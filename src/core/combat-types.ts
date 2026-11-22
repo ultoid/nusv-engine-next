@@ -1,0 +1,18 @@
+export interface BaseStats { str: number; int: number; dex: number; luk: number; agi: number; vit: number }
+export interface CombatBase { hp: number; mp: number; atk: number; def: number; mat: number; mdf: number; agi: number }
+export interface CombatBonuses { hp?: number; mp?: number; sp?: number; atk?: number; def?: number; mat?: number; mdf?: number; agi?: number; hit?: number; eva?: number; cri?: number; cev?: number; criticalDamage?: number; guard?: number; hpRegen?: number; mpRegen?: number; spRegen?: number }
+export interface BossPhase { id:string;name:string;hpRatio:number;bonuses?:CombatBonuses;skillIds?:string[] }
+export interface ActorData { id: string; name: string; stats: BaseStats; base: CombatBase; bonuses?: CombatBonuses; weaponType?: 'melee' | 'finesse' | 'ranged'; skillIds: string[]; classId?: string; classTier?: 1|2|3|4|5; availableClassIds?:string[]; classGrowth?:Partial<BaseStats>; classLearnings?:Array<{classId:string;level:number;skillId:string}>; defaultEquipment?:Record<string,string>; elementRates?:Record<string,0|0.5|1|2>; targetRate?:number }
+export interface EnemyData extends ActorData { reward: { gold: number; baseExp?: number; classExp?: number; items?: Record<string, number> }; ai?:'aggressive'|'caster'|'guardian';bossPhases?:BossPhase[] }
+export interface SkillData { id: string; name: string; kind: 'physical' | 'magical' | 'heal' | 'revive'; power: number; mpCost?: number; spCost?: number; speed?: number; target: 'enemy' | 'ally'; armorPiercing?: boolean; element?:string; stateId?: string; stateChance?: number;sequence?:Array<'approach'|'cast'|'impact'|'return'> }
+export interface ItemData { id: string; name: string; kind: 'key' | 'heal' | 'revive' | 'stat-reset'; healHp?: number; reviveHpRatio?:number }
+export interface EquipmentData { id:string; name:string; slot:'weapon'|'head'|'body'|'accessory'; stats?:Partial<BaseStats>; bonuses?:CombatBonuses; weaponType?:'melee'|'finesse'|'ranged' }
+export interface TroopData { id: string; name: string; enemyIds: string[] }
+export interface StateData { id:string; name:string; duration:number; pdr?:number; mdr?:number; damagePerTurn?:number; preventsAction?:boolean }
+export interface ActiveState { id:string; turns:number }
+export interface ActorProgress { baseLevel:number; baseExp:number; unspentStatPoints:number; allocated:BaseStats; equipment:Record<string,string>; activeClassId:string; classes:Record<string,{level:number;exp:number;tier:1|2|3|4|5}> }
+export interface DerivedStats { maxHp: number; maxMp: number; maxSp: number; atk: number; def: number; mat: number; mdf: number; actionSpeed: number; hit: number; eva: number; cri: number; cev: number; criticalDamage: number; guard: number; hpRegen: number; mpRegen: number; spRegen: number }
+export interface ResourceState { hp: number; mp: number; sp: number }
+export interface BattleBattler extends ResourceState { instanceId: string; definitionId: string; side: 'party' | 'enemy'; guarded: boolean; states:ActiveState[]; combat:ActorData; phaseId?:string }
+export type BattleAction = { actorId: string; type: 'attack' | 'guard'; targetId?: string } | { actorId: string; type: 'skill'; skillId: string; targetId: string } | { actorId: string; type: 'item'; itemId: string; targetId: string };
+export interface BattleState { seed: number; round: number; status: 'active' | 'victory' | 'defeat'; battlers: BattleBattler[]; ctbCharge:Record<string,number>; inventory: Record<string, number>; goldReward: number; baseExpReward:number; classExpReward:number; itemRewards: Record<string, number>; log: string[];turnsTaken:number;damageTaken:number }

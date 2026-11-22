@@ -1,0 +1,1 @@
+[null,{"id":1,"name":"Slash","hitType":1,"scope":1,"mpCost":0,"tpCost":5,"damage":{"type":1,"formula":"a.atk * 4 - b.def * 2"}},{"id":2,"name":"First Aid","hitType":2,"scope":7,"mpCost":4,"tpCost":0,"damage":{"type":3,"formula":"a.mat * 2"}}]

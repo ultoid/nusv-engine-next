@@ -1,0 +1,13 @@
+group,observed_scope,status,distribution_decision,evidence_or_gap
+RPG Maker MV runtime,"rpg_core.js reports 1.6.1; README says 1.6.2",PROPRIETARY_CONFLICTING_VERSION,"exclude from NUSV runtime and distribution","source observation; version conflict unresolved"
+YEP plugins,"24 enabled entries in plugins.js",THIRD_PARTY_REVIEW_REQUIRED,"reference behavior only; do not copy or bundle","no project-level YEP license record found in inspected game root"
+NUSV plugins,"41 enabled entries prefixed NUSV_",OWNERSHIP_RECORD_REQUIRED,"use as behavior/specification evidence; migrate deliberately","author headers vary between NUSV and Ultoid; no consolidated license file found"
+Other plugins,"Community_Basic; CustomLogo; separator and possible inactive entries",MIXED_THIRD_PARTY,"review individually before distribution","headers name RM CoreScript team and nz_prism"
+Electron,"editor dependency",OPEN_SOURCE_DEPENDENCY,"retain for editor shell; record exact package license during lockfile audit","package-lock present in REA"
+React and Vite,"editor dependencies",OPEN_SOURCE_DEPENDENCY,"retain for editor UI/build; record exact package licenses","package-lock present in REA"
+PixiJS,"candidate renderer; MV also contains an older bundled runtime",OPEN_SOURCE_DEPENDENCY_PENDING_PIN,"use a fresh pinned package; never copy MV-bundled Pixi","technology decision cites official renderer documentation"
+Pixel Art Atlas,"1.4M synthetic sprite dataset",CC0_WITH_PROVENANCE_LIMITS,"exclude wholesale; select assets only after provenance review","LICENSE limits dedication to rights held and notes Krea terms"
+PixelFX assets,"database/vfx assets; README claims 6508 PNG",MIT_SOURCE_INDICATED,"eligible only with MIT notice and source-to-output verification","temp_pixelfx/LICENSE is MIT; mapping to copied database output must be verified"
+Fonts,"game fonts directory",UNKNOWN,"exclude until each font license is inventoried","no license found in inspected font group"
+Images and movies,"game img/movies directories",UNKNOWN_MIXED,"exclude from safe fixture and distribution until per-group review","no complete provenance manifest found"
+Stage 0 fixture,"JSON and geometric colors created in this workspace",INTERNAL_SAFE,"approved for automated development tests","contains no copied game assets"

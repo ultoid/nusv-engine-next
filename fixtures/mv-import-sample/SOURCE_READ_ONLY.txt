@@ -1,0 +1,1 @@
+Sentinel: importer Tahap 5 tidak boleh mengubah file apa pun di folder ini.

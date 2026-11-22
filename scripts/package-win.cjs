@@ -1,0 +1,15 @@
+const {cpSync,existsSync,mkdirSync,readFileSync,renameSync,rmSync,writeFileSync}=require('node:fs');
+const {join,resolve,relative}=require('node:path');
+const {createHash}=require('node:crypto');
+const root=resolve(__dirname,'..'),releaseRoot=resolve(root,'release'),target=resolve(releaseRoot,'win-unpacked'),electronDist=resolve(root,'node_modules','electron','dist');
+if(relative(releaseRoot,target).startsWith('..')||target===releaseRoot)throw new Error('Target release tidak aman');
+if(!existsSync(join(electronDist,'electron.exe')))throw new Error('Runtime Electron Windows tidak ditemukan');
+rmSync(target,{recursive:true,force:true});mkdirSync(target,{recursive:true});cpSync(electronDist,target,{recursive:true});
+const executable=join(target,'electron.exe');renameSync(executable,join(target,'NUSV Engine.exe'));
+const app=join(target,'resources','app');mkdirSync(app,{recursive:true});
+for(const name of ['dist','.electron-dist'])cpSync(join(root,name),join(app,name),{recursive:true});
+cpSync(join(root,'fixtures','stage0-safe-project'),join(app,'fixtures','stage0-safe-project'),{recursive:true});
+const sourcePackage=JSON.parse(readFileSync(join(root,'package.json'),'utf8'));writeFileSync(join(app,'package.json'),JSON.stringify({name:sourcePackage.name,version:sourcePackage.version,private:true,type:'module',main:sourcePackage.main},null,2)+'\n');
+const version=name=>JSON.parse(readFileSync(join(root,'node_modules',name,'package.json'),'utf8')).version;const notices=['NUSV Engine — distribution notices','',`NUSV Engine application code: internal project code; distribution authorization required from owner.`,`Electron ${version('electron')}: MIT; Chromium notices are in LICENSES.chromium.html.`,`PixiJS ${version('pixi.js')}: MIT.`,`React ${version('react')} and ReactDOM ${version('react-dom')}: MIT.`,`Stage fixture: internally generated JSON/geometric visuals. No legacy game assets are bundled.`,''];writeFileSync(join(target,'THIRD_PARTY_NOTICES.txt'),notices.join('\n'));
+const files=[];const walk=directory=>{for(const entry of require('node:fs').readdirSync(directory,{withFileTypes:true})){const path=join(directory,entry.name);if(entry.isDirectory())walk(path);else files.push(path);}};walk(target);const manifest=files.sort().map(file=>({path:relative(target,file).replaceAll('\\','/'),size:require('node:fs').statSync(file).size,sha256:createHash('sha256').update(readFileSync(file)).digest('hex')}));writeFileSync(join(target,'release-manifest.json'),JSON.stringify({product:'NUSV Engine',version:sourcePackage.version,platform:'win32-x64',createdAt:new Date().toISOString(),files:manifest},null,2)+'\n');
+console.log(JSON.stringify({target,files:manifest.length,bytes:manifest.reduce((sum,file)=>sum+file.size,0)}));

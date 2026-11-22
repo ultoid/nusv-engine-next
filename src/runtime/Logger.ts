@@ -1,0 +1,1 @@
+export class Logger { constructor(private readonly scope: string) {} info(message: string, data?: unknown) { console.info(`[NUSV:${this.scope}] ${message}`, data ?? ''); } error(message: string, error?: unknown) { console.error(`[NUSV:${this.scope}] ${message}`, error ?? ''); } }

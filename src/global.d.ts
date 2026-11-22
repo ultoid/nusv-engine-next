@@ -1,0 +1,4 @@
+import type { ProjectBundle } from './core/types.js';
+export interface ImportReport { source:string;converted:string[];warnings:string[];unsupported:string[];errors:string[];idMap:Record<string,string> }
+declare global { interface Window { nusvEditor?: { createProject(title: string): Promise<ProjectBundle | null>; openProject(): Promise<ProjectBundle | null>; saveProject(bundle: ProjectBundle): Promise<ProjectBundle>; playtest(options?:{mapId?:string;debug?:boolean}): Promise<void>; importMvSubset(bundle:ProjectBundle):Promise<{bundle:ProjectBundle;report:ImportReport}|null>; }; nusvRuntime?: { loadProject(): Promise<ProjectBundle>; saveProgress(state: import('./core/types.js').ProgressState): Promise<import('./core/types.js').ProgressState>; loadProgress(): Promise<import('./core/types.js').ProgressState | null>; }; } }
+export {};

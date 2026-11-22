@@ -1,0 +1,832 @@
+﻿{
+  "source": "Tales of The Dark Time",
+  "pluginsJsSha256": "4d525a5c6abb25c3db4e71ab173d7307370d901afbcea9e58bf9efbef12339d9",
+  "dataDirectoryPresent": false,
+  "pluginFileCount": 70,
+  "listedPluginCount": 77,
+  "enabledPluginCount": 67,
+  "plugins": [
+    {
+      "order": 1,
+      "name": "Community_Basic",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "93d25e8b1a9154da02685472c596ec9baa5a6ae2abc29ca1b8f85c5d651f0ad6",
+      "yepMentions": []
+    },
+    {
+      "order": 2,
+      "name": "CustomLogo",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "89b9d35049ddbb75d779f78e4d1fd465b2a4a3c42dc5febc3d47aeccbda747af",
+      "yepMentions": []
+    },
+    {
+      "order": 3,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 4,
+      "name": "YEP_CoreEngine",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "df76f5834796f874ab025da504491507b5df19dacfaeb6e70193dcc15e681c9e",
+      "yepMentions": [
+        "YEP_CoreEngine"
+      ]
+    },
+    {
+      "order": 5,
+      "name": "NUSV_OptionsCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "1d879c8bb470db498e6f81165836280587d9b30b721220fc52bd54e678d5b024",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_OptionsCore"
+      ]
+    },
+    {
+      "order": 6,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 7,
+      "name": "YEP_BattleEngineCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "55a47dde96790e285e885f19587deead3021cfae4eca5f8210101b815c7d7131",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_BuffsStatesCore",
+        "YEP_ImprovedBattlebacks",
+        "YEP_InstantCast",
+        "YEP_X_AnimatedSVEnemies"
+      ]
+    },
+    {
+      "order": 8,
+      "name": "YEP_X_ActSeqPack1",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b29229a1953b76fadf69474c70be15d90b95f1616b4a485b2fa04a4826f9ddf7",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_X_ActSeqPack1"
+      ]
+    },
+    {
+      "order": 9,
+      "name": "YEP_X_ActSeqPack2",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "377e0e64e50fd51088335be7c70a64e5b5ba40011acfc336ac66a19dcdfd4fab",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_X_ActSeqPack2",
+        "YEP_X_AnimatedSVEnemies"
+      ]
+    },
+    {
+      "order": 10,
+      "name": "YEP_X_ActSeqPack3",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "dec37b828f96431bac3129641ced6464f86526b3093fe74edb91fc556b599799",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_OptionsCore",
+        "YEP_X_ActSeqPack2",
+        "YEP_X_ActSeqPack3"
+      ]
+    },
+    {
+      "order": 11,
+      "name": "YEP_X_BattleSysCTB",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "c41ff71d8e483452a3b5201a74ce1bc040f806ca36785343526d6f996df09e13",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_InstantCast",
+        "YEP_X_AnimatedSVEnemies",
+        "YEP_X_BattleSysCTB"
+      ]
+    },
+    {
+      "order": 12,
+      "name": "NUSV_CTBCalibration",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "222b71e8bb647090916e83143f5c6bb2d8f8b02dc16e9dbeeb090357c275f131",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_X_BattleSysCTB"
+      ]
+    },
+    {
+      "order": 13,
+      "name": "YEP_SkillCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "559f1595f949a9432d98b2b4a927f450d9845fcfe382b829993560dbdc7d6ba6",
+      "yepMentions": [
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 14,
+      "name": "YEP_BuffsStatesCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b62c11652663094cf19f719a3090ce3635e881c1a03e056a636e00f3bb6f29ec",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_BuffsStatesCore"
+      ]
+    },
+    {
+      "order": 15,
+      "name": "YEP_AutoPassiveStates",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "7dba4687c34474c245290ac3b9b0e87ff0a168c00d17434bb086132cbb6abe29",
+      "yepMentions": [
+        "YEP_AutoPassiveStates",
+        "YEP_EquipBattleSkills"
+      ]
+    },
+    {
+      "order": 16,
+      "name": "YEP_ElementCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "0b3bf24cfd5b9169bc90d6ccd2c48328d39a5b51f96f538e72e4753190689936",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_ElementCore"
+      ]
+    },
+    {
+      "order": 17,
+      "name": "YEP_BattleAICore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "6d6ce07c9e9390fe633cfd9346878cd5fa40d28074166f414fa210de725f1251",
+      "yepMentions": [
+        "YEP_BattleAICore",
+        "YEP_BattleEngineCore",
+        "YEP_Taunt",
+        "YEP_X_SelectionControl"
+      ]
+    },
+    {
+      "order": 18,
+      "name": "YEP_BaseTroopEvents",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "a3fd78661950a73e6737c38f8d3e6dc9cb23ed460de86730f98b8130b0f1ee2f",
+      "yepMentions": [
+        "YEP_BaseTroopEvents"
+      ]
+    },
+    {
+      "order": 19,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 20,
+      "name": "NUSV_DamageCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "a5ad7c87baee0af72ffbb1415ef495bedf277c218f5386e1e174727481e8a3e9",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_DamageCore",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 21,
+      "name": "NUSV_BattlePopups",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "87a846ce591ca0e40146ac5af4471071c8cfcfc157162a577784e5f10cb08220",
+      "yepMentions": [
+        "YEP_BattleEngineCore"
+      ]
+    },
+    {
+      "order": 22,
+      "name": "NUSV_VFXKeyframes",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "57dd2fc76aa311c0fe971d2f86aeeff9d8887707e883dbf068928cae8c1d1244",
+      "yepMentions": []
+    },
+    {
+      "order": 23,
+      "name": "NUSV_ProjectileEngine",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "7aa10f109c844b5c913995cdce570432d04255cf88514d379aec298f7a825771",
+      "yepMentions": [
+        "YEP_BattleEngineCore"
+      ]
+    },
+    {
+      "order": 24,
+      "name": "NUSV_CameraDynamics",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "8e8609522a8040e74da3f5f22c2e7b7a18ebc53436a857d80ba4ff06565116ca",
+      "yepMentions": []
+    },
+    {
+      "order": 25,
+      "name": "NUSV_OctoBattleHUD",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "2878d0537b3e322d7250f2f89c178cea888633ed1f71f8caa59343056cb19447",
+      "yepMentions": []
+    },
+    {
+      "order": 26,
+      "name": "NUSV_BattlePreview",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "d709583cf52c08c09ca7f1f819f689fe529fb0d72cbf0a5fdfbc9830c9d1b4be",
+      "yepMentions": []
+    },
+    {
+      "order": 27,
+      "name": "NUSV_CriticalControl",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "4e0113f33d75d3feaa03e1b67715f19c59f52ced24558b5bbaa5fd4f15a5782b",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_SkillCore",
+        "YEP_X_CriticalControl"
+      ]
+    },
+    {
+      "order": 28,
+      "name": "NUSV_TargetCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "37d9379db41650f6ced58f0d514edbea64ebe229819eff92f649a433f5dfd0ec",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_SkillCore",
+        "YEP_TargetCore"
+      ]
+    },
+    {
+      "order": 29,
+      "name": "NUSV_SelectionControl",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "abb4cd49a361707fd8fbd03e96daa34c433f3b5d45aa2a6f5bc6ab24d0912882",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_SelectionControl",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 30,
+      "name": "NUSV_ExtraParamFormula",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "ecf6c0075ce0559ce1b16f3fcd6ba666a0d082f06123eedcb92baeeeb7ce7f7a",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_ExtraParamFormula",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 31,
+      "name": "NUSV_SpecialParamFormula",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b5df602ed07ed7354095efb18c9c4ecf589533477f2cdff16aa9fa481bfda408",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_SkillCore",
+        "YEP_SpecialParamFormula"
+      ]
+    },
+    {
+      "order": 32,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 33,
+      "name": "NUSV_InstantCast",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "04b559bb79f3ad913149379a3c8e2391e85b3ab80d2bc9bf52e4136279edc655",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_InstantCast",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 34,
+      "name": "NUSV_EnemyLevels",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "18056bfb306aa3bda464e0c4a7d14aeec45fa9f12f4b239cce7226db6b6ff79a",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_EnemyLevels"
+      ]
+    },
+    {
+      "order": 35,
+      "name": "NUSV_DifficultySlider",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "31240f2357659cc098c7de21b33cf6ea96aaa90a3de7271196bf9993390aae36",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_DifficultySlider"
+      ]
+    },
+    {
+      "order": 36,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 37,
+      "name": "YEP_X_AnimatedSVEnemies",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "8130c0c5d6c7b74e3f018cf2ab88d061247261978e14a77f9f03d980e67f7d96",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_X_ActSeqPack2",
+        "YEP_X_AnimatedSVEnemies",
+        "YEP_X_BattleSysCTB",
+        "YEP_X_VisualStateFX"
+      ]
+    },
+    {
+      "order": 38,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 39,
+      "name": "YEP_ItemCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "26a6f756bad0d7f606a3ec3251b6dea986e415c19dda6677a048ac7790df340e",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 40,
+      "name": "YEP_EquipCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "97328b0889eb06960d1d9d51e6c72fb487d257458544d9a72227cccae6926071",
+      "yepMentions": [
+        "YEP_EquipCore",
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 41,
+      "name": "NUSV_EquipRules",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "e924eb90c93f20d58f4a06a14698db3405fc39c4a54aadb9c100a94f93ba3843",
+      "yepMentions": [
+        "YEP_EquipCore"
+      ]
+    },
+    {
+      "order": 42,
+      "name": "NUSV_ItemUpgrade",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "ec5a018f223f51a81c2a9f66a5667066e0804c621ffd6f78b0d0cf0d5b33d9bd",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_EquipCore",
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 43,
+      "name": "NUSV_SocketCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "47d38f541027b1312391b2782f189c71e11a8f47ce9eec44353d44b3325daf75",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_EquipCore",
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 44,
+      "name": "NUSV_WeaponUnleash",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "d7f7c15ebaf138c1df40fc36a817c1bc47f48d66701be37a0c040be5669cafcc",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_SkillCore",
+        "YEP_WeaponUnleash"
+      ]
+    },
+    {
+      "order": 45,
+      "name": "NUSV_JobPoints",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "3dd59b3d325a1892480527ab267f9d53e0e38abfb5c6d9e838520ce0460596c2",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_JobPoints",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 46,
+      "name": "SRD_SummonCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "a5fb90dbd14a0b51f5fa737d0a448522b3c5219a297b2c13bfe18b0fe805d2ce",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_VictoryAftermath"
+      ]
+    },
+    {
+      "order": 47,
+      "name": "SRD_SummonBattlerImages",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b32772d8864940beae94f82c62979d052a25a4e8ba3d2fbc77481cfa0e50c0ef",
+      "yepMentions": []
+    },
+    {
+      "order": 48,
+      "name": "YEP_MessageCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "c84e4066f75a0c63e0621d4e907513222dfdbf888adc8f4332bc8524cea868fc",
+      "yepMentions": [
+        "YEP_MessageCore"
+      ]
+    },
+    {
+      "order": 49,
+      "name": "YEP_QuestJournal",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "30020c9c5b8184e0a0dbb4ecf1eaa938fa1a52a1da70ddf1c48b6ca700988c46",
+      "yepMentions": [
+        "YEP_MessageCore",
+        "YEP_QuestJournal"
+      ]
+    },
+    {
+      "order": 50,
+      "name": "YEP_SaveCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "c78662e6c5838b68a3cda12e7f3e65ab12ba3d1d699c3a253e1d8306212e89e4",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_SaveCore"
+      ]
+    },
+    {
+      "order": 51,
+      "name": "YEP_MoveRouteCore",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "c157fcd2e25a2960bc23645b6cc848bfd130f23d4f8370c3014ce9caba932276",
+      "yepMentions": [
+        "YEP_IconBalloons",
+        "YEP_MoveRouteCore",
+        "YEP_SelfSwVar"
+      ]
+    },
+    {
+      "order": 52,
+      "name": "YEP_EventChasePlayer",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "800083526c91a7879ad69f6c7498b01cbb2ef8c63adf8254ae6fa6591f29c0a6",
+      "yepMentions": [
+        "YEP_EventChasePlayer",
+        "YEP_StopAllMove",
+        "YEP_X_EventChaseStealth"
+      ]
+    },
+    {
+      "order": 53,
+      "name": "YEP_RegionRestrictions",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "de2c27d3f27f8b53d58f911c87d4f16128b4cffca4cc5846192eff717a30c2fb",
+      "yepMentions": [
+        "YEP_RegionRestrictions"
+      ]
+    },
+    {
+      "order": 54,
+      "name": "YEP_RegionEvents",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "43bcb75f4021e4f4068c45ea0a086d549d190d0e161779b77ccee8e1e4f78d6d",
+      "yepMentions": [
+        "YEP_RegionEvents"
+      ]
+    },
+    {
+      "order": 55,
+      "name": "NUSV_EventChaseStealth",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "597a7d207845274a639e9d8d9116ff727657a9c06f8362cad2c4b4b83d7c303a",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_EventChasePlayer",
+        "YEP_EventChaseStealth"
+      ]
+    },
+    {
+      "order": 56,
+      "name": "YEP_VictoryAftermath",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b3a82e40ef319008b47251f8bac399877e872e667ab00ee026cf3545d7fb4530",
+      "yepMentions": [
+        "YEP_VictoryAftermath"
+      ]
+    },
+    {
+      "order": 57,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 58,
+      "name": "YEP_MainMenuManager",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "ea026e2ef91123e14dea351d7af788b32934b06f096d64fcb83e946270eafe14",
+      "yepMentions": [
+        "YEP_ClassChangeCore",
+        "YEP_MainMenuManager"
+      ]
+    },
+    {
+      "order": 59,
+      "name": "NUSV_ItemMenuCategories",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b7d9a5a37c69966594a6b3ac0583aba3b0882db8ab30b7c3dc853c901b4b5301",
+      "yepMentions": [
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 60,
+      "name": "NUSV_PartySystem",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "7af825b4e4203f9138877e86e1d08ec818c42fa2c8c0f3498991df96fbb1bda7",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_PartySystem"
+      ]
+    },
+    {
+      "order": 61,
+      "name": "NUSV_ClassChange",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "cdda8fdf2647ad4896cb31cb1c7ce00926338e0be76e068911f3bb4075615db7",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_ClassChangeCore",
+        "YEP_CoreEngine",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 62,
+      "name": "NUSV_SkillLearn",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "2b42f4dbaf941a6335e89f2963de44eb8debd6a46a2c84e0f44c66498fc1ded1",
+      "yepMentions": [
+        "YEP_BattleEngineCore",
+        "YEP_CoreEngine",
+        "YEP_SkillCore",
+        "YEP_SkillLearnSystem"
+      ]
+    },
+    {
+      "order": 63,
+      "name": "NUSV_ItemSynthesis",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "d918a7fdc8b4785250a3d8a42b9af1584c02a15e8ea0d3865659187075dabe11",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_EquipCore",
+        "YEP_ItemCore",
+        "YEP_ItemSynthesis"
+      ]
+    },
+    {
+      "order": 64,
+      "name": "NUSV_MainMenuBridge",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "86def2df938b47a8742b3b90bca2f8d27a62bd345196a29c3167e01ac568597c",
+      "yepMentions": [
+        "YEP_ClassChangeCore",
+        "YEP_MainMenuManager"
+      ]
+    },
+    {
+      "order": 65,
+      "name": "--------------------",
+      "enabled": false,
+      "fileExists": true,
+      "sha256": "62d8301da8411bc4e7775def3296ca771a57d37bb2a7dadbd2492b0465950882",
+      "yepMentions": []
+    },
+    {
+      "order": 66,
+      "name": "NUSV_MapSelectEquip",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "639aa129610c2dc180152ed15f9e3ed336dc775c6b0c2152665f673000514a4f",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_EquipCore",
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 67,
+      "name": "NUSV_MapSelectItem",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "3f10cae494e1f96557cb80d1e90e818ffb34e4a72fb92bd106df84abd07fe1ae",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_ItemCore"
+      ]
+    },
+    {
+      "order": 68,
+      "name": "NUSV_MapSelectSkill",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "ecd0e448bb90cb6534f0bdf4512d2568ca7f139c9a4147338441c7bf27a93d51",
+      "yepMentions": [
+        "YEP_CoreEngine",
+        "YEP_SkillCore"
+      ]
+    },
+    {
+      "order": 69,
+      "name": "NUSV_ButtonCommonEvents",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "97142d81b409f10bc96bd01d16699940092c65e1b53065b078ccd74e85e978e5",
+      "yepMentions": [
+        "YEP_ButtonCommonEvents",
+        "YEP_CoreEngine"
+      ]
+    },
+    {
+      "order": 70,
+      "name": "NUSV_GameFontBaseline",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "a82a1e41f688e90719444db24235b9378341d7f25a8811f1990a28b4cec3484c",
+      "yepMentions": []
+    },
+    {
+      "order": 71,
+      "name": "NUSV_AlwaysCenterPlayer",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "49e191ae17d5e3b7fdb4a575431ed53e4b37143734b3ba2fd94cd2885347edde",
+      "yepMentions": []
+    },
+    {
+      "order": 72,
+      "name": "NUSV_AutoTextWrap",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "aecce09266f7a92c2da5952712473078c46e7cb7f90b2d3b06a52b1beebc3a0a",
+      "yepMentions": [
+        "YEP_MessageCore"
+      ]
+    },
+    {
+      "order": 73,
+      "name": "NUSV_InventoryUI",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "f96215d0f3ae6719c63c8dfd220163fdce7817f4d0b584b9cc26891c6a93c195",
+      "yepMentions": [
+        "YEP_ItemCore",
+        "YEP_MainMenuManager"
+      ]
+    },
+    {
+      "order": 74,
+      "name": "NUSV_StatSystem",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "b0240611d91c9be020c5269dcd5f953225ef87af127c2f487040990ea0c54177",
+      "yepMentions": []
+    },
+    {
+      "order": 75,
+      "name": "NUSV_ClassLevel",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "e70864d4827853f8d96b14de74badcf539e11ba1e8e1e552413a9028da367e8a",
+      "yepMentions": []
+    },
+    {
+      "order": 76,
+      "name": "NUSV_StaminaBattle",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "8686ec8dae021c32f2f2e0261fdc68132e9d55bb25e3ab06b5804f8c68f81769",
+      "yepMentions": []
+    },
+    {
+      "order": 77,
+      "name": "NUSV_StatusScreen",
+      "enabled": true,
+      "fileExists": true,
+      "sha256": "0a29890b81c4fe82ab91d2a904efe89043da609738cb5553fb4540e6374d0f6c",
+      "yepMentions": [
+        "YEP_AutoPassiveStates"
+      ]
+    }
+  ],
+  "unlistedPluginFiles": [],
+  "note": "YEP mentions are textual indicators, not verified runtime dependencies. Licenses and ownership are not inferred."
+}

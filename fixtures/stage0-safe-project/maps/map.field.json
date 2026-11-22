@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1, "id": "map.field", "name": "Padang Uji", "width": 7, "height": 5, "tileSize": 48,
+  "layers": [{ "id": "layer.ground", "type": "tile", "data": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] }],
+  "collision": [1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1],
+  "events": [
+    { "id": "event.return", "name": "Kembali", "x": 1, "y": 2, "trigger": "touch", "pages": [{ "solid": false, "commands": [{ "type": "transfer", "mapId": "map.intro", "x": 6, "y": 2 }] }] },
+    { "id": "event.field-guide", "name": "Pengamat", "x": 4, "y": 2, "trigger": "interact", "pages": [
+      { "solid": true, "commands": [{ "type": "text", "text": "Makhluk padang menghalangi jalan." }, { "type": "battle", "troopId": "troop.training", "victorySwitchId": "battle.training-won" }, { "type": "questAdvance", "questId": "quest.ash-warden", "objectiveId": "objective.scout", "amount": 1 }] },
+      { "conditions": { "switchId": "battle.training-won", "switchValue": true }, "solid": true, "commands": [{ "type": "text", "text": "Battle sandbox telah ditaklukkan." }] }
+    ] },
+    { "id": "event.to-village", "name": "Jalan Desa", "x": 5, "y": 2, "trigger": "touch", "pages": [{ "solid": false, "commands": [{ "type": "transfer", "mapId": "map.village", "x": 2, "y": 2 }] }] }
+  ]
+}

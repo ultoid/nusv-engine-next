@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-11-22T04:11:52.879Z",
+  "application": {
+    "name": "nusv-engine-next",
+    "version": "0.1.0"
+  },
+  "packages": [
+    {
+      "name": "electron",
+      "version": "45.4.1",
+      "license": "MIT",
+      "homepage": null,
+      "distribution": "binary runtime plus Chromium notices"
+    },
+    {
+      "name": "pixi.js",
+      "version": "8.16.0",
+      "license": "MIT",
+      "homepage": "http://pixijs.com/",
+      "distribution": "bundled client code"
+    },
+    {
+      "name": "react",
+      "version": "18.3.1",
+      "license": "MIT",
+      "homepage": "https://reactjs.org/",
+      "distribution": "bundled client code"
+    },
+    {
+      "name": "react-dom",
+      "version": "18.3.1",
+      "license": "MIT",
+      "homepage": "https://reactjs.org/",
+      "distribution": "bundled client code"
+    }
+  ],
+  "excluded": [
+    "legacy MV runtime",
+    "YEP plugins",
+    "legacy NUSV plugins",
+    "legacy fonts/images/movies",
+    "Pixel Art Atlas dataset"
+  ]
+}

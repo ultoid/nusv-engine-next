@@ -1,0 +1,18 @@
+const { spawn, spawnSync } = require('node:child_process');
+const { mkdtempSync, rmSync } = require('node:fs');
+const { tmpdir } = require('node:os');
+const { join, resolve } = require('node:path');
+const electron = require('electron');
+const env = { ...process.env };
+delete env.ELECTRON_RUN_AS_NODE;
+const smokeRoot = mkdtempSync(join(tmpdir(), 'nusv-electron-smoke-'));
+env.NUSV_SMOKE_ROOT = smokeRoot;
+const child = spawn(electron, ['.', '--smoke-test'], { cwd: resolve(__dirname, '..'), env, stdio: ['ignore','pipe','pipe'] });
+let buffer = '', finished = false;
+child.stderr.pipe(process.stderr);
+const stopTree = () => { if (process.platform === 'win32') spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { stdio:'ignore' }); else child.kill('SIGKILL'); };
+const finish = (code) => { if (finished) return; finished=true; stopTree(); setTimeout(()=>{rmSync(smokeRoot,{recursive:true,force:true,maxRetries:10,retryDelay:100});process.exit(code);},250); };
+child.stdout.on('data', chunk => { const text=chunk.toString(); process.stdout.write(text); buffer+=text; const lines=buffer.split(/\r?\n/); buffer=lines.pop()??''; for(const line of lines){if(!line.startsWith('{"editorLoaded"'))continue;try{const result=JSON.parse(line);finish(result.storyCompleted?0:1);}catch{finish(1);}} });
+child.on('error', error=>{console.error(error);finish(1);});
+child.on('exit', code=>{if(!finished)finish(code??1);});
+setTimeout(()=>{console.error('Smoke test timeout');finish(1);},60000).unref();
