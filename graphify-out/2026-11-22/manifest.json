@@ -18,10 +18,10 @@
     "semantic_hash": "88f172b475b62cb2b775235bbf06a4b3"
   },
   "electron/editor-preload.cts": {
-    "mtime": 1795338796.9214878,
-    "seen": 1795343691.4663785,
-    "ast_hash": "4e05b1914995c7fdeb9a3bee2926bf96",
-    "semantic_hash": "4e05b1914995c7fdeb9a3bee2926bf96"
+    "mtime": 1795363357.9160552,
+    "seen": 1795363843.4194734,
+    "ast_hash": "871499be9bfef64999cc7c95b6f8f484",
+    "semantic_hash": ""
   },
   "electron/import-service.ts": {
     "mtime": 1795338796.9218347,
@@ -30,10 +30,10 @@
     "semantic_hash": "288c9f3aa107785c7f5933a1d2730f97"
   },
   "electron/main.ts": {
-    "mtime": 1795338796.9221845,
-    "seen": 1795343691.4663808,
-    "ast_hash": "66e5af779a50e9700d05f388d021cc66",
-    "semantic_hash": "66e5af779a50e9700d05f388d021cc66"
+    "mtime": 1795363998.9574559,
+    "seen": 1795364555.2861707,
+    "ast_hash": "58b7dd6b20ef25aa09dcd3e13440a7e3",
+    "semantic_hash": ""
   },
   "electron/player-preload.cts": {
     "mtime": 1795338796.9224455,
@@ -48,10 +48,10 @@
     "semantic_hash": "dd39830cba70bcb088187771094efc48"
   },
   "electron/project-service.ts": {
-    "mtime": 1795338796.9230547,
-    "seen": 1795343691.466384,
-    "ast_hash": "78d7b2466a231e27e6d19fd2e370ae6c",
-    "semantic_hash": "78d7b2466a231e27e6d19fd2e370ae6c"
+    "mtime": 1795363864.0583713,
+    "seen": 1795363987.3967743,
+    "ast_hash": "8ce19e4f7344d0b0c12f94342c97b112",
+    "semantic_hash": ""
   },
   "fixtures/mv-import-sample/data/Actors.json": {
     "mtime": 1795338796.9254723,
@@ -246,10 +246,10 @@
     "semantic_hash": "1b4aca7921d77263412903c593f62ad5"
   },
   "src/editor/App.tsx": {
-    "mtime": 1795338796.9389462,
-    "seen": 1795343691.4664164,
-    "ast_hash": "c4807d5f91ac9c1dfe6de1d740bcf980",
-    "semantic_hash": "c4807d5f91ac9c1dfe6de1d740bcf980"
+    "mtime": 1795365071.5848565,
+    "seen": 1795365091.400601,
+    "ast_hash": "0cd730b2d711e5ac90e55764b1eedf6c",
+    "semantic_hash": ""
   },
   "src/editor/main.tsx": {
     "mtime": 1795338796.9391675,
@@ -258,10 +258,10 @@
     "semantic_hash": "e27eb4bbad79093a9a9a58f2eeda8c43"
   },
   "src/global.d.ts": {
-    "mtime": 1795338796.9393601,
-    "seen": 1795343691.4664195,
-    "ast_hash": "6508bce1903e551bb3b4d104d4dd7860",
-    "semantic_hash": "6508bce1903e551bb3b4d104d4dd7860"
+    "mtime": 1795363366.297341,
+    "seen": 1795363843.4195275,
+    "ast_hash": "0accb7a9d8b79f3ec2f2684be5afa84d",
+    "semantic_hash": ""
   },
   "src/player/main.ts": {
     "mtime": 1795338796.939682,
@@ -348,10 +348,10 @@
     "semantic_hash": "075dcf513aadcb8fbcdfdb87532bf210"
   },
   "tests/stage1-project-service.test.js": {
-    "mtime": 1795338796.9447415,
-    "seen": 1795343691.4664335,
-    "ast_hash": "e39381e67682a54eaacd463a68c8a410",
-    "semantic_hash": "e39381e67682a54eaacd463a68c8a410"
+    "mtime": 1795363866.3169844,
+    "seen": 1795363987.396839,
+    "ast_hash": "6c3f9ec412bbac7841ed446658367463",
+    "semantic_hash": ""
   },
   "tests/stage2-world.test.js": {
     "mtime": 1795338796.944948,
@@ -550,5 +550,35 @@
     "seen": 1795343691.4664662,
     "ast_hash": "ee995a3f6f89fbf62f58d410c6cd95bb",
     "semantic_hash": "ee995a3f6f89fbf62f58d410c6cd95bb"
+  },
+  ".agents/rules/karpathy-guidelines.md": {
+    "mtime": 1795345323.407154,
+    "seen": 1795360712.0267706,
+    "ast_hash": "fc54e824dc25481ee4915c8392db339a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/karpathy-guidelines/SKILL.md": {
+    "mtime": 1795345290.0164368,
+    "seen": 1795345310.3426676,
+    "ast_hash": "568fe33228692e85543530ce376f695f",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1795345290.0181813,
+    "seen": 1795345310.342669,
+    "ast_hash": "e2bc4aa3d584ea3c6121404607b2fac1",
+    "semantic_hash": ""
+  },
+  "rpgmaker-mz-analysis/NUSV_ENGINE_SPECIFICATION.md": {
+    "mtime": 1795359299.1518571,
+    "seen": 1795360712.026802,
+    "ast_hash": "37a29b36139a42d0f701744304d3c9e9",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1795360119.5965557,
+    "seen": 1795360712.0268054,
+    "ast_hash": "9032f349bf24069d015409a86c1f56e6",
+    "semantic_hash": ""
   }
 }

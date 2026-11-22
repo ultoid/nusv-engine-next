@@ -1,4 +1,4 @@
-import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync, copyFileSync, unlinkSync } from 'node:fs';
+import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync, unlinkSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { validateBundle } from '../src/core/validation.js';
 import type { ProjectBundle } from '../src/core/types.js';
@@ -37,10 +37,24 @@ export function loadProject(root: string): ProjectBundle {
   return validateBundle({ root: normalized, project, game: readJson(join(normalized, 'data', 'game.json'), 'game'), maps, assets: readJson(join(normalized, 'assets', 'manifest.json'), 'assets') });
 }
 
-export function createProject(parent: string, title: string, templateRoot: string): ProjectBundle {
-  const cleanTitle = title.trim() || 'NUSV Project'; const slug = cleanTitle.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'project'; const root = join(resolve(parent), slug);
-  if (existsSync(root)) throw new Error(`Folder proyek sudah ada: ${root}`); mkdirSync(root, { recursive: false });
-  try { cpSync(templateRoot, root, { recursive: true, errorOnExist: true }); const manifestFile = join(root, 'nusv.project.json'); const manifest = readJson(manifestFile, 'project'); manifest.title = cleanTitle; manifest.projectId = `game.${slug}`; writeFileSync(manifestFile, JSON.stringify(manifest, null, 2) + '\n', { flush: true }); return loadProject(root); } catch (error) { rmSync(root, { recursive: true, force: true }); throw error; }
+export function createProject(parent: string, title: string, templateRoot: string, customFolderName?: string): ProjectBundle {
+  const cleanTitle = title.trim() || 'NUSV Project';
+  const slug = (customFolderName?.trim() || cleanTitle).toLowerCase().normalize('NFKD').replace(/[^a-z0-9-_]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'project';
+  const root = join(resolve(parent), slug);
+  if (existsSync(root)) throw new Error(`Folder proyek sudah ada: ${root}`);
+  mkdirSync(root, { recursive: false });
+  try {
+    cpSync(templateRoot, root, { recursive: true, errorOnExist: true });
+    const manifestFile = join(root, 'nusv.project.json');
+    const manifest = readJson(manifestFile, 'project');
+    manifest.title = cleanTitle;
+    manifest.projectId = `game.${slug}`;
+    writeFileSync(manifestFile, JSON.stringify(manifest, null, 2) + '\n', { flush: true });
+    return loadProject(root);
+  } catch (error) {
+    rmSync(root, { recursive: true, force: true });
+    throw error;
+  }
 }
 
 export function saveProject(root: string, raw: unknown): ProjectBundle {
@@ -52,4 +66,103 @@ export function saveProject(root: string, raw: unknown): ProjectBundle {
     ...candidate.project.maps.map(mapId => ({ path: `maps/${mapId}.json`, content: JSON.stringify(candidate.maps[mapId], null, 2) + '\n' }))
   ];
   commitFiles(root, files); return loadProject(root);
+}
+
+const RECENT_FILE = 'recent-projects.json';
+
+export interface RecentProjectItem {
+  path: string;
+  title: string;
+  lastOpened: number;
+}
+
+export function getDefaultProjectsDirectory(workspaceRoot: string): string {
+  const defaultDir = join(resolve(workspaceRoot), 'project');
+  if (!existsSync(defaultDir)) {
+    mkdirSync(defaultDir, { recursive: true });
+  }
+  return defaultDir;
+}
+
+export function scanProjectsDirectory(projectsDir: string): RecentProjectItem[] {
+  if (!existsSync(projectsDir)) return [];
+  try {
+    const entries = readdirSync(projectsDir, { withFileTypes: true });
+    const discovered: RecentProjectItem[] = [];
+    for (const entry of entries) {
+      if (entry.isDirectory()) {
+        const projRoot = join(projectsDir, entry.name);
+        const manifestPath = join(projRoot, 'nusv.project.json');
+        if (existsSync(manifestPath)) {
+          try {
+            const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+            const stat = statSync(manifestPath);
+            discovered.push({
+              path: projRoot,
+              title: typeof manifest?.title === 'string' ? manifest.title : entry.name,
+              lastOpened: stat.mtimeMs
+            });
+          } catch {
+            // ignore
+          }
+        }
+      }
+    }
+    return discovered;
+  } catch {
+    return [];
+  }
+}
+
+export function getRecentProjects(userDataDir: string, defaultProjectsDir?: string): RecentProjectItem[] {
+  const file = join(userDataDir, RECENT_FILE);
+  let list: unknown[] = [];
+  if (existsSync(file)) {
+    try {
+      const parsed = JSON.parse(readFileSync(file, 'utf8'));
+      if (Array.isArray(parsed)) list = parsed;
+    } catch {
+      list = [];
+    }
+  }
+  const verified = list
+    .filter((item): item is RecentProjectItem => Boolean(item && typeof (item as RecentProjectItem).path === 'string' && existsSync(join((item as RecentProjectItem).path, 'nusv.project.json'))))
+    .map(item => ({ ...item, path: resolve(item.path) }));
+
+  if (defaultProjectsDir && existsSync(defaultProjectsDir)) {
+    const scanned = scanProjectsDirectory(defaultProjectsDir);
+    for (const item of scanned) {
+      if (!verified.some(v => resolve(v.path) === resolve(item.path))) {
+        verified.push(item);
+      }
+    }
+  }
+  return verified.sort((a, b) => b.lastOpened - a.lastOpened).slice(0, 30);
+}
+
+export function saveRecentProject(userDataDir: string, root: string, title: string): RecentProjectItem[] {
+  const normalized = resolve(root);
+  const current = getRecentProjects(userDataDir);
+  const updated = [
+    { path: normalized, title: title.trim() || 'NUSV Project', lastOpened: Date.now() },
+    ...current.filter(item => resolve(item.path) !== normalized)
+  ].slice(0, 25);
+  try {
+    writeFileSync(join(userDataDir, RECENT_FILE), JSON.stringify(updated, null, 2) + '\n', { flush: true });
+  } catch {
+    // ignore
+  }
+  return updated;
+}
+
+export function removeRecentProject(userDataDir: string, root: string): RecentProjectItem[] {
+  const normalized = resolve(root);
+  const current = getRecentProjects(userDataDir);
+  const updated = current.filter(item => resolve(item.path) !== normalized);
+  try {
+    writeFileSync(join(userDataDir, RECENT_FILE), JSON.stringify(updated, null, 2) + '\n', { flush: true });
+  } catch {
+    // ignore
+  }
+  return updated;
 }

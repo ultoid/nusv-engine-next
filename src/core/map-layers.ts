@@ -81,3 +81,120 @@ export function floodFillLayer(layers:TileLayer[],layerIndex:number,start:number
   }
   return layers.map((layer,index)=>index===layerIndex?{...layer,data}:layer);
 }
+
+export function paintLayerCircle(layers:TileLayer[],layerIndex:number,startX:number,startY:number,endX:number,endY:number,tileId:number,width:number):TileLayer[]{
+  const left=Math.min(startX,endX),right=Math.max(startX,endX),top=Math.min(startY,endY),bottom=Math.max(startY,endY);
+  const rx=(right-left)/2, ry=(bottom-top)/2;
+  const cx=left+rx, cy=top+ry;
+  const data=[...layers[layerIndex].data];
+  for(let y=top;y<=bottom;y++){
+    for(let x=left;x<=right;x++){
+      const dx=rx>0?(x-cx)/rx:0, dy=ry>0?(y-cy)/ry:0;
+      if(dx*dx+dy*dy<=1.08){
+        data[y*width+x]=tileId;
+      }
+    }
+  }
+  return layers.map((layer,index)=>index===layerIndex?{...layer,data}:layer);
+}
+
+export function shiftMapData(
+  layers: TileLayer[],
+  collision: Array<0 | 1>,
+  width: number,
+  height: number,
+  dx: number,
+  dy: number,
+  loop: boolean
+): { layers: TileLayer[]; collision: Array<0 | 1> } {
+  const nextLayers = layers.map(layer => {
+    const data = Array(width * height).fill(0);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        let nx = x + dx;
+        let ny = y + dy;
+        if (loop) {
+          nx = ((nx % width) + width) % width;
+          ny = ((ny % height) + height) % height;
+        }
+        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+          data[ny * width + nx] = layer.data[y * width + x];
+        }
+      }
+    }
+    return { ...layer, data };
+  });
+
+  const nextCollision = Array(width * height).fill(0) as (0 | 1)[];
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let nx = x + dx;
+      let ny = y + dy;
+      if (loop) {
+        nx = ((nx % width) + width) % width;
+        ny = ((ny % height) + height) % height;
+      }
+      if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+        nextCollision[ny * width + nx] = collision[y * width + x];
+      }
+    }
+  }
+
+  return { layers: nextLayers, collision: nextCollision };
+}
+
+export function generateDungeonData(
+  width: number,
+  height: number,
+  wallTile: number = 6,
+  floorTile: number = 3
+): { layers: TileLayer[]; collision: Array<0 | 1> } {
+  const cells = width * height;
+  const l1 = Array(cells).fill(wallTile);
+  const coll = Array(cells).fill(1) as (0 | 1)[];
+
+  const rooms: Array<{ x: number; y: number; w: number; h: number }> = [];
+  const roomCount = Math.max(2, Math.floor((width * height) / 45));
+
+  for (let i = 0; i < roomCount; i++) {
+    const rw = Math.floor(Math.random() * 4) + 3;
+    const rh = Math.floor(Math.random() * 4) + 3;
+    const rx = Math.floor(Math.random() * (width - rw - 2)) + 1;
+    const ry = Math.floor(Math.random() * (height - rh - 2)) + 1;
+
+    for (let y = ry; y < ry + rh; y++) {
+      for (let x = rx; x < rx + rw; x++) {
+        const idx = y * width + x;
+        l1[idx] = floorTile;
+        coll[idx] = 0;
+      }
+    }
+    rooms.push({ x: rx + Math.floor(rw / 2), y: ry + Math.floor(rh / 2), w: rw, h: rh });
+  }
+
+  for (let i = 0; i < rooms.length - 1; i++) {
+    const a = rooms[i], b = rooms[i + 1];
+    let cx = a.x, cy = a.y;
+    while (cx !== b.x) {
+      const idx = cy * width + cx;
+      l1[idx] = floorTile;
+      coll[idx] = 0;
+      cx += cx < b.x ? 1 : -1;
+    }
+    while (cy !== b.y) {
+      const idx = cy * width + cx;
+      l1[idx] = floorTile;
+      coll[idx] = 0;
+      cy += cy < b.y ? 1 : -1;
+    }
+  }
+
+  const layers: TileLayer[] = [
+    { id: 'layer.1', type: 'tile', name: 'Layer 1', data: l1 },
+    { id: 'layer.2', type: 'tile', name: 'Layer 2', data: Array(cells).fill(0) },
+    { id: 'layer.3', type: 'tile', name: 'Layer 3', data: Array(cells).fill(0) },
+    { id: 'layer.4', type: 'tile', name: 'Layer 4', data: Array(cells).fill(0) }
+  ];
+
+  return { layers, collision: coll };
+}

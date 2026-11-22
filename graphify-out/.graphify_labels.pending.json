@@ -1,10 +1,8 @@
 {
-  "0": "PartyController.ts",
-  "1": "stage4-advanced.test.js",
-  "17": "ref_node_fs",
-  "20": "smoke.cjs",
-  "21": "ref_node_path",
-  "22": "stage5-tools.test.js",
+  "1": "ref_node_path",
+  "3": "NUSV Engine - Technical Architecture & Clean-Room Specification",
+  "6": "battle.ts",
+  "17": "types.ts",
   "23": "Karpathy Guidelines",
   "24": "Karpathy Guidelines",
   "25": "CLAUDE.md"

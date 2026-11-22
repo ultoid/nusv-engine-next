@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProject, loadProject, saveProject } from './project-service.js';
+import { createProject, loadProject, saveProject, getRecentProjects, saveRecentProject, removeRecentProject, getDefaultProjectsDirectory } from './project-service.js';
 import { loadProgress, saveProgress } from './progress-service.js';
 import { importMvSubset } from './import-service.js';
 const here = dirname(fileURLToPath(import.meta.url)); const appRoot = resolve(here, '..', '..'); const smokeTest = process.argv.includes('--smoke-test'); let smokeDirectory: string | null = smokeTest ? (process.env.NUSV_SMOKE_ROOT ?? mkdtempSync(join(tmpdir(), 'nusv-electron-smoke-'))) : null; let editor: BrowserWindow | null = null; let currentRoot: string | null = null;
@@ -72,9 +72,70 @@ function verifySmokePlayer(player: BrowserWindow) {
     }, 700);
   });
 }
-ipcMain.handle('project:create', async (_event, title: string) => { const choice = await dialog.showOpenDialog(editor!, { title: 'Pilih lokasi proyek baru', properties: ['openDirectory', 'createDirectory'] }); if (choice.canceled) return null; const bundle = createProject(choice.filePaths[0], title, template()); currentRoot = bundle.root!; return bundle; });
-ipcMain.handle('project:open', async () => { const choice = await dialog.showOpenDialog(editor!, { title: 'Buka proyek NUSV', properties: ['openFile'], filters: [{ name: 'NUSV Project', extensions: ['json'] }] }); if (choice.canceled) return null; const selected = choice.filePaths[0]; const root = dirname(selected); const bundle = loadProject(root); currentRoot = bundle.root!; return bundle; });
-ipcMain.handle('project:save', (_event, bundle: unknown) => { if (!currentRoot) throw new Error('Tidak ada proyek aktif'); return saveProject(currentRoot, bundle); });
+ipcMain.handle('project:create', async (_event, title: string, options?: { folderName?: string; location?: string }) => {
+  let location = options?.location;
+  if (!location) {
+    location = getDefaultProjectsDirectory(appRoot);
+  }
+  const bundle = createProject(location, title, template(), options?.folderName);
+  currentRoot = bundle.root!;
+  saveRecentProject(app.getPath('userData'), currentRoot, bundle.project.title);
+  return bundle;
+});
+ipcMain.handle('project:choose-directory', async (_event, title?: string) => {
+  const choice = await dialog.showOpenDialog(editor!, {
+    title: title || 'Pilih folder',
+    defaultPath: getDefaultProjectsDirectory(appRoot),
+    properties: ['openDirectory', 'createDirectory']
+  });
+  if (choice.canceled || !choice.filePaths[0]) return null;
+  return choice.filePaths[0];
+});
+ipcMain.handle('project:get-default-directory', () => {
+  return getDefaultProjectsDirectory(appRoot);
+});
+ipcMain.handle('project:open', async (_event, targetPath?: string) => {
+  let root = targetPath;
+  if (!root) {
+    const choice = await dialog.showOpenDialog(editor!, {
+      title: 'Buka proyek NUSV',
+      defaultPath: getDefaultProjectsDirectory(appRoot),
+      properties: ['openFile'],
+      filters: [{ name: 'NUSV Project', extensions: ['json'] }]
+    });
+    if (choice.canceled || !choice.filePaths[0]) return null;
+    const selected = choice.filePaths[0];
+    root = selected.endsWith('nusv.project.json') ? dirname(selected) : selected;
+  } else if (root.endsWith('nusv.project.json')) {
+    root = dirname(root);
+  }
+  const bundle = loadProject(root);
+  currentRoot = bundle.root!;
+  saveRecentProject(app.getPath('userData'), currentRoot, bundle.project.title);
+  return bundle;
+});
+ipcMain.handle('project:close', () => {
+  currentRoot = null;
+  return true;
+});
+ipcMain.handle('project:get-recent', () => {
+  return getRecentProjects(app.getPath('userData'), getDefaultProjectsDirectory(appRoot));
+});
+ipcMain.handle('project:remove-recent', (_event, path: string) => {
+  return removeRecentProject(app.getPath('userData'), path);
+});
+ipcMain.handle('playtest:launch-path', async (_event, projectPath: string) => {
+  const normalized = resolve(projectPath);
+  const bundle = loadProject(normalized);
+  createPlaytest({ root: normalized, mapId: bundle.project.start.mapId, debug: true }, true);
+  saveRecentProject(app.getPath('userData'), normalized, bundle.project.title);
+});
+ipcMain.handle('project:save', (_event, bundle: unknown) => {
+  if (!currentRoot) throw new Error('Tidak ada proyek aktif');
+  const saved = saveProject(currentRoot, bundle);
+  saveRecentProject(app.getPath('userData'), currentRoot, saved.project.title);
+  return saved;
+});
 ipcMain.handle('import:mv-subset', async (_event, bundle: unknown) => { const choice=await dialog.showOpenDialog(editor!,{title:'Pilih folder proyek MV atau folder data',properties:['openDirectory']});if(choice.canceled)return null;if(!currentRoot)throw new Error('Tidak ada proyek aktif');return importMvSubset(choice.filePaths[0],bundle as never,currentRoot); });
 ipcMain.handle('playtest:start', (_event, options?:{mapId?:string;debug?:boolean}) => { if (!currentRoot) throw new Error('Tidak ada proyek aktif'); const bundle=loadProject(currentRoot);if(options?.mapId&&!bundle.maps[options.mapId])throw new Error(`Map ${options.mapId} tidak ditemukan`); createPlaytest({root:currentRoot,mapId:options?.mapId,debug:options?.debug}, !smokeTest); });
 ipcMain.handle('runtime:load-project', event => { const session = playtestRoots.get(event.sender.id); if (!session) throw new Error('Sesi playtest tidak dikenal'); const bundle=loadProject(session.root);if(session.mapId){const map=bundle.maps[session.mapId];let x=1,y=1;const same=bundle.project.start.mapId===map.id;if(same&&map.collision[bundle.project.start.y*map.width+bundle.project.start.x]===0){x=bundle.project.start.x;y=bundle.project.start.y;}else{const index=map.collision.findIndex(value=>value===0);if(index<0)throw new Error(`Map ${map.id} tidak memiliki tile yang dapat dilalui`);x=index%map.width;y=Math.floor(index/map.width);}bundle.project={...bundle.project,start:{mapId:map.id,x,y},debug:!!session.debug};}else if(session.debug)bundle.project={...bundle.project,debug:true};return bundle; });
