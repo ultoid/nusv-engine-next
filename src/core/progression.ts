@@ -3,7 +3,7 @@ export const classLevelCap=(tier:1|2|3|4|5)=>({1:10,2:30,3:40,4:50,5:60})[tier];
 export const classExpForLevel=(level:number)=>level<=1?0:Math.round(35*Math.pow(level-1,1.65));
 export const baseExpForLevel=(level:number)=>level<=1?0:Math.round(100*Math.pow(level-1,1.5));
 const emptyStats=():BaseStats=>({str:0,int:0,dex:0,luk:0,agi:0,vit:0});
-export function initialActorProgress(actor:ActorData):ActorProgress{const classId=actor.classId??'class.wanderer',tier=actor.classTier??1;return{baseLevel:1,baseExp:0,unspentStatPoints:0,allocated:emptyStats(),equipment:{...(actor.defaultEquipment??{})},activeClassId:classId,classes:{[classId]:{level:1,exp:0,tier}}};}
+export function initialActorProgress(actor:ActorData):ActorProgress{const classId=actor.classId??'class.wanderer',tier=actor.classTier??1,level=actor.initialLevel??1;return{baseLevel:level,baseExp:0,unspentStatPoints:0,allocated:emptyStats(),equipment:{...(actor.defaultEquipment??{})},activeClassId:classId,classes:{[classId]:{level,exp:0,tier}}};}
 export function allocateStat(input:ActorProgress,key:keyof BaseStats,amount=1){if(!Number.isInteger(amount)||amount<1||amount>input.unspentStatPoints)throw new Error('stat allocation: poin tidak cukup atau jumlah tidak valid');const next=structuredClone(input);next.allocated[key]+=amount;next.unspentStatPoints-=amount;return next;}
 export function resetAllocatedStats(input:ActorProgress){const next=structuredClone(input);next.unspentStatPoints+=Object.values(next.allocated).reduce((sum,value)=>sum+value,0);next.allocated=emptyStats();return next;}
 export function equip(input:ActorProgress,item:EquipmentData){const next=structuredClone(input);next.equipment[item.slot]=item.id;return next;}

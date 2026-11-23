@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "projectId": "game.project1",
+  "title": "Project1",
+  "logicalResolution": {
+    "width": 1080,
+    "height": 720
+  },
+  "maps": [
+    "map.map001"
+  ],
+  "party": [
+    "actor.reid"
+  ],
+  "start": {
+    "mapId": "map.map001",
+    "x": 8,
+    "y": 6
+  },
+  "titleImage": "assets/titles1/Ruins.png",
+  "titleBgm": "assets/audio/bgm/Theme1.ogg"
+}

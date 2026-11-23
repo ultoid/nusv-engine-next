@@ -1,4 +1,4 @@
-import type { TileLayer } from './types.js';
+import type { ProjectBundle, TileLayer, TilesetData } from './types.js';
 
 export const MAP_LAYER_COUNT = 4;
 export type LayerSelection = 'auto' | 0 | 1 | 2 | 3;
@@ -6,33 +6,538 @@ export type LayerSelection = 'auto' | 0 | 1 | 2 | 3;
 export interface TileDefinition {
   id:number;
   name:string;
-  group:'A'|'B'|'C'|'D';
+  group:'A'|'B'|'C'|'D'|'E'|'R';
   defaultLayer:0|1|2|3;
   color:number;
   glyph:string;
+  tileset?:string;
+  srcX?:number;
+  srcY?:number;
+  paletteSrcX?:number;
+  paletteSrcY?:number;
+  autotile?:boolean;
+  autotileBaseX?:number;
+  autotileBaseY?:number;
+}
+
+export interface TileQuadrant {
+  srcX: number;
+  srcY: number;
+  left: number; // 0 or 24
+  top: number;  // 0 or 24
+}
+
+/**
+ * Computes the 4 sub-tile quadrants (24x24 px each) for an autotile matching the authentic RPG Maker MZ
+ * 47-blob quadrant assembly specification.
+ * Quadrant 0: Top-Left (d = NW)
+ * Quadrant 1: Top-Right (d = NE)
+ * Quadrant 2: Bottom-Left (d = SW)
+ * Quadrant 3: Bottom-Right (d = SE)
+ */
+export function getAutotileQuadrants(
+  tile: TileDefinition,
+  data: number[],
+  cellIndex: number,
+  width: number,
+  height: number
+): TileQuadrant[] {
+  const bx = tile.autotileBaseX ?? 0;
+  const by = tile.autotileBaseY ?? 0;
+  const tileId = data[cellIndex];
+  const x = cellIndex % width;
+  const y = Math.floor(cellIndex / width);
+
+  const isSame = (cx: number, cy: number): boolean => {
+    if (cx < 0 || cx >= width || cy < 0 || cy >= height) return false;
+    return data[cy * width + cx] === tileId;
+  };
+
+  const N  = isSame(x, y - 1);
+  const S  = isSame(x, y + 1);
+  const E  = isSame(x + 1, y);
+  const W  = isSame(x - 1, y);
+  const NW = isSame(x - 1, y - 1);
+  const NE = isSame(x + 1, y - 1);
+  const SW = isSame(x - 1, y + 1);
+  const SE = isSame(x + 1, y + 1);
+
+  const isIsolated = !N && !S && !E && !W;
+
+  // Quadrant 0: Top-Left
+  let q0: [number, number];
+  if (isIsolated) q0 = [0, 0];
+  else if (!N && !W) q0 = [0, 2];
+  else if (!N && W) q0 = [2, 2];
+  else if (N && !W) q0 = [0, 4];
+  else if (!NW) q0 = [2, 0];
+  else q0 = [2, 4];
+
+  // Quadrant 1: Top-Right
+  let q1: [number, number];
+  if (isIsolated) q1 = [1, 0];
+  else if (!N && !E) q1 = [3, 2];
+  else if (!N && E) q1 = [1, 2];
+  else if (N && !E) q1 = [3, 4];
+  else if (!NE) q1 = [3, 0];
+  else q1 = [1, 4];
+
+  // Quadrant 2: Bottom-Left
+  let q2: [number, number];
+  if (isIsolated) q2 = [0, 1];
+  else if (!S && !W) q2 = [0, 5];
+  else if (!S && W) q2 = [2, 5];
+  else if (S && !W) q2 = [0, 3];
+  else if (!SW) q2 = [2, 1];
+  else q2 = [2, 3];
+
+  // Quadrant 3: Bottom-Right
+  let q3: [number, number];
+  if (isIsolated) q3 = [1, 1];
+  else if (!S && !E) q3 = [3, 5];
+  else if (!S && E) q3 = [1, 5];
+  else if (S && !E) q3 = [3, 3];
+  else if (!SE) q3 = [3, 1];
+  else q3 = [1, 3];
+
+  return [
+    { srcX: bx + q0[0] * 24, srcY: by + q0[1] * 24, left: 0, top: 0 },
+    { srcX: bx + q1[0] * 24, srcY: by + q1[1] * 24, left: 24, top: 0 },
+    { srcX: bx + q2[0] * 24, srcY: by + q2[1] * 24, left: 0, top: 24 },
+    { srcX: bx + q3[0] * 24, srcY: by + q3[1] * 24, left: 24, top: 24 }
+  ];
+}
+
+export function getTileCoordinates(tile: TileDefinition, mask = 15): { srcX: number; srcY: number } {
+  if (tile.autotile && tile.autotileBaseX !== undefined && tile.autotileBaseY !== undefined) {
+    const bx = tile.autotileBaseX;
+    const by = tile.autotileBaseY;
+    if (mask === 15) return { srcX: bx + 48, srcY: by + 96 }; // seamless center
+    if (mask === 0) return { srcX: bx, srcY: by }; // isolated 1x1
+    if (mask === 14) return { srcX: bx + 48, srcY: by + 48 }; // open North (top border)
+    if (mask === 11) return { srcX: bx + 48, srcY: by + 120 }; // open South (bottom border)
+    if (mask === 7) return { srcX: bx, srcY: by + 96 }; // open West (left border)
+    if (mask === 13) return { srcX: bx + 72, srcY: by + 96 }; // open East (right border)
+    if (mask === 5) return { srcX: bx, srcY: by + 96 }; // vertical path
+    if (mask === 10) return { srcX: bx + 48, srcY: by + 48 }; // horizontal path
+    if (mask === 6) return { srcX: bx, srcY: by + 48 }; // top-left corner
+    if (mask === 12) return { srcX: bx + 72, srcY: by + 48 }; // top-right corner
+    if (mask === 3) return { srcX: bx, srcY: by + 120 }; // bottom-left corner
+    if (mask === 9) return { srcX: bx + 72, srcY: by + 120 }; // bottom-right corner
+    return { srcX: bx + 48, srcY: by + 96 };
+  }
+  return { srcX: tile.srcX ?? 0, srcY: tile.srcY ?? 0 };
 }
 
 export const TILE_CATALOG:TileDefinition[] = [
-  {id:0,name:'Transparent',group:'A',defaultLayer:0,color:0x000000,glyph:''},
-  {id:1,name:'Grass',group:'A',defaultLayer:0,color:0x6f9257,glyph:'·'},
-  {id:2,name:'Dry Ground',group:'A',defaultLayer:0,color:0xa2865b,glyph:'·'},
-  {id:3,name:'Stone Floor',group:'A',defaultLayer:0,color:0x777f83,glyph:'▦'},
-  {id:4,name:'Water',group:'A',defaultLayer:0,color:0x397fab,glyph:'≈'},
-  {id:5,name:'Wood Floor',group:'A',defaultLayer:0,color:0x9a7048,glyph:'═'},
-  {id:6,name:'Wall',group:'A',defaultLayer:0,color:0x5d6268,glyph:'▥'},
-  {id:7,name:'Flowers',group:'B',defaultLayer:1,color:0xd78aa6,glyph:'✦'},
-  {id:8,name:'Bush',group:'B',defaultLayer:1,color:0x3f743f,glyph:'♣'},
-  {id:9,name:'Tree',group:'B',defaultLayer:2,color:0x285e37,glyph:'♠'},
-  {id:10,name:'Rock',group:'B',defaultLayer:2,color:0x74777b,glyph:'●'},
-  {id:11,name:'Sign',group:'C',defaultLayer:2,color:0xa66c36,glyph:'⊤'},
-  {id:12,name:'Crate',group:'C',defaultLayer:2,color:0x8b5931,glyph:'□'},
-  {id:13,name:'Roof',group:'D',defaultLayer:3,color:0x874b50,glyph:'▲'},
-  {id:14,name:'Window',group:'D',defaultLayer:3,color:0x78b7ce,glyph:'◇'},
-  {id:15,name:'Torch',group:'D',defaultLayer:3,color:0xe89b38,glyph:'♦'}
+  // Tab A: RPG Maker MZ Overworld (48 tiles: 6 rows of 8 tiles)
+  // Row 0 of Tab A (World_A1: 8 water autotiles)
+  { id: 19, name: 'Deep Ocean', group: 'A', defaultLayer: 0, color: 0x1e3a8a, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 0, srcY: 0, autotile: true, autotileBaseX: 0, autotileBaseY: 0, paletteSrcX: 0, paletteSrcY: 0 },
+  { id: 4, name: 'Ocean Water', group: 'A', defaultLayer: 0, color: 0x2563eb, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 0, srcY: 144, autotile: true, autotileBaseX: 0, autotileBaseY: 144, paletteSrcX: 0, paletteSrcY: 144 },
+  { id: 50, name: 'Coast Water', group: 'A', defaultLayer: 0, color: 0x38bdf8, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 0, srcY: 288, autotile: true, autotileBaseX: 0, autotileBaseY: 288, paletteSrcX: 0, paletteSrcY: 288 },
+  { id: 51, name: 'Ice Water', group: 'A', defaultLayer: 0, color: 0x7dd3fc, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 0, srcY: 432, autotile: true, autotileBaseX: 0, autotileBaseY: 432, paletteSrcX: 0, paletteSrcY: 432 },
+  { id: 52, name: 'Poison Swamp', group: 'A', defaultLayer: 0, color: 0x701a75, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 384, srcY: 0, autotile: true, autotileBaseX: 384, autotileBaseY: 0, paletteSrcX: 384, paletteSrcY: 0 },
+  { id: 53, name: 'Dark Water', group: 'A', defaultLayer: 0, color: 0x4a044e, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 384, srcY: 144, autotile: true, autotileBaseX: 384, autotileBaseY: 144, paletteSrcX: 384, paletteSrcY: 144 },
+  { id: 54, name: 'Magma Altar', group: 'A', defaultLayer: 0, color: 0x9a3412, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 384, srcY: 288, autotile: true, autotileBaseX: 384, autotileBaseY: 288, paletteSrcX: 384, paletteSrcY: 288 },
+  { id: 55, name: 'Lava Pool', group: 'A', defaultLayer: 0, color: 0xdc2626, glyph: '≈', tileset: 'assets/tilesets/World_A1.png', srcX: 384, srcY: 432, autotile: true, autotileBaseX: 384, autotileBaseY: 432, paletteSrcX: 384, paletteSrcY: 432 },
+
+  // Row 1 of Tab A (World_A1: 8 water/whirlpool/waterfall/cloud autotiles)
+  { id: 56, name: 'Ocean Whirlpool', group: 'A', defaultLayer: 1, color: 0x1d4ed8, glyph: '◎', tileset: 'assets/tilesets/World_A1.png', srcX: 288, srcY: 0, paletteSrcX: 288, paletteSrcY: 0 },
+  { id: 57, name: 'Reef Coast', group: 'A', defaultLayer: 1, color: 0x0284c7, glyph: '·', tileset: 'assets/tilesets/World_A1.png', srcX: 288, srcY: 144, paletteSrcX: 288, paletteSrcY: 144 },
+  { id: 58, name: 'Ice Float', group: 'A', defaultLayer: 1, color: 0xbae6fd, glyph: '◇', tileset: 'assets/tilesets/World_A1.png', srcX: 288, srcY: 288, paletteSrcX: 288, paletteSrcY: 288 },
+  { id: 59, name: 'Ice Vortex', group: 'A', defaultLayer: 1, color: 0x38bdf8, glyph: '◎', tileset: 'assets/tilesets/World_A1.png', srcX: 288, srcY: 432, paletteSrcX: 288, paletteSrcY: 432 },
+  { id: 60, name: 'Swamp Waterfall', group: 'A', defaultLayer: 1, color: 0x581c87, glyph: '↓', tileset: 'assets/tilesets/World_A1.png', srcX: 672, srcY: 0, paletteSrcX: 672, paletteSrcY: 0 },
+  { id: 61, name: 'Ocean Waterfall', group: 'A', defaultLayer: 1, color: 0x0ea5e9, glyph: '↓', tileset: 'assets/tilesets/World_A1.png', srcX: 672, srcY: 144, paletteSrcX: 672, paletteSrcY: 144 },
+  { id: 62, name: 'Sea Clouds', group: 'A', defaultLayer: 1, color: 0xf8fafc, glyph: '☁', tileset: 'assets/tilesets/World_A1.png', srcX: 672, srcY: 288, paletteSrcX: 672, paletteSrcY: 288 },
+  { id: 63, name: 'Ice Clouds', group: 'A', defaultLayer: 1, color: 0xe0f2fe, glyph: '☁', tileset: 'assets/tilesets/World_A1.png', srcX: 672, srcY: 432, paletteSrcX: 672, paletteSrcY: 432 },
+
+  // Row 2 of Tab A (World_A2: 8 grass & mountain autotiles)
+  { id: 20, name: 'World Grass', group: 'A', defaultLayer: 0, color: 0x558844, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 0, srcY: 0, autotile: true, autotileBaseX: 0, autotileBaseY: 0, paletteSrcX: 0, paletteSrcY: 0 },
+  { id: 1, name: 'Lush Grass', group: 'A', defaultLayer: 0, color: 0x65a30d, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 96, srcY: 0, autotile: true, autotileBaseX: 96, autotileBaseY: 0, paletteSrcX: 96, paletteSrcY: 0 },
+  { id: 64, name: 'Deciduous Forest', group: 'A', defaultLayer: 1, color: 0x15803d, glyph: '♣', tileset: 'assets/tilesets/World_A2.png', srcX: 192, srcY: 0, autotile: true, autotileBaseX: 192, autotileBaseY: 0, paletteSrcX: 192, paletteSrcY: 0 },
+  { id: 65, name: 'Pine Forest', group: 'A', defaultLayer: 1, color: 0x166534, glyph: '♠', tileset: 'assets/tilesets/World_A2.png', srcX: 288, srcY: 0, autotile: true, autotileBaseX: 288, autotileBaseY: 0, paletteSrcX: 288, paletteSrcY: 0 },
+  { id: 66, name: 'Green Mountain', group: 'A', defaultLayer: 1, color: 0x4ade80, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 384, srcY: 0, autotile: true, autotileBaseX: 384, autotileBaseY: 0, paletteSrcX: 384, paletteSrcY: 0 },
+  { id: 21, name: 'Rocky Mountain', group: 'A', defaultLayer: 1, color: 0x887766, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 480, srcY: 0, autotile: true, autotileBaseX: 480, autotileBaseY: 0, paletteSrcX: 480, paletteSrcY: 0 },
+  { id: 67, name: 'High Mountain', group: 'A', defaultLayer: 1, color: 0x64748b, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 576, srcY: 0, autotile: true, autotileBaseX: 576, autotileBaseY: 0, paletteSrcX: 576, paletteSrcY: 0 },
+  { id: 68, name: 'Snow Peak', group: 'A', defaultLayer: 1, color: 0x94a3b8, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 672, srcY: 0, autotile: true, autotileBaseX: 672, autotileBaseY: 0, paletteSrcX: 672, paletteSrcY: 0 },
+
+  // Row 3 of Tab A (World_A2: 8 wasteland & desert autotiles)
+  { id: 2, name: 'Wasteland', group: 'A', defaultLayer: 0, color: 0xa2865b, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 0, srcY: 144, autotile: true, autotileBaseX: 0, autotileBaseY: 144, paletteSrcX: 0, paletteSrcY: 144 },
+  { id: 69, name: 'Desert Sand', group: 'A', defaultLayer: 0, color: 0xf59e0b, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 96, srcY: 144, autotile: true, autotileBaseX: 96, autotileBaseY: 144, paletteSrcX: 96, paletteSrcY: 144 },
+  { id: 70, name: 'Sand Dunes', group: 'A', defaultLayer: 0, color: 0xd97706, glyph: '≈', tileset: 'assets/tilesets/World_A2.png', srcX: 192, srcY: 144, autotile: true, autotileBaseX: 192, autotileBaseY: 144, paletteSrcX: 192, paletteSrcY: 144 },
+  { id: 18, name: 'Canyon', group: 'A', defaultLayer: 0, color: 0xb45309, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 288, srcY: 144, autotile: true, autotileBaseX: 288, autotileBaseY: 144, paletteSrcX: 288, paletteSrcY: 144 },
+  { id: 71, name: 'Desert Tree', group: 'A', defaultLayer: 1, color: 0x78350f, glyph: '†', tileset: 'assets/tilesets/World_A2.png', srcX: 384, srcY: 144, autotile: true, autotileBaseX: 384, autotileBaseY: 144, paletteSrcX: 384, paletteSrcY: 144 },
+  { id: 72, name: 'Sand Mound', group: 'A', defaultLayer: 1, color: 0xfde047, glyph: '∩', tileset: 'assets/tilesets/World_A2.png', srcX: 480, srcY: 144, autotile: true, autotileBaseX: 480, autotileBaseY: 144, paletteSrcX: 480, paletteSrcY: 144 },
+  { id: 73, name: 'Brown Rock', group: 'A', defaultLayer: 1, color: 0x92400e, glyph: '●', tileset: 'assets/tilesets/World_A2.png', srcX: 576, srcY: 144, autotile: true, autotileBaseX: 576, autotileBaseY: 144, paletteSrcX: 576, paletteSrcY: 144 },
+  { id: 74, name: 'Rocky Hill', group: 'A', defaultLayer: 1, color: 0x713f12, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 672, srcY: 144, autotile: true, autotileBaseX: 672, autotileBaseY: 144, paletteSrcX: 672, paletteSrcY: 144 },
+
+  // Row 4 of Tab A (World_A2: 8 cobblestone & volcano autotiles)
+  { id: 3, name: 'Cobblestone', group: 'A', defaultLayer: 0, color: 0x777f83, glyph: '▦', tileset: 'assets/tilesets/World_A2.png', srcX: 0, srcY: 288, autotile: true, autotileBaseX: 0, autotileBaseY: 288, paletteSrcX: 0, paletteSrcY: 288 },
+  { id: 17, name: 'Stone Gravel', group: 'A', defaultLayer: 0, color: 0x475569, glyph: '▦', tileset: 'assets/tilesets/World_A2.png', srcX: 96, srcY: 288, autotile: true, autotileBaseX: 96, autotileBaseY: 288, paletteSrcX: 96, paletteSrcY: 288 },
+  { id: 75, name: 'Lava Fissure', group: 'A', defaultLayer: 0, color: 0xef4444, glyph: '§', tileset: 'assets/tilesets/World_A2.png', srcX: 192, srcY: 288, autotile: true, autotileBaseX: 192, autotileBaseY: 288, paletteSrcX: 192, paletteSrcY: 288 },
+  { id: 76, name: 'Magma Crater', group: 'A', defaultLayer: 0, color: 0xb91c1c, glyph: '◎', tileset: 'assets/tilesets/World_A2.png', srcX: 288, srcY: 288, autotile: true, autotileBaseX: 288, autotileBaseY: 288, paletteSrcX: 288, paletteSrcY: 288 },
+  { id: 77, name: 'Swamp Tree', group: 'A', defaultLayer: 1, color: 0x3f3f46, glyph: '†', tileset: 'assets/tilesets/World_A2.png', srcX: 384, srcY: 288, autotile: true, autotileBaseX: 384, autotileBaseY: 288, paletteSrcX: 384, paletteSrcY: 288 },
+  { id: 78, name: 'Dirt Mound', group: 'A', defaultLayer: 1, color: 0x78716c, glyph: '∩', tileset: 'assets/tilesets/World_A2.png', srcX: 480, srcY: 288, autotile: true, autotileBaseX: 480, autotileBaseY: 288, paletteSrcX: 480, paletteSrcY: 288 },
+  { id: 79, name: 'Dark Rock Crag', group: 'A', defaultLayer: 1, color: 0x334155, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 576, srcY: 288, autotile: true, autotileBaseX: 576, autotileBaseY: 288, paletteSrcX: 576, paletteSrcY: 288 },
+  { id: 80, name: 'Active Volcano', group: 'A', defaultLayer: 1, color: 0x991b1b, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 672, srcY: 288, autotile: true, autotileBaseX: 672, autotileBaseY: 288, paletteSrcX: 672, paletteSrcY: 288 },
+
+  // Row 5 of Tab A (World_A2: 8 snow & glacier autotiles)
+  { id: 81, name: 'Snow Plain', group: 'A', defaultLayer: 0, color: 0xffffff, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 0, srcY: 432, autotile: true, autotileBaseX: 0, autotileBaseY: 432, paletteSrcX: 0, paletteSrcY: 432 },
+  { id: 82, name: 'Snow Hills', group: 'A', defaultLayer: 1, color: 0xf1f5f9, glyph: '∩', tileset: 'assets/tilesets/World_A2.png', srcX: 96, srcY: 432, autotile: true, autotileBaseX: 96, autotileBaseY: 432, paletteSrcX: 96, paletteSrcY: 432 },
+  { id: 83, name: 'Snow Field', group: 'A', defaultLayer: 0, color: 0xe2e8f0, glyph: '·', tileset: 'assets/tilesets/World_A2.png', srcX: 192, srcY: 432, autotile: true, autotileBaseX: 192, autotileBaseY: 432, paletteSrcX: 192, paletteSrcY: 432 },
+  { id: 84, name: 'Ice Shelf', group: 'A', defaultLayer: 0, color: 0xcfd8dc, glyph: '═', tileset: 'assets/tilesets/World_A2.png', srcX: 288, srcY: 432, autotile: true, autotileBaseX: 288, autotileBaseY: 432, paletteSrcX: 288, paletteSrcY: 432 },
+  { id: 85, name: 'Snow Pine', group: 'A', defaultLayer: 1, color: 0x94a3b8, glyph: '♠', tileset: 'assets/tilesets/World_A2.png', srcX: 384, srcY: 432, autotile: true, autotileBaseX: 384, autotileBaseY: 432, paletteSrcX: 384, paletteSrcY: 432 },
+  { id: 86, name: 'Cave Entrance', group: 'A', defaultLayer: 1, color: 0x18181b, glyph: 'Ω', tileset: 'assets/tilesets/World_A2.png', srcX: 480, srcY: 432, autotile: true, autotileBaseX: 480, autotileBaseY: 432, paletteSrcX: 480, paletteSrcY: 432 },
+  { id: 87, name: 'Ice Crystals', group: 'A', defaultLayer: 1, color: 0x7dd3fc, glyph: '♦', tileset: 'assets/tilesets/World_A2.png', srcX: 576, srcY: 432, autotile: true, autotileBaseX: 576, autotileBaseY: 432, paletteSrcX: 576, paletteSrcY: 432 },
+  { id: 88, name: 'Glacier Peak', group: 'A', defaultLayer: 1, color: 0x38bdf8, glyph: '▲', tileset: 'assets/tilesets/World_A2.png', srcX: 672, srcY: 432, autotile: true, autotileBaseX: 672, autotileBaseY: 432, paletteSrcX: 672, paletteSrcY: 432 },
+
+  // Legacy compatibility tiles (not shown in Overworld Tab A)
+  { id: 0, name: 'Transparent', group: 'A', defaultLayer: 0, color: 0x000000, glyph: '' },
+  { id: 5, name: 'Wood Floor', group: 'A', defaultLayer: 0, color: 0x9a7048, glyph: '═', tileset: 'assets/tilesets/Outside_A2.png', srcX: 288, srcY: 0, autotile: true, autotileBaseX: 288, autotileBaseY: 0, paletteSrcX: 288, paletteSrcY: 0 },
+  { id: 6, name: 'Wall', group: 'A', defaultLayer: 0, color: 0x5d6268, glyph: '▥', tileset: 'assets/tilesets/Outside_A2.png', srcX: 0, srcY: 144, autotile: true, autotileBaseX: 0, autotileBaseY: 144, paletteSrcX: 0, paletteSrcY: 144 },
+  { id: 16, name: 'Dark Wall', group: 'A', defaultLayer: 0, color: 0x3f4448, glyph: '▥', tileset: 'assets/tilesets/Outside_A2.png', srcX: 96, srcY: 144, autotile: true, autotileBaseX: 96, autotileBaseY: 144, paletteSrcX: 96, paletteSrcY: 144 },
+  { id: 32, name: 'Bridge', group: 'A', defaultLayer: 1, color: 0x854d0e, glyph: '=', tileset: 'assets/tilesets/Outside_B.png', srcX: 288, srcY: 240 },
+  { id: 33, name: 'Cobblestone Old', group: 'A', defaultLayer: 0, color: 0x64748b, glyph: '▦', tileset: 'assets/tilesets/Outside_A2.png', srcX: 480, srcY: 0, autotile: true, autotileBaseX: 480, autotileBaseY: 0, paletteSrcX: 480, paletteSrcY: 0 },
+  { id: 34, name: 'Sand Ground Old', group: 'A', defaultLayer: 0, color: 0xd97706, glyph: '·', tileset: 'assets/tilesets/Outside_A2.png', srcX: 576, srcY: 0, autotile: true, autotileBaseX: 576, autotileBaseY: 0, paletteSrcX: 576, paletteSrcY: 0 },
+
+  // Tab B: Nature, Deco & Objects (8 tiles per row)
+  {id:7,name:'Flowers',group:'B',defaultLayer:1,color:0xd78aa6,glyph:'✦',tileset:'assets/tilesets/Outside_B.png',srcX:0,srcY:48},
+  {id:8,name:'Bush',group:'B',defaultLayer:1,color:0x3f743f,glyph:'♣',tileset:'assets/tilesets/Outside_B.png',srcX:48,srcY:48},
+  {id:9,name:'Tree',group:'B',defaultLayer:2,color:0x285e37,glyph:'♠',tileset:'assets/tilesets/Outside_B.png',srcX:0,srcY:96},
+  {id:10,name:'Rock',group:'B',defaultLayer:2,color:0x74777b,glyph:'●',tileset:'assets/tilesets/Outside_B.png',srcX:192,srcY:96},
+  {id:22,name:'Tall Tree',group:'B',defaultLayer:2,color:0x1b4728,glyph:'♠',tileset:'assets/tilesets/Outside_B.png',srcX:48,srcY:96},
+  {id:23,name:'Big Rock',group:'B',defaultLayer:2,color:0x5e6165,glyph:'●',tileset:'assets/tilesets/Outside_B.png',srcX:240,srcY:96},
+  {id:24,name:'Barrel',group:'B',defaultLayer:2,color:0x7c4e2b,glyph:'○',tileset:'assets/tilesets/Outside_B.png',srcX:384,srcY:48},
+  {id:12,name:'Crate',group:'B',defaultLayer:2,color:0x8b5931,glyph:'□',tileset:'assets/tilesets/Outside_B.png',srcX:336,srcY:48},
+
+  {id:26,name:'Fence',group:'B',defaultLayer:1,color:0xa16207,glyph:'#',tileset:'assets/tilesets/Outside_B.png',srcX:48,srcY:144},
+  {id:27,name:'Lamp Post',group:'B',defaultLayer:2,color:0xd97706,glyph:'!',tileset:'assets/tilesets/Outside_B.png',srcX:192,srcY:144},
+  {id:25,name:'Well',group:'B',defaultLayer:2,color:0x6b7280,glyph:'◎',tileset:'assets/tilesets/Outside_B.png',srcX:288,srcY:144},
+  {id:11,name:'Sign',group:'B',defaultLayer:2,color:0xa66c36,glyph:'⊤',tileset:'assets/tilesets/Outside_B.png',srcX:288,srcY:48},
+  {id:35,name:'Pot',group:'B',defaultLayer:2,color:0x9a3412,glyph:'U',tileset:'assets/tilesets/Outside_B.png',srcX:480,srcY:48},
+  {id:36,name:'Bench',group:'B',defaultLayer:2,color:0x78350f,glyph:'=',tileset:'assets/tilesets/Outside_B.png',srcX:528,srcY:48},
+  {id:37,name:'Grave',group:'B',defaultLayer:2,color:0x64748b,glyph:'+',tileset:'assets/tilesets/Outside_B.png',srcX:576,srcY:48},
+  {id:38,name:'Stump',group:'B',defaultLayer:2,color:0x451a03,glyph:'o',tileset:'assets/tilesets/Outside_B.png',srcX:624,srcY:48},
+
+  // Tab C: Structures, Deco & Architecture (8 tiles per row)
+  {id:30,name:'Statue',group:'C',defaultLayer:2,color:0x94a3b8,glyph:'&',tileset:'assets/tilesets/Outside_B.png',srcX:384,srcY:144},
+  {id:31,name:'Tent',group:'C',defaultLayer:2,color:0xe2e8f0,glyph:'^',tileset:'assets/tilesets/Outside_B.png',srcX:144,srcY:240},
+  {id:13,name:'Roof',group:'C',defaultLayer:3,color:0x874b50,glyph:'▲',tileset:'assets/tilesets/Outside_B.png',srcX:480,srcY:0},
+  {id:14,name:'Window',group:'C',defaultLayer:3,color:0x78b7ce,glyph:'◇',tileset:'assets/tilesets/Outside_B.png',srcX:576,srcY:96},
+  {id:15,name:'Torch',group:'C',defaultLayer:3,color:0xe89b38,glyph:'♦',tileset:'assets/tilesets/Outside_B.png',srcX:672,srcY:96},
+  {id:28,name:'Roof Blue',group:'C',defaultLayer:3,color:0x2563eb,glyph:'▲',tileset:'assets/tilesets/Outside_B.png',srcX:528,srcY:0},
+  {id:29,name:'Chimney',group:'C',defaultLayer:3,color:0x78350f,glyph:'|',tileset:'assets/tilesets/Outside_B.png',srcX:480,srcY:144},
+  {id:39,name:'Door Arch',group:'C',defaultLayer:2,color:0x475569,glyph:'n',tileset:'assets/tilesets/Outside_B.png',srcX:48,srcY:240},
+
+  {id:40,name:'Fountain',group:'C',defaultLayer:2,color:0x38bdf8,glyph:'*',tileset:'assets/tilesets/Outside_B.png',srcX:0,srcY:240},
+  {id:41,name:'Bell',group:'C',defaultLayer:2,color:0xeab308,glyph:'A',tileset:'assets/tilesets/Outside_B.png',srcX:96,srcY:240},
+  {id:42,name:'Monument',group:'C',defaultLayer:2,color:0x94a3b8,glyph:'T',tileset:'assets/tilesets/Outside_B.png',srcX:192,srcY:240},
+  {id:43,name:'Table',group:'C',defaultLayer:2,color:0x854d0e,glyph:'T',tileset:'assets/tilesets/Outside_B.png',srcX:336,srcY:240},
+  {id:44,name:'Chair',group:'C',defaultLayer:2,color:0xa16207,glyph:'h',tileset:'assets/tilesets/Outside_B.png',srcX:384,srcY:240},
+  {id:45,name:'Banner',group:'C',defaultLayer:2,color:0xdc2626,glyph:'V',tileset:'assets/tilesets/Outside_B.png',srcX:432,srcY:240},
+  {id:46,name:'Chest Deco',group:'C',defaultLayer:2,color:0xb45309,glyph:'O',tileset:'assets/tilesets/Outside_B.png',srcX:480,srcY:240},
+  {id:47,name:'Magic Portal',group:'C',defaultLayer:2,color:0xa855f7,glyph:'@',tileset:'assets/tilesets/Outside_B.png',srcX:528,srcY:240},
+
+  // Tab R (Group D): Region Markers 1..16
+  ...Array.from({length: 16}, (_, i) => ({
+    id: 100 + i + 1,
+    name: `Region ${i + 1}`,
+    group: 'D' as const,
+    defaultLayer: 3 as const,
+    color: [0xef4444, 0xf97316, 0xf59e0b, 0xeab308, 0x84cc16, 0x22c55e, 0x10b981, 0x06b6d4, 0x0ea5e9, 0x3b82f6, 0x6366f1, 0x8b5cf6, 0xa855f7, 0xd946ef, 0xec4899, 0xf43f5e][i],
+    glyph: String(i + 1)
+  }))
 ];
 
-export const tileDefinition = (id:number) => TILE_CATALOG.find(tile=>tile.id===id) ?? TILE_CATALOG[0];
-export const layerForTile = (tileId:number,selection:LayerSelection) => selection==='auto' ? tileDefinition(tileId).defaultLayer : selection;
+export const DEFAULT_TILESETS: TilesetData[] = [
+  { id: 'tileset.overworld', name: 'Overworld', mode: 0, tilesetNames: ['World_A1', 'World_A2', '', '', '', 'World_B', 'World_C', '', ''] },
+  { id: 'tileset.outside', name: 'Outside', mode: 1, tilesetNames: ['Outside_A1', 'Outside_A2', 'Outside_A3', 'Outside_A4', 'Outside_A5', 'Outside_B', 'Outside_C', '', ''] },
+  { id: 'tileset.inside', name: 'Inside', mode: 1, tilesetNames: ['Inside_A1', 'Inside_A2', '', 'Inside_A4', 'Inside_A5', 'Inside_B', 'Inside_C', '', ''] },
+  { id: 'tileset.dungeon', name: 'Dungeon', mode: 1, tilesetNames: ['Dungeon_A1', 'Dungeon_A2', '', 'Dungeon_A4', 'Dungeon_A5', 'Dungeon_B', 'Dungeon_C', '', ''] },
+  { id: 'tileset.sf-outside', name: 'SF Outside', mode: 1, tilesetNames: ['Outside_A1', 'Outside_A2', 'SF_Outside_A3', 'SF_Outside_A4', 'SF_Outside_A5', 'SF_Outside_B', 'SF_Outside_C', '', ''] },
+  { id: 'tileset.sf-inside', name: 'SF Inside', mode: 1, tilesetNames: ['Inside_A1', 'Inside_A2', '', 'SF_Inside_A4', 'SF_Outside_A5', 'SF_Inside_B', 'SF_Inside_C', '', ''] }
+];
+
+export const TILE_MAP = new Map<number, TileDefinition>(TILE_CATALOG.map(tile => [tile.id, tile]));
+
+export function resolveSheetPath(name: string): string {
+  if (!name) return '';
+  const clean = name.replace(/\\/g, '/').replace(/^\/+/, '');
+  if (clean.startsWith('assets/tilesets/')) {
+    return clean.endsWith('.png') ? clean : `${clean}.png`;
+  }
+  return `assets/tilesets/${clean.endsWith('.png') ? clean : `${clean}.png`}`;
+}
+
+export function tileDefinition(id: number, tileset?: TilesetData): TileDefinition {
+  if (id === 0) return TILE_CATALOG[0];
+
+  // Dynamic Sheet B (IDs 2000..2255)
+  if (id >= 2000 && id < 3000) {
+    const i = id - 2000;
+    const r = Math.floor(i / 8);
+    const c = i % 8;
+    const srcX = (r < 16 ? c : c + 8) * 48;
+    const srcY = (r < 16 ? r : r - 16) * 48;
+    const sheetName = tileset?.tilesetNames?.[5] || 'Outside_B';
+    return {
+      id,
+      name: i === 0 ? 'Clear / Transparent' : `Tile B #${i}`,
+      group: 'B',
+      defaultLayer: 1,
+      color: 0x475569,
+      glyph: '',
+      tileset: resolveSheetPath(sheetName),
+      srcX,
+      srcY,
+      paletteSrcX: srcX,
+      paletteSrcY: srcY
+    };
+  }
+
+  // Dynamic Sheet C (IDs 3000..3255)
+  if (id >= 3000 && id < 4000) {
+    const i = id - 3000;
+    const r = Math.floor(i / 8);
+    const c = i % 8;
+    const srcX = (r < 16 ? c : c + 8) * 48;
+    const srcY = (r < 16 ? r : r - 16) * 48;
+    const sheetName = tileset?.tilesetNames?.[6] || 'Outside_C';
+    return {
+      id,
+      name: `Tile C #${i}`,
+      group: 'C',
+      defaultLayer: 2,
+      color: 0x64748b,
+      glyph: '',
+      tileset: resolveSheetPath(sheetName),
+      srcX,
+      srcY,
+      paletteSrcX: srcX,
+      paletteSrcY: srcY
+    };
+  }
+
+  // Dynamic Sheet D (IDs 4000..4255)
+  if (id >= 4000 && id < 5000) {
+    const i = id - 4000;
+    const r = Math.floor(i / 8);
+    const c = i % 8;
+    const srcX = (r < 16 ? c : c + 8) * 48;
+    const srcY = (r < 16 ? r : r - 16) * 48;
+    const sheetName = tileset?.tilesetNames?.[7] || '';
+    return {
+      id,
+      name: `Tile D #${i}`,
+      group: 'D',
+      defaultLayer: 2,
+      color: 0x64748b,
+      glyph: '',
+      tileset: resolveSheetPath(sheetName),
+      srcX,
+      srcY,
+      paletteSrcX: srcX,
+      paletteSrcY: srcY
+    };
+  }
+
+  // Dynamic Sheet E (IDs 5000..5255)
+  if (id >= 5000 && id < 6000) {
+    const i = id - 5000;
+    const r = Math.floor(i / 8);
+    const c = i % 8;
+    const srcX = (r < 16 ? c : c + 8) * 48;
+    const srcY = (r < 16 ? r : r - 16) * 48;
+    const sheetName = tileset?.tilesetNames?.[8] || '';
+    return {
+      id,
+      name: `Tile E #${i}`,
+      group: 'D',
+      defaultLayer: 2,
+      color: 0x64748b,
+      glyph: '',
+      tileset: resolveSheetPath(sheetName),
+      srcX,
+      srcY,
+      paletteSrcX: srcX,
+      paletteSrcY: srcY
+    };
+  }
+
+  // Dynamic Sheet A5 (IDs 1536..1663)
+  if (id >= 1536 && id < 1664) {
+    const k = id - 1536;
+    const srcX = (k % 8) * 48;
+    const srcY = Math.floor(k / 8) * 48;
+    const sheetName = tileset?.tilesetNames?.[4] || 'Outside_A5';
+    return {
+      id,
+      name: `Tile A5 #${k}`,
+      group: 'A',
+      defaultLayer: 0,
+      color: 0x334155,
+      glyph: '',
+      tileset: resolveSheetPath(sheetName),
+      srcX,
+      srcY,
+      paletteSrcX: srcX,
+      paletteSrcY: srcY
+    };
+  }
+
+  return TILE_MAP.get(id) ?? TILE_CATALOG[0];
+}
+
+export const layerForTile = (tileId: number, selection: LayerSelection, tileset?: TilesetData) =>
+  selection === 'auto' ? tileDefinition(tileId, tileset).defaultLayer : selection;
+
+export function getPaletteTiles(
+  group: 'A' | 'B' | 'C' | 'D' | 'E' | 'R',
+  tileset?: TilesetData
+): TileDefinition[] {
+  if (group === 'B') {
+    const bSheet = resolveSheetPath(tileset?.tilesetNames?.[5] || 'Outside_B');
+    const list: TileDefinition[] = [];
+    for (let i = 0; i < 256; i++) {
+      const r = Math.floor(i / 8);
+      const c = i % 8;
+      const srcX = (r < 16 ? c : c + 8) * 48;
+      const srcY = (r < 16 ? r : r - 16) * 48;
+      list.push({
+        id: i === 0 ? 0 : 2000 + i,
+        name: i === 0 ? 'Clear / Transparent' : `Tile B #${i}`,
+        group: 'B',
+        defaultLayer: 1,
+        color: 0x475569,
+        glyph: i === 0 ? '⌫' : '',
+        tileset: i === 0 ? undefined : bSheet,
+        srcX: i === 0 ? undefined : srcX,
+        srcY: i === 0 ? undefined : srcY,
+        paletteSrcX: i === 0 ? undefined : srcX,
+        paletteSrcY: i === 0 ? undefined : srcY
+      });
+    }
+    return list;
+  }
+
+  if (group === 'C') {
+    const cSheet = resolveSheetPath(tileset?.tilesetNames?.[6] || 'Outside_C');
+    const list: TileDefinition[] = [];
+    for (let i = 0; i < 256; i++) {
+      const r = Math.floor(i / 8);
+      const c = i % 8;
+      const srcX = (r < 16 ? c : c + 8) * 48;
+      const srcY = (r < 16 ? r : r - 16) * 48;
+      list.push({
+        id: 3000 + i,
+        name: `Tile C #${i}`,
+        group: 'C',
+        defaultLayer: 2,
+        color: 0x64748b,
+        glyph: '',
+        tileset: cSheet,
+        srcX,
+        srcY,
+        paletteSrcX: srcX,
+        paletteSrcY: srcY
+      });
+    }
+    return list;
+  }
+
+  if (group === 'D') {
+    const dSheet = resolveSheetPath(tileset?.tilesetNames?.[7] || '');
+    if (dSheet) {
+      const list: TileDefinition[] = [];
+      for (let i = 0; i < 256; i++) {
+        const r = Math.floor(i / 8);
+        const c = i % 8;
+        const srcX = (r < 16 ? c : c + 8) * 48;
+        const srcY = (r < 16 ? r : r - 16) * 48;
+        list.push({
+          id: 4000 + i,
+          name: `Tile D #${i}`,
+          group: 'D',
+          defaultLayer: 2,
+          color: 0x64748b,
+          glyph: '',
+          tileset: dSheet,
+          srcX,
+          srcY,
+          paletteSrcX: srcX,
+          paletteSrcY: srcY
+        });
+      }
+      return list;
+    }
+    return TILE_CATALOG.filter(t => t.group === 'D');
+  }
+
+  if (group === 'E') {
+    const eSheet = resolveSheetPath(tileset?.tilesetNames?.[8] || '');
+    if (eSheet) {
+      const list: TileDefinition[] = [];
+      for (let i = 0; i < 256; i++) {
+        const r = Math.floor(i / 8);
+        const c = i % 8;
+        const srcX = (r < 16 ? c : c + 8) * 48;
+        const srcY = (r < 16 ? r : r - 16) * 48;
+        list.push({
+          id: 5000 + i,
+          name: `Tile E #${i}`,
+          group: 'D',
+          defaultLayer: 2,
+          color: 0x64748b,
+          glyph: '',
+          tileset: eSheet,
+          srcX,
+          srcY,
+          paletteSrcX: srcX,
+          paletteSrcY: srcY
+        });
+      }
+      return list;
+    }
+    return [];
+  }
+
+  if (group === 'R') {
+    return TILE_CATALOG.filter(t => t.group === 'D');
+  }
+
+  // Group A
+  if (tileset?.mode === 1) {
+    const a5Sheet = resolveSheetPath(tileset.tilesetNames?.[4] || 'Outside_A5');
+    const list: TileDefinition[] = [];
+    for (let k = 0; k < 128; k++) {
+      const srcX = (k % 8) * 48;
+      const srcY = Math.floor(k / 8) * 48;
+      list.push({
+        id: 1536 + k,
+        name: `Tile A5 #${k + 1}`,
+        group: 'A',
+        defaultLayer: 0,
+        color: 0x334155,
+        glyph: '',
+        tileset: a5Sheet,
+        srcX,
+        srcY,
+        paletteSrcX: srcX,
+        paletteSrcY: srcY
+      });
+    }
+    const a2Sheet = tileset.tilesetNames?.[1] ? resolveSheetPath(tileset.tilesetNames[1]) : undefined;
+    const baseATiles = TILE_CATALOG
+      .filter(t => t.group === 'A' && t.paletteSrcX !== undefined)
+      .map(t => (a2Sheet && t.tileset?.includes('A2') ? { ...t, tileset: a2Sheet } : t));
+    return [...list, ...baseATiles];
+  }
+
+  const worldA2 = tileset?.tilesetNames?.[1] ? resolveSheetPath(tileset.tilesetNames[1]) : undefined;
+  return TILE_CATALOG
+    .filter(tile => tile.group === 'A' && tile.paletteSrcX !== undefined)
+    .map(t => (worldA2 && t.tileset?.includes('A2') ? { ...t, tileset: worldA2 } : t));
+}
 
 export function normalizeTileLayers(rawLayers:unknown[],cells:number):TileLayer[]{
   if(rawLayers.length>MAP_LAYER_COUNT)throw new Error(`map.layers: maksimal ${MAP_LAYER_COUNT} layer`);
@@ -197,4 +702,95 @@ export function generateDungeonData(
   ];
 
   return { layers, collision: coll };
+}
+
+// ------------------------------------------------------------------------------------------------
+// RPG Maker MZ Standard Tileset Flags & Passage Resolution
+// 0x0001 (1)   : Impassable DOWN
+// 0x0002 (2)   : Impassable LEFT
+// 0x0004 (4)   : Impassable RIGHT
+// 0x0008 (8)   : Impassable UP
+// 0x000f (15)  : Impassable in all 4 directions (×)
+// 0x0010 (16)  : Star (☆) Overhead / Roof (transparent to passage)
+// 0x0020 (32)  : Ladder (▲) Always face UP
+// 0x0040 (64)  : Bush (～) Lower sprite depth / semi-transparency
+// 0x0080 (128) : Counter (◆) Action button reaches 1 tile beyond
+// 0x0100 (256) : Damage floor (⚡) Inflicts 10 HP floor damage
+// 0x7000 (bits 12-14): Terrain Tag (0..7)
+// ------------------------------------------------------------------------------------------------
+
+export function getTileFlag(tileId: number, tileset?: TilesetData): number {
+  if (tileId === 0) return 0x10; // Clear tile is Star (transparent)
+
+  let flagIndex = tileId;
+  if (tileId >= 2000 && tileId < 3000) {
+    flagIndex = tileId - 2000; // Sheet B (0..255)
+    if (flagIndex === 0) return 0x10; // Tile 0 of sheet B is Star by default
+  } else if (tileId >= 3000 && tileId < 4000) {
+    flagIndex = 256 + (tileId - 3000); // Sheet C (256..511)
+  } else if (tileId >= 4000 && tileId < 5000) {
+    flagIndex = 512 + (tileId - 4000); // Sheet D (512..767)
+  } else if (tileId >= 5000 && tileId < 6000) {
+    flagIndex = 768 + (tileId - 5000); // Sheet E (768..1023)
+  }
+
+  if (Array.isArray(tileset?.flags) && tileset.flags[flagIndex] !== undefined) {
+    return tileset.flags[flagIndex];
+  }
+
+  // Fallback defaults based on catalog definition
+  if (tileId === 8) return 0x40; // Bush
+  if (tileId === 43) return 0x80 | 0x0f; // Counter table (solid + counter)
+  if (tileId === 13 || tileId === 28) return 0x10; // Roof (Star)
+  if (tileId >= 101 && tileId <= 116) return 0x10; // Region tags (transparent)
+  if ([1, 2, 3, 4, 6, 9, 10, 16, 22, 23, 24, 25, 26, 27, 30, 31, 35, 40, 42].includes(tileId)) {
+    return 0x0f; // Impassable
+  }
+  return 0x00; // Default passable
+}
+
+export function getHighestTileFlagAt(bundle: ProjectBundle, mapId: string, x: number, y: number): number {
+  const map = bundle.maps[mapId];
+  if (!map || x < 0 || y < 0 || x >= map.width || y >= map.height) return 0x0f;
+
+  const tilesets = (bundle.game.tilesets && bundle.game.tilesets.length > 0)
+    ? bundle.game.tilesets
+    : DEFAULT_TILESETS;
+  const currentTileset = (map.tilesetId ? tilesets.find(ts => ts.id === map.tilesetId) : undefined)
+    || tilesets.find(ts => ts.mode === (map.name?.toLowerCase().includes('world') ? 0 : 1))
+    || tilesets[0];
+
+  const cell = y * map.width + x;
+  let groundFlag = 0;
+
+  for (let l = map.layers.length - 1; l >= 0; l--) {
+    const tileId = map.layers[l].data[cell];
+    if (tileId === 0) continue;
+    const flag = getTileFlag(tileId, currentTileset);
+    if (l === 0) groundFlag = flag;
+    if ((flag & 0x10) !== 0) continue; // Star tile is transparent to passage
+    return flag;
+  }
+
+  return groundFlag;
+}
+
+export function isLadderTile(bundle: ProjectBundle, mapId: string, x: number, y: number): boolean {
+  return (getHighestTileFlagAt(bundle, mapId, x, y) & 0x20) !== 0;
+}
+
+export function isBushTile(bundle: ProjectBundle, mapId: string, x: number, y: number): boolean {
+  return (getHighestTileFlagAt(bundle, mapId, x, y) & 0x40) !== 0;
+}
+
+export function isCounterTile(bundle: ProjectBundle, mapId: string, x: number, y: number): boolean {
+  return (getHighestTileFlagAt(bundle, mapId, x, y) & 0x80) !== 0;
+}
+
+export function isDamageFloorTile(bundle: ProjectBundle, mapId: string, x: number, y: number): boolean {
+  return (getHighestTileFlagAt(bundle, mapId, x, y) & 0x100) !== 0;
+}
+
+export function terrainTag(bundle: ProjectBundle, mapId: string, x: number, y: number): number {
+  return (getHighestTileFlagAt(bundle, mapId, x, y) >> 12) & 0x07;
 }

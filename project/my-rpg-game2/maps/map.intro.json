@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "id": "map.intro",
+  "name": "Gerbang Uji",
+  "width": 9,
+  "height": 6,
+  "tileSize": 48,
+  "layers": [
+    {
+      "id": "layer.ground",
+      "type": "tile",
+      "data": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "collision": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "events": [
+    {
+      "id": "event.guide",
+      "name": "Penjaga",
+      "x": 3,
+      "y": 2,
+      "trigger": "interact",
+      "pages": [
+        {
+          "solid": true,
+          "commands": [
+            {
+              "type": "text",
+              "text": "Gerbang ini menguji event NUSV."
+            },
+            {
+              "type": "choice",
+              "prompt": "Buka gerbang?",
+              "choices": [
+                {
+                  "text": "Buka",
+                  "commands": [
+                    {
+                      "type": "setSwitch",
+                      "id": "door.open",
+                      "value": true
+                    },
+                    {
+                      "type": "giveItem",
+                      "itemId": "item.token",
+                      "amount": 1
+                    },
+                    {
+                      "type": "questStart",
+                      "questId": "quest.ash-warden"
+                    },
+                    {
+                      "type": "text",
+                      "text": "Gerbang terbuka. Quest Abu di Timur dimulai."
+                    }
+                  ]
+                },
+                {
+                  "text": "Nanti",
+                  "commands": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event.gate",
+      "name": "Gerbang",
+      "x": 5,
+      "y": 2,
+      "trigger": "interact",
+      "pages": [
+        {
+          "solid": true,
+          "commands": [
+            {
+              "type": "text",
+              "text": "Gerbang masih terkunci."
+            }
+          ]
+        },
+        {
+          "conditions": {
+            "switchId": "door.open",
+            "switchValue": true
+          },
+          "solid": false,
+          "commands": []
+        }
+      ]
+    },
+    {
+      "id": "event.to-field",
+      "name": "Jalan Keluar",
+      "x": 7,
+      "y": 2,
+      "trigger": "touch",
+      "pages": [
+        {
+          "solid": false,
+          "commands": [
+            {
+              "type": "transfer",
+              "mapId": "map.field",
+              "x": 2,
+              "y": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bgm": "assets/audio/bgm/Theme1.ogg",
+  "battleback1": "assets/battlebacks1/Cobblestones1.png",
+  "battleback2": "assets/battlebacks2/Castle1.png",
+  "tilesetImage": "assets/tilesets/Outside_A2.png"
+}

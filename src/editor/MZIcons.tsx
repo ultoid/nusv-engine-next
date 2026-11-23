@@ -119,6 +119,13 @@ export const MZIcons = {
     </svg>
   ),
 
+  // Redo (Panah lengkung biru tebal ke kanan)
+  Redo: () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M13 6L17.5 10.5L13 15V11.5C8.5 11.5 4.5 12.8 2.5 16C3.2 10 6.5 6 13 6V6Z" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1" strokeLinejoin="round" />
+    </svg>
+  ),
+
   // 9. Map Mode (Ikon landscape pemandangan alam)
   MapMode: () => (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

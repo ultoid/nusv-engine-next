@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "projectId": "game.my-rpg-game2",
+  "title": "My RPG Game2",
+  "logicalResolution": {
+    "width": 1080,
+    "height": 720
+  },
+  "maps": [
+    "map.intro",
+    "map.field",
+    "map.village",
+    "map.ruins"
+  ],
+  "party": [
+    "actor.arka",
+    "actor.sena"
+  ],
+  "start": {
+    "mapId": "map.intro",
+    "x": 2,
+    "y": 2
+  },
+  "titleImage": "assets/titles1/Ruins.png",
+  "titleBgm": "assets/audio/bgm/Theme1.ogg"
+}

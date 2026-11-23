@@ -1,0 +1,5511 @@
+{
+  "schemaVersion": 1,
+  "actors": [
+    {
+      "id": "actor.reid",
+      "name": "Reid",
+      "classId": "class.swordsman",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.swordsman"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.swordsman",
+          "level": 2,
+          "skillId": "skill.mz-172-strong-attack"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 5,
+          "skillId": "skill.mz-173-slash"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 8,
+          "skillId": "skill.mz-175-willpower"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 12,
+          "skillId": "skill.mz-176-first-aid"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 15,
+          "skillId": "skill.mz-174-dual-attack"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 20,
+          "skillId": "skill.mz-178-spin-crash"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-2-long-sword",
+        "body": "equip.mz-a-3-leather-vest"
+      },
+      "stats": {
+        "str": 10,
+        "int": 8,
+        "dex": 10,
+        "luk": 14,
+        "agi": 15,
+        "vit": 9
+      },
+      "base": {
+        "hp": 544,
+        "mp": 41,
+        "atk": 19,
+        "def": 17,
+        "mat": 15,
+        "mdf": 17,
+        "agi": 29
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.mz-1-attack"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 0,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 0,
+      "battlerImage": "assets/sv_actors/Actor1_1.png"
+    },
+    {
+      "id": "actor.priscilla",
+      "name": "Priscilla",
+      "classId": "class.swordsman",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.swordsman"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.swordsman",
+          "level": 2,
+          "skillId": "skill.mz-172-strong-attack"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 5,
+          "skillId": "skill.mz-173-slash"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 8,
+          "skillId": "skill.mz-175-willpower"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 12,
+          "skillId": "skill.mz-176-first-aid"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 15,
+          "skillId": "skill.mz-174-dual-attack"
+        },
+        {
+          "classId": "class.swordsman",
+          "level": 20,
+          "skillId": "skill.mz-178-spin-crash"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-1-short-sword",
+        "body": "equip.mz-a-9-leather-armor"
+      },
+      "stats": {
+        "str": 10,
+        "int": 8,
+        "dex": 10,
+        "luk": 14,
+        "agi": 15,
+        "vit": 9
+      },
+      "base": {
+        "hp": 544,
+        "mp": 41,
+        "atk": 19,
+        "def": 17,
+        "mat": 15,
+        "mdf": 17,
+        "agi": 29
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.mz-1-attack"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 1,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 1,
+      "battlerImage": "assets/sv_actors/Actor1_2.png"
+    },
+    {
+      "id": "actor.gale",
+      "name": "Gale",
+      "classId": "class.martial-artist",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.martial-artist"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.martial-artist",
+          "level": 1,
+          "skillId": "skill.mz-175-willpower"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 2,
+          "skillId": "skill.mz-172-strong-attack"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 5,
+          "skillId": "skill.mz-216-sweep"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 8,
+          "skillId": "skill.mz-217-qigong"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 12,
+          "skillId": "skill.mz-218-roundhouse-kick"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 15,
+          "skillId": "skill.mz-174-dual-attack"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 20,
+          "skillId": "skill.mz-219-tiger-dance"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-31-cestus",
+        "body": "equip.mz-a-5-hard-leather"
+      },
+      "stats": {
+        "str": 9,
+        "int": 6,
+        "dex": 10,
+        "luk": 13,
+        "agi": 17,
+        "vit": 10
+      },
+      "base": {
+        "hp": 639,
+        "mp": 44,
+        "atk": 18,
+        "def": 20,
+        "mat": 12,
+        "mdf": 11,
+        "agi": 34
+      },
+      "weaponType": "finesse",
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-175-willpower"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 2,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 2,
+      "battlerImage": "assets/sv_actors/Actor1_3.png"
+    },
+    {
+      "id": "actor.michelle",
+      "name": "Michelle",
+      "classId": "class.martial-artist",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.martial-artist"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.martial-artist",
+          "level": 1,
+          "skillId": "skill.mz-175-willpower"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 2,
+          "skillId": "skill.mz-172-strong-attack"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 5,
+          "skillId": "skill.mz-216-sweep"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 8,
+          "skillId": "skill.mz-217-qigong"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 12,
+          "skillId": "skill.mz-218-roundhouse-kick"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 15,
+          "skillId": "skill.mz-174-dual-attack"
+        },
+        {
+          "classId": "class.martial-artist",
+          "level": 20,
+          "skillId": "skill.mz-219-tiger-dance"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-31-cestus",
+        "body": "equip.mz-a-5-hard-leather"
+      },
+      "stats": {
+        "str": 9,
+        "int": 6,
+        "dex": 10,
+        "luk": 13,
+        "agi": 17,
+        "vit": 10
+      },
+      "base": {
+        "hp": 639,
+        "mp": 44,
+        "atk": 18,
+        "def": 20,
+        "mat": 12,
+        "mdf": 11,
+        "agi": 34
+      },
+      "weaponType": "finesse",
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-175-willpower"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 3,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 3,
+      "battlerImage": "assets/sv_actors/Actor1_4.png"
+    },
+    {
+      "id": "actor.albert",
+      "name": "Albert",
+      "classId": "class.sorcerer",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.sorcerer"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.sorcerer",
+          "level": 1,
+          "skillId": "skill.mz-99-fire-i"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 3,
+          "skillId": "skill.mz-75-sleep"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 5,
+          "skillId": "skill.mz-103-flame-i"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 5,
+          "skillId": "skill.mz-187-spell-enhancement"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 8,
+          "skillId": "skill.mz-100-fire-ii"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 11,
+          "skillId": "skill.mz-74-silence"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 15,
+          "skillId": "skill.mz-193-magic-mirror"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 15,
+          "skillId": "skill.mz-92-mana-drain"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 18,
+          "skillId": "skill.mz-76-paralyze"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 18,
+          "skillId": "skill.mz-104-flame-ii"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 21,
+          "skillId": "skill.mz-101-fire-iii"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 21,
+          "skillId": "skill.mz-132-quake-i"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 25,
+          "skillId": "skill.mz-189-meteor"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-7-wooden-staff",
+        "body": "equip.mz-a-20-cotton-robe"
+      },
+      "stats": {
+        "str": 6,
+        "int": 11,
+        "dex": 10,
+        "luk": 9,
+        "agi": 11,
+        "vit": 6
+      },
+      "base": {
+        "hp": 297,
+        "mp": 131,
+        "atk": 12,
+        "def": 11,
+        "mat": 21,
+        "mdf": 20,
+        "agi": 22
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-99-fire-i"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 4,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 4,
+      "battlerImage": "assets/sv_actors/Actor1_5.png"
+    },
+    {
+      "id": "actor.kasey",
+      "name": "Kasey",
+      "classId": "class.sorcerer",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.sorcerer"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.sorcerer",
+          "level": 1,
+          "skillId": "skill.mz-99-fire-i"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 3,
+          "skillId": "skill.mz-75-sleep"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 5,
+          "skillId": "skill.mz-103-flame-i"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 5,
+          "skillId": "skill.mz-187-spell-enhancement"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 8,
+          "skillId": "skill.mz-100-fire-ii"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 11,
+          "skillId": "skill.mz-74-silence"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 15,
+          "skillId": "skill.mz-193-magic-mirror"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 15,
+          "skillId": "skill.mz-92-mana-drain"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 18,
+          "skillId": "skill.mz-76-paralyze"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 18,
+          "skillId": "skill.mz-104-flame-ii"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 21,
+          "skillId": "skill.mz-101-fire-iii"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 21,
+          "skillId": "skill.mz-132-quake-i"
+        },
+        {
+          "classId": "class.sorcerer",
+          "level": 25,
+          "skillId": "skill.mz-189-meteor"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-7-wooden-staff",
+        "body": "equip.mz-a-21-silk-cloak"
+      },
+      "stats": {
+        "str": 6,
+        "int": 11,
+        "dex": 10,
+        "luk": 9,
+        "agi": 11,
+        "vit": 6
+      },
+      "base": {
+        "hp": 297,
+        "mp": 131,
+        "atk": 12,
+        "def": 11,
+        "mat": 21,
+        "mdf": 20,
+        "agi": 22
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-99-fire-i"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 5,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 5,
+      "battlerImage": "assets/sv_actors/Actor1_6.png"
+    },
+    {
+      "id": "actor.eliot",
+      "name": "Eliot",
+      "classId": "class.priest",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.priest"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-52-heal-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-60-cure-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-83-armor-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-81-weapon-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 3,
+          "skillId": "skill.mz-141-saint-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 3,
+          "skillId": "skill.mz-85-spirit-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 3,
+          "skillId": "skill.mz-87-divine-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 5,
+          "skillId": "skill.mz-56-recover-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 5,
+          "skillId": "skill.mz-186-magic-barrier"
+        },
+        {
+          "classId": "class.priest",
+          "level": 5,
+          "skillId": "skill.mz-89-quicken-movement"
+        },
+        {
+          "classId": "class.priest",
+          "level": 8,
+          "skillId": "skill.mz-53-heal-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 8,
+          "skillId": "skill.mz-61-cure-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 10,
+          "skillId": "skill.mz-144-starlight-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 13,
+          "skillId": "skill.mz-57-recover-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 15,
+          "skillId": "skill.mz-188-yell"
+        },
+        {
+          "classId": "class.priest",
+          "level": 15,
+          "skillId": "skill.mz-54-heal-iii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 18,
+          "skillId": "skill.mz-62-cure-iii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 18,
+          "skillId": "skill.mz-142-saint-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 25,
+          "skillId": "skill.mz-145-starlight-ii"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-7-wooden-staff",
+        "body": "equip.mz-a-20-cotton-robe"
+      },
+      "stats": {
+        "str": 7,
+        "int": 7,
+        "dex": 10,
+        "luk": 16,
+        "agi": 12,
+        "vit": 7
+      },
+      "base": {
+        "hp": 308,
+        "mp": 133,
+        "atk": 13,
+        "def": 14,
+        "mat": 14,
+        "mdf": 15,
+        "agi": 24
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-52-heal-i",
+        "skill.mz-60-cure-i",
+        "skill.mz-83-armor-bless",
+        "skill.mz-81-weapon-bless"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 6,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 6,
+      "battlerImage": "assets/sv_actors/Actor1_7.png"
+    },
+    {
+      "id": "actor.roza",
+      "name": "Roza",
+      "classId": "class.priest",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.priest"
+      ],
+      "targetRate": 1,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1,
+        "agi": 1,
+        "int": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-52-heal-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-60-cure-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-83-armor-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 1,
+          "skillId": "skill.mz-81-weapon-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 3,
+          "skillId": "skill.mz-141-saint-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 3,
+          "skillId": "skill.mz-85-spirit-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 3,
+          "skillId": "skill.mz-87-divine-bless"
+        },
+        {
+          "classId": "class.priest",
+          "level": 5,
+          "skillId": "skill.mz-56-recover-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 5,
+          "skillId": "skill.mz-186-magic-barrier"
+        },
+        {
+          "classId": "class.priest",
+          "level": 5,
+          "skillId": "skill.mz-89-quicken-movement"
+        },
+        {
+          "classId": "class.priest",
+          "level": 8,
+          "skillId": "skill.mz-53-heal-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 8,
+          "skillId": "skill.mz-61-cure-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 10,
+          "skillId": "skill.mz-144-starlight-i"
+        },
+        {
+          "classId": "class.priest",
+          "level": 13,
+          "skillId": "skill.mz-57-recover-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 15,
+          "skillId": "skill.mz-188-yell"
+        },
+        {
+          "classId": "class.priest",
+          "level": 15,
+          "skillId": "skill.mz-54-heal-iii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 18,
+          "skillId": "skill.mz-62-cure-iii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 18,
+          "skillId": "skill.mz-142-saint-ii"
+        },
+        {
+          "classId": "class.priest",
+          "level": 25,
+          "skillId": "skill.mz-145-starlight-ii"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.mz-w-7-wooden-staff",
+        "body": "equip.mz-a-20-cotton-robe"
+      },
+      "stats": {
+        "str": 7,
+        "int": 7,
+        "dex": 10,
+        "luk": 16,
+        "agi": 12,
+        "vit": 7
+      },
+      "base": {
+        "hp": 308,
+        "mp": 133,
+        "atk": 13,
+        "def": 14,
+        "mat": 14,
+        "mdf": 15,
+        "agi": 24
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-52-heal-i",
+        "skill.mz-60-cure-i",
+        "skill.mz-83-armor-bless",
+        "skill.mz-81-weapon-bless"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 7,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 7,
+      "battlerImage": "assets/sv_actors/Actor1_8.png"
+    },
+    {
+      "id": "actor.arka",
+      "name": "Arka",
+      "classId": "class.squire",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.squire",
+        "class.warden"
+      ],
+      "targetRate": 1.5,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.squire",
+          "level": 2,
+          "skillId": "skill.guard-break"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.iron-sword",
+        "body": "equip.leather-vest"
+      },
+      "stats": {
+        "str": 12,
+        "int": 6,
+        "dex": 10,
+        "luk": 8,
+        "agi": 9,
+        "vit": 10
+      },
+      "base": {
+        "hp": 50,
+        "mp": 15,
+        "atk": 8,
+        "def": 6,
+        "mat": 4,
+        "mdf": 5,
+        "agi": 5
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.power-strike"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 0,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 0
+    },
+    {
+      "id": "actor.sena",
+      "name": "Sena",
+      "classId": "class.acolyte",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.acolyte",
+        "class.magus"
+      ],
+      "targetRate": 0.8,
+      "classGrowth": {
+        "int": 1,
+        "agi": 1
+      },
+      "defaultEquipment": {
+        "weapon": "equip.ritual-dagger"
+      },
+      "stats": {
+        "str": 6,
+        "int": 13,
+        "dex": 9,
+        "luk": 10,
+        "agi": 11,
+        "vit": 7
+      },
+      "base": {
+        "hp": 40,
+        "mp": 25,
+        "atk": 5,
+        "def": 4,
+        "mat": 8,
+        "mdf": 7,
+        "agi": 6
+      },
+      "weaponType": "finesse",
+      "skillIds": [
+        "skill.ember",
+        "skill.mend",
+        "skill.rekindle"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 1,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 1
+    }
+  ],
+  "enemies": [
+    {
+      "id": "enemy.moss",
+      "name": "Mossling",
+      "elementRates": {
+        "fire": 2
+      },
+      "stats": {
+        "str": 3,
+        "int": 2,
+        "dex": 4,
+        "luk": 2,
+        "agi": 3,
+        "vit": 2
+      },
+      "base": {
+        "hp": 10,
+        "mp": 0,
+        "atk": 2,
+        "def": 2,
+        "mat": 1,
+        "mdf": 1,
+        "agi": 2
+      },
+      "weaponType": "melee",
+      "skillIds": [],
+      "reward": {
+        "gold": 7,
+        "baseExp": 20,
+        "classExp": 16,
+        "items": {
+          "item.potion": 1
+        }
+      },
+      "battlerImage": "assets/enemies/Bat.png"
+    },
+    {
+      "id": "enemy.wisp",
+      "name": "Ash Wisp",
+      "elementRates": {
+        "fire": 0.5
+      },
+      "stats": {
+        "str": 2,
+        "int": 5,
+        "dex": 5,
+        "luk": 3,
+        "agi": 6,
+        "vit": 2
+      },
+      "base": {
+        "hp": 8,
+        "mp": 10,
+        "atk": 2,
+        "def": 1,
+        "mat": 3,
+        "mdf": 3,
+        "agi": 3
+      },
+      "weaponType": "ranged",
+      "skillIds": [],
+      "reward": {
+        "gold": 9,
+        "baseExp": 25,
+        "classExp": 20
+      },
+      "battlerImage": "assets/enemies/Gargoyle.png"
+    },
+    {
+      "id": "enemy.ash-warden",
+      "name": "Ash Warden",
+      "ai": "caster",
+      "elementRates": {
+        "fire": 0.5
+      },
+      "stats": {
+        "str": 11,
+        "int": 12,
+        "dex": 8,
+        "luk": 7,
+        "agi": 8,
+        "vit": 12
+      },
+      "base": {
+        "hp": 120,
+        "mp": 40,
+        "atk": 8,
+        "def": 8,
+        "mat": 9,
+        "mdf": 8,
+        "agi": 5
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.ember"
+      ],
+      "bossPhases": [
+        {
+          "id": "phase.ember",
+          "name": "Ember Veil",
+          "hpRatio": 0.65,
+          "bonuses": {
+            "def": 3,
+            "mdf": 3
+          },
+          "skillIds": [
+            "skill.ash-burst"
+          ]
+        },
+        {
+          "id": "phase.inferno",
+          "name": "Inferno Crown",
+          "hpRatio": 0.3,
+          "bonuses": {
+            "mat": 6,
+            "agi": 4
+          },
+          "skillIds": [
+            "skill.ash-burst"
+          ]
+        }
+      ],
+      "reward": {
+        "gold": 45,
+        "baseExp": 120,
+        "classExp": 90,
+        "items": {
+          "item.phoenix-leaf": 1
+        }
+      },
+      "battlerImage": "assets/enemies/Dragon.png"
+    },
+    {
+      "id": "enemy.mz-1-goblin",
+      "name": "Goblin",
+      "weaponType": "melee",
+      "stats": {
+        "str": 13,
+        "int": 10,
+        "dex": 10,
+        "luk": 10,
+        "agi": 10,
+        "vit": 10
+      },
+      "base": {
+        "hp": 200,
+        "mp": 10,
+        "atk": 25,
+        "def": 20,
+        "mat": 20,
+        "mdf": 20,
+        "agi": 20
+      },
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-20-bodyslam"
+      ],
+      "reward": {
+        "gold": 5,
+        "baseExp": 10,
+        "classExp": 8
+      },
+      "battlerImage": "assets/enemies/Goblin.png"
+    },
+    {
+      "id": "enemy.mz-2-gnome",
+      "name": "Gnome",
+      "weaponType": "melee",
+      "stats": {
+        "str": 10,
+        "int": 10,
+        "dex": 10,
+        "luk": 10,
+        "agi": 10,
+        "vit": 13
+      },
+      "base": {
+        "hp": 250,
+        "mp": 10,
+        "atk": 20,
+        "def": 25,
+        "mat": 20,
+        "mdf": 20,
+        "agi": 20
+      },
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-23-venom"
+      ],
+      "reward": {
+        "gold": 8,
+        "baseExp": 10,
+        "classExp": 8
+      },
+      "battlerImage": "assets/enemies/Gnome.png"
+    },
+    {
+      "id": "enemy.mz-3-crow",
+      "name": "Crow",
+      "weaponType": "melee",
+      "stats": {
+        "str": 13,
+        "int": 10,
+        "dex": 10,
+        "luk": 10,
+        "agi": 13,
+        "vit": 10
+      },
+      "base": {
+        "hp": 250,
+        "mp": 50,
+        "atk": 25,
+        "def": 20,
+        "mat": 20,
+        "mdf": 20,
+        "agi": 25
+      },
+      "skillIds": [
+        "skill.mz-1-attack"
+      ],
+      "reward": {
+        "gold": 8,
+        "baseExp": 15,
+        "classExp": 12
+      },
+      "battlerImage": "assets/enemies/Crow.png"
+    },
+    {
+      "id": "enemy.mz-4-treant",
+      "name": "Treant",
+      "weaponType": "melee",
+      "stats": {
+        "str": 15,
+        "int": 15,
+        "dex": 10,
+        "luk": 15,
+        "agi": 15,
+        "vit": 10
+      },
+      "base": {
+        "hp": 500,
+        "mp": 50,
+        "atk": 30,
+        "def": 20,
+        "mat": 30,
+        "mdf": 30,
+        "agi": 30
+      },
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-52-heal-i"
+      ],
+      "reward": {
+        "gold": 15,
+        "baseExp": 30,
+        "classExp": 24
+      },
+      "battlerImage": "assets/enemies/Treant.png"
+    },
+    {
+      "id": "enemy.mz-5-hi-monster",
+      "name": "Hi_monster",
+      "weaponType": "melee",
+      "stats": {
+        "str": 20,
+        "int": 20,
+        "dex": 10,
+        "luk": 20,
+        "agi": 20,
+        "vit": 10
+      },
+      "base": {
+        "hp": 1000,
+        "mp": 50,
+        "atk": 40,
+        "def": 20,
+        "mat": 40,
+        "mdf": 40,
+        "agi": 40
+      },
+      "skillIds": [
+        "skill.mz-1-attack",
+        "skill.mz-99-fire-i",
+        "skill.mz-13-double-attack"
+      ],
+      "reward": {
+        "gold": 50,
+        "baseExp": 100,
+        "classExp": 80
+      },
+      "battlerImage": "assets/enemies/Hi_monster.png"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equip.iron-sword",
+      "name": "Iron Sword",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "stats": {
+        "str": 1
+      },
+      "bonuses": {
+        "atk": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.ritual-dagger",
+      "name": "Ritual Dagger",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "stats": {
+        "dex": 2
+      },
+      "bonuses": {
+        "mat": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.leather-vest",
+      "name": "Leather Vest",
+      "slot": "body",
+      "stats": {
+        "vit": 1
+      },
+      "bonuses": {
+        "def": 5,
+        "hp": 20
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.wind-charm",
+      "name": "Wind Charm",
+      "slot": "accessory",
+      "stats": {
+        "agi": 3
+      },
+      "bonuses": {
+        "eva": 0.02,
+        "sp": 10
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-w-1-short-sword",
+      "name": "Short Sword",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 8,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 3
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-2-long-sword",
+      "name": "Long Sword",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 12,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-3-falchion",
+      "name": "Falchion",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-4-mithril-sword",
+      "name": "Mithril Sword",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 25,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-5-dragon-blade",
+      "name": "Dragon Blade",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 36,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 12
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-7-wooden-staff",
+      "name": "Wooden Staff",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 2,
+        "def": 0,
+        "mat": 8,
+        "mdf": 3,
+        "agi": 0
+      },
+      "stats": {
+        "str": 1
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-8-magic-wand",
+      "name": "Magic Wand",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 3,
+        "def": 0,
+        "mat": 12,
+        "mdf": 6,
+        "agi": 0
+      },
+      "stats": {
+        "str": 1
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-9-force-wand",
+      "name": "Force Wand",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 5,
+        "def": 0,
+        "mat": 21,
+        "mdf": 12,
+        "agi": 0
+      },
+      "stats": {
+        "str": 2
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-10-mithril-rod",
+      "name": "Mithril Rod",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 12,
+        "def": 0,
+        "mat": 32,
+        "mdf": 24,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-11-dragon-staff",
+      "name": "Dragon Staff",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 45,
+        "mdf": 52,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-13-stone-flail",
+      "name": "Stone Flail",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 7,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 2
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-14-bronze-flail",
+      "name": "Bronze Flail",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 12,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-15-morning-star",
+      "name": "Morning Star",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-16-mithril-flail",
+      "name": "Mithril Flail",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 23,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-17-dragon-flail",
+      "name": "Dragon Flail",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 29,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 10
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-19-hand-axe",
+      "name": "Hand Axe",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 10,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 3
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-20-battle-axe",
+      "name": "Battle Axe",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-21-bardiche",
+      "name": "Bardiche",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 25,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-22-mithril-axe",
+      "name": "Mithril Axe",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 32,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 11
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-23-dragon-axe",
+      "name": "Dragon Axe",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 45,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 15
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-25-short-spear",
+      "name": "Short Spear",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 6,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 2
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-26-long-spear",
+      "name": "Long Spear",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 12,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-27-halberd",
+      "name": "Halberd",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-28-mithril-spear",
+      "name": "Mithril Spear",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 24,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-29-dragon-spear",
+      "name": "Dragon Spear",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 32,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 11
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-31-cestus",
+      "name": "Cestus",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 5,
+        "def": 5,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 2
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-32-bagh-naka",
+      "name": "Bagh Naka",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 12,
+        "def": 8,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-33-iron-claw",
+      "name": "Iron Claw",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 20,
+        "def": 15,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 7
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-34-mithril-claw",
+      "name": "Mithril Claw",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 25,
+        "def": 18,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-35-dragon-claw",
+      "name": "Dragon Claw",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "bonuses": {
+        "atk": 32,
+        "def": 21,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 11
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-37-short-bow",
+      "name": "Short Bow",
+      "slot": "weapon",
+      "weaponType": "ranged",
+      "bonuses": {
+        "atk": 7,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 2
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-38-long-bow",
+      "name": "Long Bow",
+      "slot": "weapon",
+      "weaponType": "ranged",
+      "bonuses": {
+        "atk": 12,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-39-crossbow",
+      "name": "Crossbow",
+      "slot": "weapon",
+      "weaponType": "ranged",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-40-mithril-bow",
+      "name": "Mithril Bow",
+      "slot": "weapon",
+      "weaponType": "ranged",
+      "bonuses": {
+        "atk": 23,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-41-dragon-bow",
+      "name": "Dragon Bow",
+      "slot": "weapon",
+      "weaponType": "ranged",
+      "bonuses": {
+        "atk": 28,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 9
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-43-knife",
+      "name": "Knife",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "bonuses": {
+        "atk": 5,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 2
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-44-daggar",
+      "name": "Daggar",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "bonuses": {
+        "atk": 9,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 3
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-45-machete",
+      "name": "Machete",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "bonuses": {
+        "atk": 12,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 4
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-46-mithril-daggar",
+      "name": "Mithril Daggar",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "bonuses": {
+        "atk": 18,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 6
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-w-47-dragon-daggar",
+      "name": "Dragon Daggar",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "bonuses": {
+        "atk": 23,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "str": 8
+      },
+      "iconIndex": 96
+    },
+    {
+      "id": "equip.mz-a-2-linen-clothing",
+      "name": "Linen Clothing",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 1,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-3-leather-vest",
+      "name": "Leather Vest",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 3,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-4-adventurer-s-clothing",
+      "name": "Adventurer’s Clothing",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 7,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-5-hard-leather",
+      "name": "Hard Leather",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 15,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-6-brigandine",
+      "name": "Brigandine",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 20,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 7
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-8-cloth-armor",
+      "name": "Cloth Armor",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 4,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-9-leather-armor",
+      "name": "Leather Armor",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 8,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-10-bronze-breastplate",
+      "name": "Bronze Breastplate",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 13,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 4
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-11-iron-breastplate",
+      "name": "Iron Breastplate",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 20,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 7
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-12-mithril-breastplate",
+      "name": "Mithril Breastplate",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 27,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 9
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-13-dragon-breastplate",
+      "name": "Dragon Breastplate",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 35,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 12
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-15-bronze-armor",
+      "name": "Bronze Armor",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 15,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-16-iron-armor",
+      "name": "Iron Armor",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 24,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 8
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-17-mithril-armor",
+      "name": "Mithril Armor",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 37,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 12
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-18-dragon-armor",
+      "name": "Dragon Armor",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 50,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 17
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-20-cotton-robe",
+      "name": "Cotton Robe",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 4,
+        "mat": 2,
+        "mdf": 3,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-21-silk-cloak",
+      "name": "Silk Cloak",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 9,
+        "mat": 4,
+        "mdf": 6,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-22-tactician-s-robe",
+      "name": "Tactician’s Robe",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 15,
+        "mat": 7,
+        "mdf": 11,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-23-sage-s-robe",
+      "name": "Sage’s Robe",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 21,
+        "mat": 15,
+        "mdf": 18,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 7
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-24-elemental-cloak",
+      "name": "Elemental Cloak",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 28,
+        "mat": 20,
+        "mdf": 32,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 9
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-27-buckler",
+      "name": "Buckler",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 5,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-28-round-buckler",
+      "name": "Round Buckler",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 10,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-29-spiked-buckler",
+      "name": "Spiked Buckler",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 15,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-30-mithril-buckler",
+      "name": "Mithril Buckler",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 21,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 7
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-31-dragon-buckler",
+      "name": "Dragon Buckler",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 28,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 9
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-33-wooden-shield",
+      "name": "Wooden Shield",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 7,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-34-bronze-shield",
+      "name": "Bronze Shield",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 12,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 4
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-35-iron-shield",
+      "name": "Iron Shield",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 17,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 6
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-36-mithril-shield",
+      "name": "Mithril Shield",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 25,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 8
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-37-dragon-shield",
+      "name": "Dragon Shield",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 38,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 13
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-39-wooden-bangle",
+      "name": "Wooden Bangle",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 2,
+        "mat": 0,
+        "mdf": 3,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-40-bronze-bangle",
+      "name": "Bronze Bangle",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 5,
+        "mat": 0,
+        "mdf": 6,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-41-iron-bangle",
+      "name": "Iron Bangle",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 10,
+        "mat": 0,
+        "mdf": 9,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-42-mithril-bangle",
+      "name": "Mithril Bangle",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 16,
+        "mat": 0,
+        "mdf": 12,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-43-dragon-bangle",
+      "name": "Dragon Bangle",
+      "slot": "body",
+      "bonuses": {
+        "atk": 0,
+        "def": 23,
+        "mat": 0,
+        "mdf": 15,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 8
+      },
+      "iconIndex": 135
+    },
+    {
+      "id": "equip.mz-a-46-bandana",
+      "name": "Bandana",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 1,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-47-leather-bandana",
+      "name": "Leather Bandana",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 4,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-48-leather-hat",
+      "name": "Leather Hat",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 8,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-49-turban",
+      "name": "Turban",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 12,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 4
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-50-feathered-hat",
+      "name": "Feathered Hat",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 16,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-52-leather-cap",
+      "name": "Leather Cap",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 3,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-53-wooden-cap",
+      "name": "Wooden Cap",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 7,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-54-bronze-cap",
+      "name": "Bronze Cap",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 12,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 4
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-55-iron-cap",
+      "name": "Iron Cap",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 18,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 6
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-56-mithril-cap",
+      "name": "Mithril Cap",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 24,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 8
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-57-dragon-cap",
+      "name": "Dragon Cap",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 30,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 10
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-59-chainmail-coif",
+      "name": "Chainmail Coif",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 5,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-60-bronze-helm",
+      "name": "Bronze Helm",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 12,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 4
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-61-iron-helm",
+      "name": "Iron Helm",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 20,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 7
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-62-mithril-helm",
+      "name": "Mithril Helm",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 28,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 9
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-63-dragon-helm",
+      "name": "Dragon Helm",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 34,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 11
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-65-pointed-hat",
+      "name": "Pointed Hat",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 2,
+        "mat": 0,
+        "mdf": 5,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 1
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-66-circlet",
+      "name": "Circlet",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 5,
+        "mat": 0,
+        "mdf": 10,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-67-silver-circlet",
+      "name": "Silver Circlet",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 8,
+        "mat": 0,
+        "mdf": 15,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-68-gold-circlet",
+      "name": "Gold Circlet",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 16,
+        "mat": 0,
+        "mdf": 25,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 5
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-69-mithril-circlet",
+      "name": "Mithril Circlet",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 20,
+        "mat": 0,
+        "mdf": 30,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 7
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-70-master-circlet",
+      "name": "Master Circlet",
+      "slot": "head",
+      "bonuses": {
+        "atk": 0,
+        "def": 25,
+        "mat": 0,
+        "mdf": 36,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 8
+      },
+      "iconIndex": 128
+    },
+    {
+      "id": "equip.mz-a-73-guard-stone",
+      "name": "Guard Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 5,
+        "mat": 0,
+        "mdf": 5,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-74-guard-ring",
+      "name": "Guard Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 10,
+        "mat": 0,
+        "mdf": 10,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 3
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-75-power-stone",
+      "name": "Power Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 5,
+        "def": 0,
+        "mat": 5,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-76-power-ring",
+      "name": "Power Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 5,
+        "def": 0,
+        "mat": 10,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-77-speed-stone",
+      "name": "Speed Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 5
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-78-speed-ring",
+      "name": "Speed Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 5
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-79-lucky-stone",
+      "name": "Lucky Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-80-lucky-ring",
+      "name": "Lucky Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-81-magical-stone",
+      "name": "Magical Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 5,
+        "mdf": 5,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-82-magical-ring",
+      "name": "Magical Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 10,
+        "mdf": 10,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-83-shooter-stone",
+      "name": "Shooter Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-84-shooter-ring",
+      "name": "Shooter Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-85-master-stone",
+      "name": "Master Stone",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-86-master-ring",
+      "name": "Master Ring",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-88-poison-guard",
+      "name": "Poison Guard",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 1,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-89-super-poison-guard",
+      "name": "Super Poison Guard",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 5,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 2
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-91-mental-guard",
+      "name": "Mental Guard",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 1,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-92-super-mental-guard",
+      "name": "Super Mental Guard",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 1,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-94-enemy-radar",
+      "name": "Enemy Radar",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-95-warning-bell",
+      "name": "Warning Bell",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-96-stocker",
+      "name": "Stocker",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-97-ring-of-guts",
+      "name": "Ring of Guts",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-98-mp-keeper",
+      "name": "MP Keeper",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-99-elemental-guard",
+      "name": "Elemental Guard",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    },
+    {
+      "id": "equip.mz-a-100-spectacles",
+      "name": "Spectacles",
+      "slot": "accessory",
+      "bonuses": {
+        "atk": 0,
+        "def": 0,
+        "mat": 0,
+        "mdf": 0,
+        "agi": 0
+      },
+      "stats": {
+        "vit": 0
+      },
+      "iconIndex": 144
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill.power-strike",
+      "name": "Power Strike",
+      "kind": "physical",
+      "power": 1.35,
+      "spCost": 10,
+      "speed": -200,
+      "target": "enemy",
+      "sequence": [
+        "approach",
+        "cast",
+        "impact",
+        "return"
+      ],
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.guard-break",
+      "name": "Guard Break",
+      "kind": "physical",
+      "power": 1.1,
+      "spCost": 8,
+      "speed": 500,
+      "target": "enemy",
+      "armorPiercing": true,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.ember",
+      "name": "Ember",
+      "kind": "magical",
+      "element": "fire",
+      "power": 1.2,
+      "mpCost": 5,
+      "speed": -200,
+      "target": "enemy",
+      "stateId": "state.burn",
+      "stateChance": 1,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mend",
+      "name": "Mend",
+      "kind": "heal",
+      "power": 1.4,
+      "mpCost": 6,
+      "target": "ally",
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.rekindle",
+      "name": "Rekindle",
+      "kind": "revive",
+      "power": 1.2,
+      "mpCost": 12,
+      "speed": -600,
+      "target": "ally",
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.ash-burst",
+      "name": "Ash Burst",
+      "kind": "magical",
+      "element": "fire",
+      "power": 1.15,
+      "mpCost": 4,
+      "speed": -200,
+      "target": "enemy",
+      "stateId": "state.burn",
+      "stateChance": 0.45,
+      "sequence": [
+        "cast",
+        "impact"
+      ],
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-1-attack",
+      "name": "Attack",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-2-guard",
+      "name": "Guard",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 0,
+      "stateId": "state.mz-2-guard",
+      "stateChance": 1,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-12-dual-attack",
+      "name": "Dual Attack",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-13-double-attack",
+      "name": "Double Attack",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-14-triple-attack",
+      "name": "Triple Attack",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 15,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-15-escape",
+      "name": "Escape",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 5,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-16-wait-and-see",
+      "name": "Wait and See",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-17-blood-suck",
+      "name": "Blood Suck",
+      "kind": "physical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-18-meditate",
+      "name": "Meditate",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 5,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-19-tranquilizer",
+      "name": "Tranquilizer",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-12-paralysis",
+      "stateChance": 0.5,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-20-bodyslam",
+      "name": "Bodyslam",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-13-stun",
+      "stateChance": 0.5,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-21-shock",
+      "name": "Shock",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-12-paralysis",
+      "stateChance": 0.3,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-22-slime",
+      "name": "Slime",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-23-venom",
+      "name": "Venom",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-4-poison",
+      "stateChance": 0.5,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-24-shout",
+      "name": "Shout",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-25-bizarre-dance",
+      "name": "Bizarre Dance",
+      "kind": "physical",
+      "power": 0.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-26-petrify",
+      "name": "Petrify",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-12-paralysis",
+      "stateChance": 0.5,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-27-eye-poke",
+      "name": "Eye Poke",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-5-blind",
+      "stateChance": 0.5,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-28-sandstorm",
+      "name": "Sandstorm",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-5-blind",
+      "stateChance": 0.5,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-29-flash",
+      "name": "Flash",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-5-blind",
+      "stateChance": 0.5,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-30-toxic-fog",
+      "name": "Toxic Fog",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-4-poison",
+      "stateChance": 0.5,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-31-lullaby",
+      "name": "Lullaby",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-10-sleep",
+      "stateChance": 0.5,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-32-alluring-melody",
+      "name": "Alluring Melody",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-9-charm",
+      "stateChance": 0.5,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-33-song-of-silence",
+      "name": "Song of Silence",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "stateId": "state.mz-6-silence",
+      "stateChance": 0.5,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-34-sonic-wave",
+      "name": "Sonic Wave",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-8-confusion",
+      "stateChance": 0.5,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-35-stone-throw",
+      "name": "Stone Throw",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-36-dust-devil",
+      "name": "Dust Devil",
+      "kind": "physical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-37-fire-breath",
+      "name": "Fire Breath",
+      "kind": "physical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-38-ice-breath",
+      "name": "Ice Breath",
+      "kind": "physical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-39-earthquake",
+      "name": "Earthquake",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-40-tsunami",
+      "name": "Tsunami",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-41-scratch",
+      "name": "Scratch",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-52-heal-i",
+      "name": "Heal I",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-53-heal-ii",
+      "name": "Heal II",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-54-heal-iii",
+      "name": "Heal III",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 34,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-56-recover-i",
+      "name": "Recover I",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 25,
+      "spCost": 0,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-57-recover-ii",
+      "name": "Recover II",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-58-recover-iii",
+      "name": "Recover III",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-60-cure-i",
+      "name": "Cure I",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 10,
+      "spCost": 0,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-61-cure-ii",
+      "name": "Cure II",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-62-cure-iii",
+      "name": "Cure III",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 45,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-64-raise-i",
+      "name": "Raise I",
+      "kind": "revive",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-65-raise-ii",
+      "name": "Raise II",
+      "kind": "revive",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 150,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-71-poison",
+      "name": "Poison",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "stateId": "state.mz-4-poison",
+      "stateChance": 0.5,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-72-blind",
+      "name": "Blind",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "stateId": "state.mz-5-blind",
+      "stateChance": 0.5,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-73-confuse",
+      "name": "Confuse",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "stateId": "state.mz-8-confusion",
+      "stateChance": 0.5,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-74-silence",
+      "name": "Silence",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "stateId": "state.mz-6-silence",
+      "stateChance": 0.5,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-75-sleep",
+      "name": "Sleep",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "stateId": "state.mz-10-sleep",
+      "stateChance": 0.5,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-76-paralyze",
+      "name": "Paralyze",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "stateId": "state.mz-12-paralysis",
+      "stateChance": 0.4,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-81-weapon-bless",
+      "name": "Weapon Bless",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-82-weapon-curse",
+      "name": "Weapon Curse",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 8,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-83-armor-bless",
+      "name": "Armor Bless",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-84-armor-curse",
+      "name": "Armor Curse",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 8,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-85-spirit-bless",
+      "name": "Spirit Bless",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-86-spirit-curse",
+      "name": "Spirit Curse",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 8,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-87-divine-bless",
+      "name": "Divine Bless",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-88-divine-curse",
+      "name": "Divine Curse",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 8,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-89-quicken-movement",
+      "name": "Quicken Movement",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-90-slow-movement",
+      "name": "Slow Movement",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 8,
+      "spCost": 0,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-91-life-drain",
+      "name": "Life Drain",
+      "kind": "magical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 10,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-92-mana-drain",
+      "name": "Mana Drain",
+      "kind": "magical",
+      "power": 0.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-99-fire-i",
+      "name": "Fire I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-100-fire-ii",
+      "name": "Fire II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-101-fire-iii",
+      "name": "Fire III",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-103-flame-i",
+      "name": "Flame I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-104-flame-ii",
+      "name": "Flame II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-105-flame-iii",
+      "name": "Flame III",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 90,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-107-ice-i",
+      "name": "Ice I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-108-ice-ii",
+      "name": "Ice II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-109-ice-iii",
+      "name": "Ice III",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-111-blizzard-i",
+      "name": "Blizzard I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-112-blizzard-ii",
+      "name": "Blizzard II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-113-blizzard-iii",
+      "name": "Blizzard III",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 90,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-115-thunder-i",
+      "name": "Thunder I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 15,
+      "spCost": 0,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-116-thunder-ii",
+      "name": "Thunder II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-117-thunder-iii",
+      "name": "Thunder III",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-119-spark-i",
+      "name": "Spark I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-120-spark-ii",
+      "name": "Spark II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-121-spark-iii",
+      "name": "Spark III",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 90,
+      "spCost": 0,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-123-water-i",
+      "name": "Water I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-124-water-ii",
+      "name": "Water II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-126-wave-i",
+      "name": "Wave I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-127-wave-ii",
+      "name": "Wave II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-129-stone-i",
+      "name": "Stone I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-130-stone-ii",
+      "name": "Stone II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-132-quake-i",
+      "name": "Quake I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-133-quake-ii",
+      "name": "Quake II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-135-wind-i",
+      "name": "Wind I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-136-wind-ii",
+      "name": "Wind II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-138-tornado-i",
+      "name": "Tornado I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-139-tornado-ii",
+      "name": "Tornado II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-141-saint-i",
+      "name": "Saint I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-142-saint-ii",
+      "name": "Saint II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-144-starlight-i",
+      "name": "Starlight I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-145-starlight-ii",
+      "name": "Starlight II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-147-shade-i",
+      "name": "Shade I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 20,
+      "spCost": 0,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-148-shade-ii",
+      "name": "Shade II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-150-darkness-i",
+      "name": "Darkness I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 40,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-151-darkness-ii",
+      "name": "Darkness II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 80,
+      "spCost": 0,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-153-burst-i",
+      "name": "Burst I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 25,
+      "spCost": 0,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-154-burst-ii",
+      "name": "Burst II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-156-nuke-i",
+      "name": "Nuke I",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-157-nuke-ii",
+      "name": "Nuke II",
+      "kind": "magical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 100,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-172-strong-attack",
+      "name": "Strong Attack",
+      "kind": "physical",
+      "power": 2.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-173-slash",
+      "name": "Slash",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 20,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-174-dual-attack",
+      "name": "Dual Attack",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 30,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-175-willpower",
+      "name": "Willpower",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 15,
+      "spCost": 0,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-176-first-aid",
+      "name": "First Aid",
+      "kind": "heal",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 6,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-177-maiden-s-stance",
+      "name": "Maiden’s Stance",
+      "kind": "physical",
+      "power": 4,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 50,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-178-spin-crash",
+      "name": "Spin Crash",
+      "kind": "physical",
+      "power": 2.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 100,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-186-magic-barrier",
+      "name": "Magic Barrier",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 30,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-187-spell-enhancement",
+      "name": "Spell Enhancement",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 25,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-188-yell",
+      "name": "Yell",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 30,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-189-meteor",
+      "name": "Meteor",
+      "kind": "magical",
+      "power": 5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 100,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-190-fire-weapon",
+      "name": "Fire Weapon",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 30,
+      "stateId": "state.mz-25-fire-force",
+      "stateChance": 1,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-191-ice-weapon",
+      "name": "Ice Weapon",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 30,
+      "stateId": "state.mz-26-ice-force",
+      "stateChance": 1,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-192-thunder-weapon",
+      "name": "Thunder Weapon",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 30,
+      "stateId": "state.mz-27-thunder-force",
+      "stateChance": 1,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-193-magic-mirror",
+      "name": "Magic Mirror",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 50,
+      "stateId": "state.mz-18-magic-reflection",
+      "stateChance": 1,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-196-protect",
+      "name": "Protect",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 50,
+      "spCost": 0,
+      "stateId": "state.mz-19-protect",
+      "stateChance": 1,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-197-falcon-thrust",
+      "name": "Falcon Thrust",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 15,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-198-double-thrust",
+      "name": "Double Thrust",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 25,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-199-armor-piercer",
+      "name": "Armor Piercer",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 30,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-200-battle-cry",
+      "name": "Battle Cry",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 50,
+      "spCost": 0,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-201-windmill",
+      "name": "Windmill",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 20,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-202-clear-mind",
+      "name": "Clear Mind",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 30,
+      "spCost": 0,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-203-wild-thrust",
+      "name": "Wild Thrust",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 45,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-206-eye-poke",
+      "name": "Eye Poke",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 5,
+      "stateId": "state.mz-5-blind",
+      "stateChance": 0.5,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-207-warm-up",
+      "name": "Warm-up",
+      "kind": "magical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 12,
+      "spCost": 0,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-208-flare",
+      "name": "Flare",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 25,
+      "stateId": "state.mz-5-blind",
+      "stateChance": 0.5,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-209-watchful-eye",
+      "name": "Watchful Eye",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 30,
+      "spCost": 0,
+      "stateId": "state.mz-30-double-money-items",
+      "stateChance": 1,
+      "iconIndex": 1
+    },
+    {
+      "id": "skill.mz-210-wind-call",
+      "name": "Wind Call",
+      "kind": "physical",
+      "power": 2.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 40,
+      "iconIndex": 2
+    },
+    {
+      "id": "skill.mz-211-hide",
+      "name": "Hide",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 25,
+      "stateId": "state.mz-21-hide",
+      "stateChance": 1,
+      "iconIndex": 77
+    },
+    {
+      "id": "skill.mz-216-sweep",
+      "name": "Sweep",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 15,
+      "stateId": "state.mz-13-stun",
+      "stateChance": 0.5,
+      "iconIndex": 78
+    },
+    {
+      "id": "skill.mz-217-qigong",
+      "name": "Qigong",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "ally",
+      "mpCost": 0,
+      "spCost": 25,
+      "iconIndex": 80
+    },
+    {
+      "id": "skill.mz-218-roundhouse-kick",
+      "name": "Roundhouse Kick",
+      "kind": "physical",
+      "power": 2.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 50,
+      "iconIndex": 76
+    },
+    {
+      "id": "skill.mz-219-tiger-dance",
+      "name": "Tiger Dance",
+      "kind": "physical",
+      "power": 5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 100,
+      "iconIndex": 64
+    },
+    {
+      "id": "skill.mz-226-point-shot",
+      "name": "Point Shot",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 10,
+      "iconIndex": 65
+    },
+    {
+      "id": "skill.mz-227-stun-shot",
+      "name": "Stun Shot",
+      "kind": "physical",
+      "power": 1,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 25,
+      "stateId": "state.mz-13-stun",
+      "stateChance": 1,
+      "iconIndex": 66
+    },
+    {
+      "id": "skill.mz-228-team-shot",
+      "name": "Team Shot",
+      "kind": "physical",
+      "power": 1.5,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 50,
+      "iconIndex": 67
+    },
+    {
+      "id": "skill.mz-229-rain-shot",
+      "name": "Rain Shot",
+      "kind": "physical",
+      "power": 2,
+      "target": "enemy",
+      "mpCost": 0,
+      "spCost": 100,
+      "iconIndex": 1
+    }
+  ],
+  "states": [
+    {
+      "id": "state.burn",
+      "name": "Burn",
+      "duration": 2,
+      "mdr": 1.1,
+      "damagePerTurn": 5
+    },
+    {
+      "id": "state.stun",
+      "name": "Stun",
+      "duration": 1,
+      "preventsAction": true
+    },
+    {
+      "id": "state.mz-1-dead",
+      "name": "Dead",
+      "duration": 1,
+      "pdr": 0,
+      "preventsAction": true
+    },
+    {
+      "id": "state.mz-2-guard",
+      "name": "Guard",
+      "duration": 1,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-3-immortal",
+      "name": "Immortal",
+      "duration": 1,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-4-poison",
+      "name": "Poison",
+      "duration": 1,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-5-blind",
+      "name": "Blind",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-6-silence",
+      "name": "Silence",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-7-rage",
+      "name": "Rage",
+      "duration": 4,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-8-confusion",
+      "name": "Confusion",
+      "duration": 4,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-9-charm",
+      "name": "Charm",
+      "duration": 4,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-10-sleep",
+      "name": "Sleep",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": true
+    },
+    {
+      "id": "state.mz-12-paralysis",
+      "name": "Paralysis",
+      "duration": 3,
+      "pdr": 1,
+      "preventsAction": true
+    },
+    {
+      "id": "state.mz-13-stun",
+      "name": "Stun",
+      "duration": 2,
+      "pdr": 1,
+      "preventsAction": true
+    },
+    {
+      "id": "state.mz-15-hp-regeneration",
+      "name": "HP Regeneration",
+      "duration": 4,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-16-mp-regeneration",
+      "name": "MP Regeneration",
+      "duration": 4,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-17-tp-regeneration",
+      "name": "TP Regeneration",
+      "duration": 4,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-18-magic-reflection",
+      "name": "Magic Reflection",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-19-protect",
+      "name": "Protect",
+      "duration": 1,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-20-provoke",
+      "name": "Provoke",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-21-hide",
+      "name": "Hide",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-22-counter-attack",
+      "name": "Counter Attack",
+      "duration": 3,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-23-status-ailment-block",
+      "name": "Status Ailment Block",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-24-reduce-mp-cost",
+      "name": "Reduce MP Cost",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-25-fire-force",
+      "name": "Fire Force",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-26-ice-force",
+      "name": "Ice Force",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-27-thunder-force",
+      "name": "Thunder Force",
+      "duration": 5,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-29-half-encounters",
+      "name": "Half Encounters",
+      "duration": 1,
+      "pdr": 1,
+      "preventsAction": false
+    },
+    {
+      "id": "state.mz-30-double-money-items",
+      "name": "Double Money/Items",
+      "duration": 1,
+      "pdr": 1,
+      "preventsAction": false
+    }
+  ],
+  "troops": [
+    {
+      "id": "troop.training",
+      "name": "Makhluk Padang",
+      "enemyIds": [
+        "enemy.moss",
+        "enemy.wisp"
+      ]
+    },
+    {
+      "id": "troop.ash-warden",
+      "name": "Ash Warden",
+      "enemyIds": [
+        "enemy.ash-warden"
+      ]
+    },
+    {
+      "id": "troop.mz-1-goblin-2",
+      "name": "Goblin*2",
+      "enemyIds": [
+        "enemy.mz-1-goblin",
+        "enemy.mz-1-goblin"
+      ]
+    },
+    {
+      "id": "troop.mz-2-gnome-2",
+      "name": "Gnome*2",
+      "enemyIds": [
+        "enemy.mz-2-gnome",
+        "enemy.mz-2-gnome"
+      ]
+    },
+    {
+      "id": "troop.mz-3-crow-2",
+      "name": "Crow*2",
+      "enemyIds": [
+        "enemy.mz-3-crow",
+        "enemy.mz-3-crow"
+      ]
+    },
+    {
+      "id": "troop.mz-4-treant",
+      "name": "Treant",
+      "enemyIds": [
+        "enemy.mz-4-treant"
+      ]
+    },
+    {
+      "id": "troop.mz-5-hi-monster",
+      "name": "Hi_monster",
+      "enemyIds": [
+        "enemy.mz-5-hi-monster"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "item.token",
+      "name": "Token Uji",
+      "kind": "key",
+      "iconIndex": 176
+    },
+    {
+      "id": "item.potion",
+      "name": "Potion",
+      "kind": "heal",
+      "healHp": 80,
+      "iconIndex": 177
+    },
+    {
+      "id": "item.phoenix-leaf",
+      "name": "Phoenix Leaf",
+      "kind": "revive",
+      "reviveHpRatio": 0.3,
+      "iconIndex": 178
+    },
+    {
+      "id": "item.respec-seal",
+      "name": "Respec Seal",
+      "kind": "stat-reset",
+      "iconIndex": 179
+    },
+    {
+      "id": "item.mz-7-potion",
+      "name": "Potion",
+      "kind": "heal",
+      "healHp": 500,
+      "iconIndex": 180
+    },
+    {
+      "id": "item.mz-8-super-potion",
+      "name": "Super Potion",
+      "kind": "heal",
+      "healHp": 500,
+      "iconIndex": 192
+    },
+    {
+      "id": "item.mz-9-full-potion",
+      "name": "Full Potion",
+      "kind": "heal",
+      "healHp": 500,
+      "iconIndex": 193
+    },
+    {
+      "id": "item.mz-10-magic-water",
+      "name": "Magic Water",
+      "kind": "key",
+      "iconIndex": 176
+    },
+    {
+      "id": "item.mz-11-stimulant",
+      "name": "Stimulant",
+      "kind": "revive",
+      "healHp": 500,
+      "reviveHpRatio": 0.5,
+      "iconIndex": 177
+    },
+    {
+      "id": "item.mz-12-dispel-herb",
+      "name": "Dispel Herb",
+      "kind": "key",
+      "iconIndex": 178
+    },
+    {
+      "id": "item.mz-13-antidote",
+      "name": "Antidote",
+      "kind": "key",
+      "iconIndex": 179
+    },
+    {
+      "id": "item.mz-14-miracle-drop",
+      "name": "Miracle Drop",
+      "kind": "heal",
+      "healHp": 500,
+      "iconIndex": 180
+    },
+    {
+      "id": "item.mz-15-elixir",
+      "name": "Elixir",
+      "kind": "heal",
+      "healHp": 500,
+      "iconIndex": 192
+    },
+    {
+      "id": "item.mz-18-encounter-decreaser",
+      "name": "Encounter Decreaser",
+      "kind": "key",
+      "iconIndex": 193
+    },
+    {
+      "id": "item.mz-19-drop-increaser",
+      "name": "Drop Increaser",
+      "kind": "key",
+      "iconIndex": 176
+    },
+    {
+      "id": "item.mz-23-hp-increase",
+      "name": "HP Increase",
+      "kind": "key",
+      "iconIndex": 177
+    },
+    {
+      "id": "item.mz-24-mp-increase",
+      "name": "MP Increase",
+      "kind": "key",
+      "iconIndex": 178
+    },
+    {
+      "id": "item.mz-25-attack-increase",
+      "name": "Attack Increase",
+      "kind": "key",
+      "iconIndex": 179
+    },
+    {
+      "id": "item.mz-26-defense-increase",
+      "name": "Defense Increase",
+      "kind": "key",
+      "iconIndex": 180
+    },
+    {
+      "id": "item.mz-27-magic-increase",
+      "name": "Magic Increase",
+      "kind": "key",
+      "iconIndex": 192
+    },
+    {
+      "id": "item.mz-28-resistance-increase",
+      "name": "Resistance Increase",
+      "kind": "key",
+      "iconIndex": 193
+    },
+    {
+      "id": "item.mz-29-agility-increase",
+      "name": "Agility Increase",
+      "kind": "key",
+      "iconIndex": 176
+    },
+    {
+      "id": "item.mz-30-luck-increase",
+      "name": "Luck Increase",
+      "kind": "key",
+      "iconIndex": 177
+    }
+  ],
+  "classes": [
+    {
+      "id": "class.squire",
+      "name": "Squire",
+      "tier": 1,
+      "growth": {
+        "str": 1,
+        "vit": 1
+      }
+    },
+    {
+      "id": "class.warden",
+      "name": "Warden",
+      "tier": 2,
+      "growth": {
+        "vit": 2,
+        "str": 1
+      }
+    },
+    {
+      "id": "class.acolyte",
+      "name": "Acolyte",
+      "tier": 1,
+      "growth": {
+        "int": 1,
+        "agi": 1
+      }
+    },
+    {
+      "id": "class.magus",
+      "name": "Magus",
+      "tier": 2,
+      "growth": {
+        "int": 2,
+        "dex": 1
+      }
+    },
+    {
+      "id": "class.swordsman",
+      "name": "Swordsman",
+      "tier": 1,
+      "growth": {
+        "str": 2,
+        "int": 1,
+        "agi": 3,
+        "vit": 2
+      }
+    },
+    {
+      "id": "class.sorcerer",
+      "name": "Sorcerer",
+      "tier": 1,
+      "growth": {
+        "str": 1,
+        "int": 2,
+        "agi": 3,
+        "vit": 1
+      }
+    },
+    {
+      "id": "class.priest",
+      "name": "Priest",
+      "tier": 1,
+      "growth": {
+        "str": 1,
+        "int": 1,
+        "agi": 3,
+        "vit": 1
+      }
+    },
+    {
+      "id": "class.knight",
+      "name": "Knight",
+      "tier": 2,
+      "growth": {
+        "str": 2,
+        "int": 2,
+        "agi": 3,
+        "vit": 2
+      }
+    },
+    {
+      "id": "class.martial-artist",
+      "name": "Martial Artist",
+      "tier": 1,
+      "growth": {
+        "str": 2,
+        "int": 1,
+        "agi": 4,
+        "vit": 2
+      }
+    },
+    {
+      "id": "class.magic-swordsman",
+      "name": "Magic Swordsman",
+      "tier": 2,
+      "growth": {
+        "str": 2,
+        "int": 2,
+        "agi": 3,
+        "vit": 2
+      }
+    },
+    {
+      "id": "class.hunter",
+      "name": "Hunter",
+      "tier": 1,
+      "growth": {
+        "str": 2,
+        "int": 2,
+        "agi": 4,
+        "vit": 1
+      }
+    },
+    {
+      "id": "class.bandit",
+      "name": "Bandit",
+      "tier": 1,
+      "growth": {
+        "str": 1,
+        "int": 1,
+        "agi": 4,
+        "vit": 1
+      }
+    }
+  ],
+  "quests": [
+    {
+      "id": "quest.ash-warden",
+      "name": "Abu di Timur",
+      "description": "Selidiki makhluk padang lalu kalahkan Ash Warden di reruntuhan.",
+      "objectives": [
+        {
+          "id": "objective.scout",
+          "text": "Taklukkan patroli padang",
+          "target": 1
+        },
+        {
+          "id": "objective.boss",
+          "text": "Kalahkan Ash Warden",
+          "target": 1
+        }
+      ],
+      "rewards": {
+        "gold": 60,
+        "items": {
+          "item.potion": 2
+        }
+      }
+    }
+  ],
+  "shops": [
+    {
+      "id": "shop.village",
+      "name": "Kios Gerbang",
+      "items": [
+        {
+          "itemId": "item.potion",
+          "price": 8
+        },
+        {
+          "itemId": "item.phoenix-leaf",
+          "price": 25
+        },
+        {
+          "itemId": "item.respec-seal",
+          "price": 40
+        }
+      ]
+    }
+  ],
+  "translations": {
+    "id": {
+      "menu.journal": "Jurnal Quest"
+    },
+    "en": {
+      "menu.journal": "Quest Journal"
+    }
+  },
+  "tilesets": [
+    {
+      "id": "tileset.overworld",
+      "name": "Overworld",
+      "mode": 0,
+      "tilesetNames": [
+        "World_A1",
+        "World_A2",
+        "",
+        "",
+        "",
+        "World_B",
+        "World_C",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "tileset.outside",
+      "name": "Outside",
+      "mode": 1,
+      "tilesetNames": [
+        "Outside_A1",
+        "Outside_A2",
+        "Outside_A3",
+        "Outside_A4",
+        "Outside_A5",
+        "Outside_B",
+        "Outside_C",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "tileset.inside",
+      "name": "Inside",
+      "mode": 1,
+      "tilesetNames": [
+        "Inside_A1",
+        "Inside_A2",
+        "",
+        "Inside_A4",
+        "Inside_A5",
+        "Inside_B",
+        "Inside_C",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "tileset.dungeon",
+      "name": "Dungeon",
+      "mode": 1,
+      "tilesetNames": [
+        "Dungeon_A1",
+        "Dungeon_A2",
+        "",
+        "Dungeon_A4",
+        "Dungeon_A5",
+        "Dungeon_B",
+        "Dungeon_C",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "tileset.sf-outside",
+      "name": "SF Outside",
+      "mode": 1,
+      "tilesetNames": [
+        "Outside_A1",
+        "Outside_A2",
+        "SF_Outside_A3",
+        "SF_Outside_A4",
+        "SF_Outside_A5",
+        "SF_Outside_B",
+        "SF_Outside_C",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "tileset.sf-inside",
+      "name": "SF Inside",
+      "mode": 1,
+      "tilesetNames": [
+        "Inside_A1",
+        "Inside_A2",
+        "",
+        "SF_Inside_A4",
+        "SF_Outside_A5",
+        "SF_Inside_B",
+        "SF_Inside_C",
+        "",
+        ""
+      ]
+    }
+  ]
+}

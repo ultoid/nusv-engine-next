@@ -15,11 +15,18 @@ declare global {
       playtest(options?: { mapId?: string; debug?: boolean }): Promise<void>;
       launchProjectPlaytest(path: string): Promise<void>;
       importMvSubset(bundle: ProjectBundle): Promise<{ bundle: ProjectBundle; report: ImportReport } | null>;
+      importAsset?(options?: { sourcePath?: string; category?: string; customId?: string }): Promise<import('./core/types.js').AssetEntry | null>;
+      exportAsset?(assetPath: string): Promise<boolean>;
+      deleteAsset?(assetPath: string, assetId?: string): Promise<boolean>;
+      scanAssets?(): Promise<import('./core/types.js').AssetEntry[]>;
+      openAssetFolder?(folder?: string): Promise<boolean>;
+      readAssetData?(path: string): Promise<{ dataUrl: string; buffer?: ArrayBuffer } | null>;
     };
     nusvRuntime?: {
       loadProject(): Promise<ProjectBundle>;
       saveProgress(state: import('./core/types.js').ProgressState): Promise<import('./core/types.js').ProgressState>;
       loadProgress(): Promise<import('./core/types.js').ProgressState | null>;
+      loadAssetData?(path: string): Promise<{ dataUrl: string; buffer?: ArrayBuffer } | null>;
     };
   }
 }

@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { analyzeBundle, findReferences } from '../core/diagnostics.js';
-import { autotileMask, floodFillLayer, generateDungeonData, layerForTile, paintLayerCell, paintLayerCircle, paintLayerRectangle, shiftMapData, TILE_CATALOG, type LayerSelection } from '../core/map-layers.js';
-import type { EventCommand, MapData, MapEvent, ProjectBundle } from '../core/types.js';
+import { autotileMask, floodFillLayer, generateDungeonData, getAutotileQuadrants, getTileCoordinates, layerForTile, paintLayerCell, paintLayerCircle, paintLayerRectangle, shiftMapData, TILE_CATALOG, TILE_MAP, DEFAULT_TILESETS, getPaletteTiles, resolveSheetPath, tileDefinition, type LayerSelection, type TileDefinition } from '../core/map-layers.js';
+import type { EventCommand, MapData, MapEvent, ProjectBundle, TilesetData } from '../core/types.js';
 import type { ImportReport, RecentProject } from '../global.js';
 import { MZIcons } from './MZIcons.js';
+import { DatabaseView, DATABASE_COLLECTIONS, type DatabaseCollection } from './DatabaseView.js';
+import { ResourceManagerModal } from './ResourceManagerModal.js';
+import { getCachedImage, preloadImages } from './imageCache.js';
 
-type Collection = 'actors' | 'enemies' | 'equipment' | 'skills' | 'states' | 'troops' | 'items' | 'classes' | 'quests' | 'shops';
-type EditorMode = 'map' | 'event' | 'database' | 'search';
+type Collection = DatabaseCollection;
+type EditorMode = 'map' | 'event' | 'search';
 type MapTool = 'pencil' | 'rectangle' | 'circle' | 'eraser' | 'fill' | 'collision' | 'shadow' | 'event';
 
-const collections: Collection[] = ['actors', 'enemies', 'equipment', 'skills', 'states', 'troops', 'items', 'classes', 'quests', 'shops'];
+const collections: Collection[] = ['actors', 'classes', 'skills', 'items', 'equipment', 'enemies', 'troops', 'states', 'quests', 'shops', 'system'];
 const clone = <T,>(value: T): T => structuredClone(value);
 const eventJson = (event?: MapEvent) => JSON.stringify(event ?? {}, null, 2);
 const collectionLabel = (name: Collection) => name.charAt(0).toUpperCase() + name.slice(1);
@@ -90,140 +93,196 @@ function CommandFields({command,bundle,onChange}:{command:EventCommand;bundle:Pr
   return <label>Music mood<select value={command.mood} onChange={event=>onChange({...command,mood:event.target.value as typeof command.mood})}><option value="calm">Calm</option><option value="danger">Danger</option><option value="boss">Boss</option><option value="silence">Silence</option></select></label>;
 }
 
-function RecordForm({ collection, record, bundle, onChange }: { collection: Collection; record: Record<string, unknown>; bundle: ProjectBundle; onChange: (key: string, value: unknown) => void }) {
-  const field = (label: string, key: string, input: React.ReactNode) => <label className="mv-form-field"><span>{label}</span>{input}</label>;
-  const numberInput = (key: string, value: unknown, min?: number) => <input type="number" min={min ?? undefined} value={value == null ? '' : String(value)} onChange={event => onChange(key, Number(event.target.value))} />;
-  const textInput = (key: string, value: unknown) => <input value={value == null ? '' : String(value)} onChange={event => onChange(key, event.target.value)} />;
-  const selectInput = (key: string, value: unknown, options: Array<{ value: string; label: string }>) => <select value={String(value ?? '')} onChange={event => onChange(key, event.target.value)}>{options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}</select>;
-  const checkbox = (key: string, value: unknown) => <input type="checkbox" checked={Boolean(value)} onChange={event => onChange(key, event.target.checked)} />;
+interface MapPaletteCanvasProps {
+  paletteGroup: 'A' | 'B' | 'C' | 'D' | 'E' | 'R';
+  paletteTiles: TileDefinition[];
+  selectedTile: number;
+  onSelectTile: (tileId: number) => void;
+  activeSheetUrl?: string;
+  assetUrls: Record<string, string>;
+}
 
-  if (collection === 'actors') {
-    const stats = (record.stats as Record<string, number> ?? {}) as Record<string, number>;
-    const base = (record.base as Record<string, number> ?? {}) as Record<string, number>;
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      <div className="mv-form-section"><h4>Base Stats</h4>
-        {['str','int','dex','luk','agi','vit'].map(k => field(k.toUpperCase(), `stats.${k}`, numberInput(`stats.${k}`, stats[k], 0)))}
-      </div>
-      <div className="mv-form-section"><h4>Combat Base</h4>
-        {['hp','mp','atk','def','mat','mdf','agi'].map(k => field(k.toUpperCase(), `base.${k}`, numberInput(`base.${k}`, base[k], 0)))}
-      </div>
-      {field('Weapon Type', 'weaponType', selectInput('weaponType', record.weaponType, [{value:'melee',label:'Melee'},{value:'finesse',label:'Finesse'},{value:'ranged',label:'Ranged'}]))}
-      {field('Class ID', 'classId', textInput('classId', record.classId))}
-      {field('Class Tier', 'classTier', selectInput('classTier', record.classTier, [{value:'1',label:'1'},{value:'2',label:'2'},{value:'3',label:'3'},{value:'4',label:'4'},{value:'5',label:'5'}]))}
-      {field('Skill IDs', 'skillIds', textInput('skillIds', Array.isArray(record.skillIds) ? record.skillIds.join(',') : ''))}
-      <small className="mv-form-hint">Skill IDs dipisahkan koma.</small>
-    </div>;
-  }
+function MapPaletteCanvas({
+  paletteGroup,
+  paletteTiles,
+  selectedTile,
+  onSelectTile,
+  activeSheetUrl,
+  assetUrls
+}: MapPaletteCanvasProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const [renderTick, setRenderTick] = useState(0);
 
-  if (collection === 'classes') {
-    const growth = (record.growth as Record<string, number> ?? {}) as Record<string, number>;
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Tier', 'tier', selectInput('tier', record.tier, [{value:'1',label:'1'},{value:'2',label:'2'},{value:'3',label:'3'},{value:'4',label:'4'},{value:'5',label:'5'}]))}
-      <div className="mv-form-section"><h4>Growth (Base Stats)</h4>
-        {['str','int','dex','luk','agi','vit'].map(k => field(k.toUpperCase(), `growth.${k}`, numberInput(`growth.${k}`, growth[k], 0)))}
-      </div>
-    </div>;
-  }
+  const rowCount = Math.max(8, Math.ceil(paletteTiles.length / 8));
+  const canvasWidth = 256;
+  const canvasHeight = rowCount * 32;
 
-  if (collection === 'skills') {
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Kind', 'kind', selectInput('kind', record.kind, [{value:'physical',label:'Physical'},{value:'magical',label:'Magical'},{value:'heal',label:'Heal'},{value:'revive',label:'Revive'}]))}
-      {field('Power', 'power', numberInput('power', record.power, 0))}
-      {field('MP Cost', 'mpCost', numberInput('mpCost', record.mpCost, 0))}
-      {field('SP Cost', 'spCost', numberInput('spCost', record.spCost, 0))}
-      {field('Speed', 'speed', numberInput('speed', record.speed, 0))}
-      {field('Target', 'target', selectInput('target', record.target, [{value:'enemy',label:'Enemy'},{value:'ally',label:'Ally'}]))}
-      {field('Element', 'element', textInput('element', record.element))}
-      {field('State ID', 'stateId', textInput('stateId', record.stateId))}
-      {field('State Chance', 'stateChance', numberInput('stateChance', record.stateChance, 0))}
-    </div>;
-  }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  if (collection === 'items') {
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Kind', 'kind', selectInput('kind', record.kind, [{value:'key',label:'Key'},{value:'heal',label:'Heal'},{value:'revive',label:'Revive'},{value:'stat-reset',label:'Stat Reset'}]))}
-      {field('Heal HP', 'healHp', numberInput('healHp', record.healHp, 0))}
-      {field('Revive HP Ratio', 'reviveHpRatio', numberInput('reviveHpRatio', record.reviveHpRatio, 0))}
-    </div>;
-  }
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-  if (collection === 'equipment') {
-    const stats = (record.stats as Record<string, number> ?? {}) as Record<string, number>;
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Slot', 'slot', selectInput('slot', record.slot, [{value:'weapon',label:'Weapon'},{value:'head',label:'Head'},{value:'body',label:'Body'},{value:'accessory',label:'Accessory'}]))}
-      {field('Weapon Type', 'weaponType', selectInput('weaponType', record.weaponType, [{value:'melee',label:'Melee'},{value:'finesse',label:'Finesse'},{value:'ranged',label:'Ranged'}]))}
-      <div className="mv-form-section"><h4>Stat Bonuses</h4>
-        {['str','int','dex','luk','agi','vit'].map(k => field(k.toUpperCase(), `stats.${k}`, numberInput(`stats.${k}`, stats[k], 0)))}
-      </div>
-    </div>;
-  }
+    // 1. Background
+    ctx.fillStyle = '#8b95a2';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  if (collection === 'enemies') {
-    const stats = (record.stats as Record<string, number> ?? {}) as Record<string, number>;
-    const base = (record.base as Record<string, number> ?? {}) as Record<string, number>;
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      <div className="mv-form-section"><h4>Base Stats</h4>
-        {['str','int','dex','luk','agi','vit'].map(k => field(k.toUpperCase(), `stats.${k}`, numberInput(`stats.${k}`, stats[k], 0)))}
-      </div>
-      <div className="mv-form-section"><h4>Combat Base</h4>
-        {['hp','mp','atk','def','mat','mdf','agi'].map(k => field(k.toUpperCase(), `base.${k}`, numberInput(`base.${k}`, base[k], 0)))}
-      </div>
-      {field('AI', 'ai', selectInput('ai', record.ai, [{value:'aggressive',label:'Aggressive'},{value:'caster',label:'Caster'},{value:'guardian',label:'Guardian'}]))}
-      <small className="mv-form-hint">Reward dan boss phases dapat diedit melalui JSON.</small>
-    </div>;
-  }
+    // 2. Draw tiles
+    if (paletteGroup === 'B' || paletteGroup === 'C' || paletteGroup === 'D' || paletteGroup === 'E') {
+      if (activeSheetUrl) {
+        const img = getCachedImage(activeSheetUrl, () => setRenderTick(t => t + 1));
+        if (img && img.complete && img.naturalWidth > 0) {
+          // Upper 16 rows (left 8 cols of 768x768 sheet)
+          ctx.drawImage(img, 0, 0, 384, 768, 0, 0, 256, 512);
+          // Lower 16 rows (right 8 cols of 768x768 sheet)
+          ctx.drawImage(img, 384, 0, 384, 768, 0, 512, 256, 512);
+        }
+      }
+      if (paletteGroup === 'B') {
+        // Tile 0 clear / eraser
+        ctx.fillStyle = '#e2e8f0';
+        ctx.fillRect(0, 0, 32, 32);
+        ctx.fillStyle = '#64748b';
+        ctx.font = 'bold 15px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('⌫', 16, 16);
+      }
+    } else if (paletteGroup === 'R') {
+      paletteTiles.forEach((tile, idx) => {
+        const col = idx % 8;
+        const row = Math.floor(idx / 8);
+        const dx = col * 32;
+        const dy = row * 32;
+        ctx.fillStyle = `#${tile.color.toString(16).padStart(6, '0')}`;
+        ctx.fillRect(dx, dy, 32, 32);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tile.glyph || String(tile.id), dx + 16, dy + 16);
+      });
+    } else {
+      paletteTiles.forEach((tile, idx) => {
+        const col = idx % 8;
+        const row = Math.floor(idx / 8);
+        const dx = col * 32;
+        const dy = row * 32;
+        const imgUrl = tile.tileset ? assetUrls[tile.tileset] : null;
+        if (imgUrl) {
+          const img = getCachedImage(imgUrl, () => setRenderTick(t => t + 1));
+          if (img && img.complete && img.naturalWidth > 0) {
+            const pSrcX = tile.paletteSrcX ?? tile.srcX ?? 0;
+            const pSrcY = tile.paletteSrcY ?? tile.srcY ?? 0;
+            ctx.drawImage(img, pSrcX, pSrcY, 48, 48, dx, dy, 32, 32);
+          } else {
+            ctx.fillStyle = `#${tile.color.toString(16).padStart(6, '0')}`;
+            ctx.fillRect(dx, dy, 32, 32);
+          }
+        } else {
+          ctx.fillStyle = `#${tile.color.toString(16).padStart(6, '0')}`;
+          ctx.fillRect(dx, dy, 32, 32);
+          if (tile.glyph) {
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(tile.glyph, dx + 16, dy + 16);
+          }
+        }
+      });
+    }
 
-  if (collection === 'states') {
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Duration (turns)', 'duration', numberInput('duration', record.duration, 1))}
-      {field('PDR', 'pdr', numberInput('pdr', record.pdr, 0))}
-      {field('MDR', 'mdr', numberInput('mdr', record.mdr, 0))}
-      {field('Damage Per Turn', 'damagePerTurn', numberInput('damagePerTurn', record.damagePerTurn, 0))}
-      {field('Prevents Action', 'preventsAction', checkbox('preventsAction', record.preventsAction))}
-    </div>;
-  }
+    // 3. Grid lines
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let c = 0; c <= 8; c++) {
+      ctx.moveTo(c * 32 + 0.5, 0);
+      ctx.lineTo(c * 32 + 0.5, canvasHeight);
+    }
+    for (let r = 0; r <= rowCount; r++) {
+      ctx.moveTo(0, r * 32 + 0.5);
+      ctx.lineTo(canvasWidth, r * 32 + 0.5);
+    }
+    ctx.stroke();
 
-  if (collection === 'troops') {
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Enemy IDs', 'enemyIds', textInput('enemyIds', Array.isArray(record.enemyIds) ? record.enemyIds.join(',') : ''))}
-      <small className="mv-form-hint">Enemy IDs dipisahkan koma.</small>
-    </div>;
-  }
+    // 4. Hover tile outline
+    if (hoverIdx !== null && hoverIdx >= 0 && hoverIdx < paletteTiles.length) {
+      const hCol = hoverIdx % 8;
+      const hRow = Math.floor(hoverIdx / 8);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(hCol * 32 + 0.5, hRow * 32 + 0.5, 31, 31);
+    }
 
-  if (collection === 'quests') {
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      {field('Description', 'description', textInput('description', record.description))}
-      <small className="mv-form-hint">Objectives dan rewards dapat diedit melalui JSON.</small>
-    </div>;
-  }
+    // 5. Selected tile outline
+    const selIdx = paletteTiles.findIndex(t => t.id === selectedTile);
+    if (selIdx !== -1) {
+      const sCol = selIdx % 8;
+      const sRow = Math.floor(selIdx / 8);
+      ctx.strokeStyle = '#00d2ff';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sCol * 32 + 1, sRow * 32 + 1, 30, 30);
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(sCol * 32 + 3, sRow * 32 + 3, 26, 26);
+    }
+  }, [paletteGroup, paletteTiles, selectedTile, activeSheetUrl, assetUrls, hoverIdx, renderTick, rowCount, canvasHeight]);
 
-  if (collection === 'shops') {
-    return <div className="mv-form-grid">
-      {field('ID', 'id', textInput('id', record.id))}
-      {field('Name', 'name', textInput('name', record.name))}
-      <small className="mv-form-hint">Item daftar dapat diedit melalui JSON.</small>
-    </div>;
-  }
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const col = Math.floor(x / 32);
+    const row = Math.floor(y / 32);
+    if (col >= 0 && col < 8 && row >= 0 && row < rowCount) {
+      const idx = row * 8 + col;
+      if (idx < paletteTiles.length) {
+        if (hoverIdx !== idx) setHoverIdx(idx);
+        return;
+      }
+    }
+    if (hoverIdx !== null) setHoverIdx(null);
+  };
 
-  return <div className="mv-form-grid">{field('ID', 'id', textInput('id', record.id))}{field('Name', 'name', textInput('name', record.name))}</div>;
+  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const col = Math.floor(x / 32);
+    const row = Math.floor(y / 32);
+    if (col >= 0 && col < 8 && row >= 0 && row < rowCount) {
+      const idx = row * 8 + col;
+      const tile = paletteTiles[idx];
+      if (tile) {
+        onSelectTile(tile.id);
+      }
+    }
+  };
+
+  const hoverTile = hoverIdx !== null ? paletteTiles[hoverIdx] : null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={canvasWidth}
+      height={canvasHeight}
+      className="mv-palette-canvas"
+      style={{ display: 'block', margin: '0 auto', imageRendering: 'pixelated', cursor: 'pointer' }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setHoverIdx(null)}
+      onClick={handleClick}
+      title={hoverTile ? `${hoverTile.name} · Auto Layer ${hoverTile.defaultLayer + 1}` : undefined}
+    />
+  );
 }
 
 export function App() {
@@ -240,7 +299,7 @@ export function App() {
   const [selectedTile, setSelectedTile] = useState(1);
   const [visibleLayers, setVisibleLayers] = useState([true, true, true, true]);
   const [lockedLayers, setLockedLayers] = useState([false, false, false, false]);
-  const [paletteGroup, setPaletteGroup] = useState<'A'|'B'|'C'|'D'>('A');
+  const [paletteGroup, setPaletteGroup] = useState<'A'|'B'|'C'|'D'|'E'|'R'>('A');
   const [rectangleStart, setRectangleStart] = useState<{x:number;y:number}|null>(null);
   const [eventView, setEventView] = useState<'visual'|'json'>('visual');
   const [eventPage, setEventPage] = useState(0);
@@ -261,7 +320,7 @@ export function App() {
   const [recentProjects, setRecentProjects] = useState<RecentProject[]>([]);
   const [modal, setModal] = useState<
     'none' | 'newProject' | 'projectSettings' | 'unsavedConfirm' | 'eventEditor' | 'mapProperties' |
-    'shiftMap' | 'generateDungeon' | 'soundTest' | 'quickTransfer' | 'quickDoor' | 'quickChest' | 'quickInn' | 'toolPlaceholder'
+    'shiftMap' | 'generateDungeon' | 'soundTest' | 'resourceManager' | 'database' | 'quickTransfer' | 'quickDoor' | 'quickChest' | 'quickInn' | 'toolPlaceholder'
   >('none');
   const [selectedCell, setSelectedCell] = useState<{ x: number; y: number } | null>(null);
   const [mapContextMenu, setMapContextMenu] = useState<{ x: number; y: number; mapId: string } | null>(null);
@@ -269,6 +328,73 @@ export function App() {
   const [copiedMap, setCopiedMap] = useState<MapData | null>(null);
   const [placeholderTitle, setPlaceholderTitle] = useState('');
   const [placeholderDesc, setPlaceholderDesc] = useState('');
+  const [assetUrls, setAssetUrls] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!api?.readAssetData || !bundle) return;
+    const pathsToLoad = [
+      'assets/tilesets/World_A1.png',
+      'assets/tilesets/World_A2.png',
+      'assets/tilesets/World_B.png',
+      'assets/tilesets/World_C.png',
+      'assets/tilesets/Outside_A1.png',
+      'assets/tilesets/Outside_A2.png',
+      'assets/tilesets/Outside_A3.png',
+      'assets/tilesets/Outside_A4.png',
+      'assets/tilesets/Outside_A5.png',
+      'assets/tilesets/Outside_B.png',
+      'assets/tilesets/Outside_C.png',
+      'assets/tilesets/Inside_A1.png',
+      'assets/tilesets/Inside_A2.png',
+      'assets/tilesets/Inside_B.png',
+      'assets/tilesets/Dungeon_A1.png',
+      'assets/tilesets/Dungeon_A2.png',
+      'assets/tilesets/Dungeon_B.png',
+      'assets/characters/Actor1.png',
+      'assets/characters/Actor2.png',
+      'assets/characters/Actor3.png',
+      'assets/characters/Door1.png',
+      'assets/characters/Chest.png',
+      'assets/characters/Vehicle.png',
+      'assets/system/IconSet.png'
+    ];
+
+    const allTilesets = [
+      ...(Array.isArray(bundle.game.tilesets) ? bundle.game.tilesets : []),
+      ...DEFAULT_TILESETS
+    ];
+    for (const ts of allTilesets) {
+      if (Array.isArray(ts.tilesetNames)) {
+        for (const name of ts.tilesetNames) {
+          if (name) {
+            const p = resolveSheetPath(name);
+            if (p && !pathsToLoad.includes(p)) pathsToLoad.push(p);
+          }
+        }
+      }
+    }
+
+    const manifestAssets = bundle.assets?.assets || [];
+    for (const asset of manifestAssets) {
+      if (asset.category === 'tilesets' || asset.path.includes('/tilesets/')) {
+        if (!pathsToLoad.includes(asset.path)) pathsToLoad.push(asset.path);
+      }
+    }
+
+    for (const p of pathsToLoad) {
+      if (assetUrls[p]) continue;
+      void api.readAssetData(p).then(res => {
+        if (res?.dataUrl) {
+          setAssetUrls(prev => prev[p] ? prev : ({ ...prev, [p]: res.dataUrl }));
+          getCachedImage(res.dataUrl);
+        }
+      });
+    }
+  }, [bundle, api]);
+
+  useEffect(() => {
+    preloadImages(Object.values(assetUrls));
+  }, [assetUrls]);
 
   // Map Shift & Dungeon Form
   const [shiftX, setShiftX] = useState(0);
@@ -416,6 +542,7 @@ export function App() {
   const [mapEditHeight, setMapEditHeight] = useState(13);
   const [mapEditScroll, setMapEditScroll] = useState('none');
   const [mapEditBgm, setMapEditBgm] = useState('calm');
+  const [mapEditTilesetId, setMapEditTilesetId] = useState('');
 
   // New Project Form
   const [newTitle, setNewTitle] = useState('My RPG Game');
@@ -437,7 +564,9 @@ export function App() {
   const [defaultLocation, setDefaultLocation] = useState<string>('');
   const [projectSearchQuery, setProjectSearchQuery] = useState<string>('');
   const [pendingActionLabel, setPendingActionLabel] = useState('');
-  const [hoverCoord, setHoverCoord] = useState<{ x: number; y: number } | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [canvasTick, setCanvasTick] = useState(0);
+  const imageCacheRef = useRef<Record<string, HTMLImageElement>>({});
 
   const refreshRecent = () => {
     if (api?.getRecentProjects) {
@@ -507,6 +636,7 @@ export function App() {
     setMapEditHeight(target.height);
     setMapEditScroll(String(target.scrollType || 'none'));
     setMapEditBgm(String(target.bgm || 'calm'));
+    setMapEditTilesetId(target.tilesetId ? String(target.tilesetId) : '');
     setModal('mapProperties');
   };
 
@@ -544,6 +674,7 @@ export function App() {
       height: newHeight,
       scrollType: mapEditScroll,
       bgm: mapEditBgm,
+      tilesetId: mapEditTilesetId || undefined,
       layers: nextLayers,
       collision: nextCollision
     };
@@ -964,18 +1095,60 @@ export function App() {
     return new Date(timestamp).toLocaleDateString();
   };
 
-  const diagnostics = useMemo(() => bundle ? analyzeBundle(bundle) : [], [bundle]);
-  const references = useMemo(() => bundle ? findReferences(bundle, query) : [], [bundle, query]);
+  const diagnostics = useMemo(
+    () => (bundle && (showInspector || !dirty) ? analyzeBundle(bundle) : []),
+    [bundle, showInspector, dirty]
+  );
+  const references = useMemo(
+    () => (bundle && mode === 'search' && query.trim() ? findReferences(bundle, query) : []),
+    [bundle, mode, query]
+  );
   const map = bundle?.maps[selectedMap];
+
+  const currentTileset = useMemo<TilesetData>(() => {
+    const tilesets: TilesetData[] = Array.isArray(bundle?.game.tilesets) && bundle.game.tilesets.length > 0
+      ? bundle.game.tilesets
+      : DEFAULT_TILESETS;
+
+    if (map?.tilesetId) {
+      const found = tilesets.find(ts => ts.id === map.tilesetId || String(ts.id) === String(map.tilesetId));
+      if (found) return found;
+    }
+    const imgStr = typeof map?.tilesetImage === 'string' ? map.tilesetImage : '';
+    if (imgStr) {
+      if (imgStr.includes('World')) {
+        const overworld = tilesets.find(ts => ts.id === 'tileset.overworld' || ts.mode === 0);
+        if (overworld) return overworld;
+      } else if (imgStr.includes('Inside')) {
+        const inside = tilesets.find(ts => ts.id === 'tileset.inside');
+        if (inside) return inside;
+      } else if (imgStr.includes('Dungeon')) {
+        const dungeon = tilesets.find(ts => ts.id === 'tileset.dungeon');
+        if (dungeon) return dungeon;
+      }
+    }
+    const isWorld = map?.name?.toLowerCase().includes('world') || map?.id?.includes('field');
+    return tilesets.find(ts => isWorld ? ts.mode === 0 : ts.id === 'tileset.outside') || tilesets[0] || DEFAULT_TILESETS[0];
+  }, [bundle?.game.tilesets, map?.tilesetId, map?.tilesetImage, map?.name, map?.id]);
+
+  const paletteTiles = useMemo<TileDefinition[]>(() => {
+    return getPaletteTiles(paletteGroup, currentTileset);
+  }, [paletteGroup, currentTileset]);
+
   const currentEvent = map?.events.find(event => event.id === selectedEvent);
   const errorCount = diagnostics.filter(issue => issue.severity === 'error').length;
   const warningCount = diagnostics.filter(issue => issue.severity === 'warning').length;
   const canPlay = Boolean(bundle?.root && !dirty && !busy && !errorCount);
   const parsedEvent=useMemo(()=>{try{return JSON.parse(eventDraft) as MapEvent;}catch{return undefined;}},[eventDraft]);
 
+  const bundleRef = useRef<ProjectBundle | undefined>(bundle);
+  bundleRef.current = bundle;
+
   const commit = (next: ProjectBundle, status = 'Perubahan diterapkan.') => {
-    if (bundle) setPast(items => [...items.slice(-49), clone(bundle)]);
+    const current = bundleRef.current || bundle;
+    if (current) setPast(items => [...items.slice(-49), clone(current)]);
     setFuture([]);
+    bundleRef.current = next;
     setBundle(next);
     setDirty(true);
     setMessage(status);
@@ -1020,66 +1193,261 @@ export function App() {
     }
   };
 
+  const hasAutoOpenedRef = useRef(false);
+  useEffect(() => {
+    if (hasAutoOpenedRef.current || bundle) return;
+    hasAutoOpenedRef.current = true;
+    if (api?.getRecentProjects && api?.openProject) {
+      api.getRecentProjects().then(items => {
+        if (Array.isArray(items) && items.length > 0 && items[0]?.path) {
+          void api.openProject(items[0].path).then(opened => {
+            if (opened) accept(opened, `Proyek "${opened.project.title}" dibuka.`);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+    }
+  }, [api]);
+
+  useEffect(() => {
+    if (bundle) {
+      document.title = `${bundle.project.title} - RPG Maker MZ`;
+    } else {
+      document.title = 'NUSV Engine Next';
+    }
+  }, [bundle]);
+
   const undo = () => {
-    if (!bundle || !past.length) return;
-    const previous = past.at(-1)!;
-    setPast(past.slice(0, -1));
-    setFuture(items => [clone(bundle), ...items].slice(0, 50));
-    setBundle(previous);
-    setDirty(true);
-    setMessage('Undo diterapkan.');
+    setPast(items => {
+      if (!items.length) return items;
+      const previous = items[items.length - 1];
+      const current = bundleRef.current || bundle;
+      if (current) {
+        setFuture(fItems => [clone(current), ...fItems].slice(0, 50));
+      }
+      bundleRef.current = previous;
+      setBundle(previous);
+      setDirty(true);
+      setMessage('Undo diterapkan.');
+      return items.slice(0, -1);
+    });
   };
 
   const redo = () => {
-    if (!bundle || !future.length) return;
-    const next = future[0];
-    setFuture(future.slice(1));
-    setPast(items => [...items, clone(bundle)].slice(-50));
-    setBundle(next);
-    setDirty(true);
-    setMessage('Redo diterapkan.');
+    setFuture(items => {
+      if (!items.length) return items;
+      const next = items[0];
+      const current = bundleRef.current || bundle;
+      if (current) {
+        setPast(pItems => [...pItems, clone(current)].slice(-50));
+      }
+      bundleRef.current = next;
+      setBundle(next);
+      setDirty(true);
+      setMessage('Redo diterapkan.');
+      return items.slice(1);
+    });
   };
+
+  const isMouseDownRef = useRef(false);
+  const strokeInitialBundleRef = useRef<ProjectBundle | null>(null);
+  const activeStrokeBundleRef = useRef<ProjectBundle | null>(null);
+  const strokeModifiedRef = useRef(false);
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (isMouseDownRef.current) {
+        isMouseDownRef.current = false;
+        if (strokeModifiedRef.current && strokeInitialBundleRef.current) {
+          const initial = strokeInitialBundleRef.current;
+          setPast(items => [...items.slice(-49), initial]);
+          setFuture([]);
+          setDirty(true);
+          setMessage('Tile berhasil dipasang.');
+        }
+        strokeInitialBundleRef.current = null;
+        activeStrokeBundleRef.current = null;
+        strokeModifiedRef.current = false;
+      }
+    };
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !map) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.imageSmoothingEnabled = false;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (const [key, url] of Object.entries(assetUrls)) {
+      if (!imageCacheRef.current[url]) {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => setCanvasTick(t => t + 1);
+        imageCacheRef.current[url] = img;
+      }
+    }
+
+    map.layers.forEach((layer, layerIndex) => {
+      if (!visibleLayers[layerIndex]) return;
+      const isDimmed = activeLayer !== 'auto' && activeLayer !== layerIndex;
+      ctx.globalAlpha = isDimmed ? 0.25 : 1.0;
+
+      for (let index = 0; index < layer.data.length; index++) {
+        const tileId = layer.data[index];
+        if (tileId === 0) continue;
+        const tile = tileDefinition(tileId, currentTileset);
+        if (!tile || tile.id === 0) continue;
+
+        const x = (index % map.width) * 48;
+        const y = Math.floor(index / map.width) * 48;
+        const imgUrl = tile.tileset ? assetUrls[tile.tileset] : null;
+        if (imgUrl && !imageCacheRef.current[imgUrl]) {
+          const newImg = new Image();
+          newImg.src = imgUrl;
+          newImg.onload = () => setCanvasTick(t => t + 1);
+          imageCacheRef.current[imgUrl] = newImg;
+        }
+        const img = imgUrl ? imageCacheRef.current[imgUrl] : null;
+
+        if (layerIndex === 0 && tile.defaultLayer === 1) {
+          ctx.fillStyle = '#558844';
+          ctx.fillRect(x, y, 48, 48);
+        }
+
+        if (img && img.complete && img.naturalWidth > 0) {
+          if (tile.autotile && tile.autotileBaseX !== undefined && tile.autotileBaseY !== undefined) {
+            const quads = getAutotileQuadrants(tile, layer.data, index, map.width, map.height);
+            for (let q = 0; q < 4; q++) {
+              const quad = quads[q];
+              ctx.drawImage(
+                img,
+                quad.srcX, quad.srcY, 24, 24,
+                x + quad.left, y + quad.top, 24, 24
+              );
+            }
+          } else if (tile.srcX !== undefined && tile.srcY !== undefined) {
+            ctx.drawImage(
+              img,
+              tile.srcX, tile.srcY, 48, 48,
+              x, y, 48, 48
+            );
+          }
+        } else {
+          ctx.fillStyle = `#${tile.color.toString(16).padStart(6, '0')}`;
+          ctx.fillRect(x, y, 48, 48);
+          if (tile.glyph) {
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(tile.glyph, x + 24, y + 24);
+          }
+        }
+      }
+    });
+    ctx.globalAlpha = 1.0;
+  }, [map?.layers, visibleLayers, activeLayer, canvasTick, assetUrls, map?.width, map?.height]);
 
   const toggleTile = (x: number, y: number) => {
-    if (!bundle || !map) return;
-    const collision = [...map.collision];
-    collision[y * map.width + x] = collision[y * map.width + x] === 1 ? 0 : 1;
-    commit({ ...bundle, maps: { ...bundle.maps, [map.id]: { ...map, collision } } }, `Collision (${x}, ${y}) diubah.`);
+    const targetBundle = bundleRef.current || bundle;
+    if (!targetBundle) return;
+    const currentMap = targetBundle.maps[selectedMap];
+    if (!currentMap) return;
+    const collision = [...currentMap.collision];
+    collision[y * currentMap.width + x] = collision[y * currentMap.width + x] === 1 ? 0 : 1;
+    commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, collision } } }, `Collision (${x}, ${y}) diubah.`);
   };
 
-  const drawTile = (x:number,y:number) => {
-    if(!bundle||!map)return;
-    const tileId=mapTool==='eraser'?0:selectedTile;
-    const layerIndex=layerForTile(tileId,activeLayer);
-    if(lockedLayers[layerIndex])return setMessage(`Layer ${layerIndex+1} terkunci.`);
-    if(mapTool==='rectangle'){
-      if(!rectangleStart){setRectangleStart({x,y});setMessage(`Awal rectangle: (${x}, ${y}). Pilih sudut akhir.`);return;}
-      const layers=paintLayerRectangle(map.layers,layerIndex,rectangleStart.x,rectangleStart.y,x,y,tileId,map.width);
+  const applyPaint = (x: number, y: number, isBatch = false) => {
+    const targetBundle = isBatch ? (activeStrokeBundleRef.current ?? bundleRef.current ?? bundle) : (bundleRef.current ?? bundle);
+    if (!targetBundle) return;
+    const currentMap = targetBundle.maps[selectedMap];
+    if (!currentMap) return;
+
+    const cellIndex = y * currentMap.width + x;
+    const isEraser = mapTool === 'eraser';
+    const tileId = isEraser ? 0 : selectedTile;
+
+    let layerIndex: number;
+    if (isEraser && activeLayer === 'auto') {
+      layerIndex = [3, 2, 1, 0].find(l => visibleLayers[l] && currentMap.layers[l].data[cellIndex] !== 0) ?? 0;
+    } else {
+      layerIndex = layerForTile(tileId, activeLayer, currentTileset);
+    }
+
+    if (lockedLayers[layerIndex]) {
+      if (!isBatch) setMessage(`Layer ${layerIndex + 1} terkunci.`);
+      return;
+    }
+
+    if (mapTool === 'shadow') {
+      const shadowLayer = 3;
+      const nextTile = currentMap.layers[shadowLayer].data[cellIndex] === 10 ? 0 : 10;
+      const layers = paintLayerCell(currentMap.layers, shadowLayer, cellIndex, nextTile);
+      const next = { ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } };
+      if (isBatch) {
+        activeStrokeBundleRef.current = next;
+        bundleRef.current = next;
+        strokeModifiedRef.current = true;
+        setBundle(next);
+      } else {
+        commit(next, `Shadow Pen diterapkan pada (${x}, ${y}).`);
+      }
+      return;
+    }
+
+    if (mapTool === 'fill') {
+      const layers = floodFillLayer(currentMap.layers, layerIndex, cellIndex, tileId, currentMap.width, currentMap.height);
+      if (layers === currentMap.layers) return;
+      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Fill diterapkan pada Layer ${layerIndex + 1}.`);
+      return;
+    }
+
+    if (mapTool === 'rectangle') {
+      if (!rectangleStart) {
+        setRectangleStart({ x, y });
+        setMessage(`Awal rectangle: (${x}, ${y}). Pilih sudut akhir.`);
+        return;
+      }
+      const layers = paintLayerRectangle(currentMap.layers, layerIndex, rectangleStart.x, rectangleStart.y, x, y, tileId, currentMap.width);
       setRectangleStart(null);
-      commit({...bundle,maps:{...bundle.maps,[map.id]:{...map,layers}}},`Rectangle diterapkan pada Layer ${layerIndex+1}.`);
+      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Rectangle diterapkan pada Layer ${layerIndex + 1}.`);
       return;
     }
-    if(mapTool==='circle'){
-      if(!rectangleStart){setRectangleStart({x,y});setMessage(`Awal Circle: (${x}, ${y}). Pilih sudut akhir.`);return;}
-      const layers=paintLayerCircle(map.layers,layerIndex,rectangleStart.x,rectangleStart.y,x,y,tileId,map.width);
+
+    if (mapTool === 'circle') {
+      if (!rectangleStart) {
+        setRectangleStart({ x, y });
+        setMessage(`Awal Circle: (${x}, ${y}). Pilih sudut akhir.`);
+        return;
+      }
+      const layers = paintLayerCircle(currentMap.layers, layerIndex, rectangleStart.x, rectangleStart.y, x, y, tileId, currentMap.width);
       setRectangleStart(null);
-      commit({...bundle,maps:{...bundle.maps,[map.id]:{...map,layers}}},`Circle diterapkan pada Layer ${layerIndex+1}.`);
+      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Circle diterapkan pada Layer ${layerIndex + 1}.`);
       return;
     }
-    if(mapTool==='shadow'){
-      const shadowLayer=3;
-      const cellIndex=y*map.width+x;
-      const nextTile=map.layers[shadowLayer].data[cellIndex]===10?0:10;
-      const layers=paintLayerCell(map.layers,shadowLayer,cellIndex,nextTile);
-      commit({...bundle,maps:{...bundle.maps,[map.id]:{...map,layers}}},`Shadow Pen diterapkan pada (${x}, ${y}).`);
-      return;
+
+    const currentTile = currentMap.layers[layerIndex].data[cellIndex];
+    if (currentTile === tileId) return;
+
+    const layers = paintLayerCell(currentMap.layers, layerIndex, cellIndex, tileId);
+    const next = { ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } };
+    if (isBatch) {
+      activeStrokeBundleRef.current = next;
+      bundleRef.current = next;
+      strokeModifiedRef.current = true;
+      setBundle(next);
+    } else {
+      commit(next, `Tile diterapkan pada Layer ${layerIndex + 1}.`);
     }
-    const cellIndex=y*map.width+x;
-    const layers=mapTool==='fill'
-      ?floodFillLayer(map.layers,layerIndex,cellIndex,tileId,map.width,map.height)
-      :paintLayerCell(map.layers,layerIndex,cellIndex,tileId);
-    if(layers===map.layers||layers[layerIndex].data[cellIndex]===map.layers[layerIndex].data[cellIndex])return;
-    commit({...bundle,maps:{...bundle.maps,[map.id]:{...map,layers}}},`${mapTool==='fill'?'Fill':'Tile'} diterapkan pada Layer ${layerIndex+1}.`);
+  };
+
+  const drawTile = (x: number, y: number) => {
+    applyPaint(x, y, false);
   };
 
   const createEventAt = (x: number, y: number) => {
@@ -1129,13 +1497,16 @@ export function App() {
     }
   };
 
-  const pickTile = (x:number,y:number) => {
-    if(!map)return;
-    const cell=y*map.width+x;
-    const layerIndex=activeLayer==='auto'?[3,2,1,0].find(index=>visibleLayers[index]&&map.layers[index].data[cell]!==0)??0:activeLayer;
-    const tileId=map.layers[layerIndex].data[cell];
-    setSelectedTile(tileId);setPaletteGroup(TILE_CATALOG.find(tile=>tile.id===tileId)?.group??'A');setMapTool(tileId===0?'eraser':'pencil');
-    setMessage(`${TILE_CATALOG.find(tile=>tile.id===tileId)?.name??`Tile ${tileId}`} diambil dari Layer ${layerIndex+1}.`);
+  const pickTile = (x: number, y: number) => {
+    if (!map) return;
+    const cell = y * map.width + x;
+    const layerIndex = activeLayer === 'auto' ? [3, 2, 1, 0].find(index => visibleLayers[index] && map.layers[index].data[cell] !== 0) ?? 0 : activeLayer;
+    const tileId = map.layers[layerIndex].data[cell];
+    const def = tileDefinition(tileId, currentTileset);
+    setSelectedTile(tileId);
+    setPaletteGroup(def.group === 'D' && tileId <= 116 ? 'R' : (def.group ?? 'A') as any);
+    setMapTool(tileId === 0 ? 'eraser' : 'pencil');
+    setMessage(`${def.name || `Tile ${tileId}`} diambil dari Layer ${layerIndex + 1}.`);
   };
 
   const clearLayer = (layerIndex:number) => {
@@ -1277,7 +1648,7 @@ export function App() {
         commit(result.bundle, 'Subset MV diimpor ke memori. Simpan untuk menetapkan hasil.');
         setReport(result.report);
         selectCollection(collection, result.bundle);
-        setMode('database');
+        setModal('database');
       }
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
@@ -1303,13 +1674,27 @@ export function App() {
         event.preventDefault();
         guardDirty(() => handleOpenProject(), 'Buka Proyek');
       } else if (!editing && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
-        event.preventDefault(); undo();
+        event.preventDefault();
+        if (event.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
       } else if (!editing && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
-        event.preventDefault(); redo();
+        event.preventDefault();
+        redo();
+      } else if (event.key === 'Escape') {
+        if (rectangleStart) {
+          event.preventDefault();
+          setRectangleStart(null);
+          setMessage('Operasi area dibatalkan.');
+        }
       } else if (!editing && event.key === 'F5' && bundle) {
         event.preventDefault(); setMode('map');
       } else if (!editing && event.key === 'F9' && bundle) {
-        event.preventDefault(); setMode('database');
+        event.preventDefault(); setModal('database');
+      } else if (!editing && event.key === 'F10' && bundle) {
+        event.preventDefault(); setModal('resourceManager');
       } else if (!editing && event.key === 'F6' && canPlay) {
         event.preventDefault(); void api!.playtest({ mapId: selectedMap, debug: true });
       } else if (!editing && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 't') {
@@ -1777,6 +2162,20 @@ export function App() {
                   </div>
                 </div>
                 <div className="mv-field-group">
+                  <label>Tileset (Database)</label>
+                  <select
+                    value={mapEditTilesetId}
+                    onChange={e => setMapEditTilesetId(e.target.value)}
+                  >
+                    <option value="">(Bawaan: {currentTileset.name})</option>
+                    {(Array.isArray(bundle.game.tilesets) && bundle.game.tilesets.length > 0 ? bundle.game.tilesets : DEFAULT_TILESETS).map(ts => (
+                      <option key={ts.id} value={ts.id}>
+                        {ts.name} ({ts.mode === 0 ? 'World Type' : 'Area Type'})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mv-field-group">
                   <label>Scroll Type</label>
                   <select
                     value={mapEditScroll}
@@ -1830,6 +2229,55 @@ export function App() {
             </div>
             <div className="mv-modal-footer">
               <button className="primary" onClick={() => setModal('none')}>Tutup</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modal === 'resourceManager' && bundle && (
+        <ResourceManagerModal
+          bundle={bundle}
+          onCommit={commit}
+          onClose={() => setModal('none')}
+        />
+      )}
+
+      {modal === 'database' && bundle && (
+        <div className="mv-modal-backdrop mz-db-backdrop" onClick={() => setModal('none')}>
+          <div className="mv-modal mz-database-modal" onClick={e => e.stopPropagation()}>
+            <div className="mv-modal-header mz-db-modal-header">
+              <div className="mz-db-modal-title">
+                <span style={{ fontSize: '14px' }}>▤</span>
+                <strong>Database</strong>
+              </div>
+              <button className="mv-modal-close" onClick={() => setModal('none')} title="Tutup Database (Esc)">✕</button>
+            </div>
+            <div className="mz-db-modal-body">
+              <DatabaseView
+                bundle={bundle}
+                collection={collection}
+                onSelectCollection={(c) => setCollection(c)}
+                onCommit={commit}
+                onImportMv={() => void importMv()}
+                busy={busy}
+                assetUrls={assetUrls}
+              />
+            </div>
+            {report && (
+              <details className="mv-import-report" open style={{ margin: '8px 16px', maxHeight: '160px', overflowY: 'auto' }}>
+                <summary>Import report — {report.source}</summary>
+                <div>
+                  <section><h3>Converted</h3>{report.converted.map(line => <p key={line}>{line}</p>)}</section>
+                  <section><h3>Warnings & manual work</h3>{[...report.warnings, ...report.unsupported, ...report.errors].map((line, index) => <p key={index}>{line}</p>)}</section>
+                </div>
+              </details>
+            )}
+            <div className="mv-modal-footer mz-db-modal-footer">
+              <div className="mz-db-modal-footer-actions">
+                <button className="mz-btn-dialog primary" onClick={() => setModal('none')}>OK</button>
+                <button className="mz-btn-dialog" onClick={() => setModal('none')}>Cancel</button>
+                <button className="mz-btn-dialog" onClick={() => { setMessage('Perubahan database diterapkan.'); }}>Apply</button>
+              </div>
             </div>
           </div>
         </div>
@@ -2017,6 +2465,55 @@ export function App() {
             </div>
             <div className="mv-modal-footer">
               <button className="primary" onClick={() => setModal('none')}>Tutup</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modal === 'resourceManager' && bundle && (
+        <ResourceManagerModal
+          bundle={bundle}
+          onCommit={commit}
+          onClose={() => setModal('none')}
+        />
+      )}
+
+      {modal === 'database' && bundle && (
+        <div className="mv-modal-backdrop mz-db-backdrop" onClick={() => setModal('none')}>
+          <div className="mv-modal mz-database-modal" onClick={e => e.stopPropagation()}>
+            <div className="mv-modal-header mz-db-modal-header">
+              <div className="mz-db-modal-title">
+                <span style={{ fontSize: '14px' }}>▤</span>
+                <strong>Database</strong>
+              </div>
+              <button className="mv-modal-close" onClick={() => setModal('none')} title="Tutup Database (Esc)">✕</button>
+            </div>
+            <div className="mz-db-modal-body">
+              <DatabaseView
+                bundle={bundle}
+                collection={collection}
+                onSelectCollection={(c) => setCollection(c)}
+                onCommit={commit}
+                onImportMv={() => void importMv()}
+                busy={busy}
+                assetUrls={assetUrls}
+              />
+            </div>
+            {report && (
+              <details className="mv-import-report" open style={{ margin: '8px 16px', maxHeight: '160px', overflowY: 'auto' }}>
+                <summary>Import report — {report.source}</summary>
+                <div>
+                  <section><h3>Converted</h3>{report.converted.map(line => <p key={line}>{line}</p>)}</section>
+                  <section><h3>Warnings & manual work</h3>{[...report.warnings, ...report.unsupported, ...report.errors].map((line, index) => <p key={index}>{line}</p>)}</section>
+                </div>
+              </details>
+            )}
+            <div className="mv-modal-footer mz-db-modal-footer">
+              <div className="mz-db-modal-footer-actions">
+                <button className="mz-btn-dialog primary" onClick={() => setModal('none')}>OK</button>
+                <button className="mz-btn-dialog" onClick={() => setModal('none')}>Cancel</button>
+                <button className="mz-btn-dialog" onClick={() => { setMessage('Perubahan database diterapkan.'); }}>Apply</button>
+              </div>
             </div>
           </div>
         </div>
@@ -2399,15 +2896,17 @@ export function App() {
       <details className="mv-menu"><summary>Mode</summary><div>
         <button onClick={() => setMode('map')}>Map <kbd>F5</kbd></button>
         <button onClick={() => setMode('event')}>Events</button>
-        <button onClick={() => setMode('database')}>Database <kbd>F9</kbd></button>
+        <button onClick={() => setModal('database')}>Database <kbd>F9</kbd></button>
         <button onClick={() => setMode('search')}>Search</button>
       </div></details>
       <details className="mv-menu"><summary>Draw</summary><div>
-        <button disabled={mode !== 'map'} onClick={() => setMapTool('pencil')}>✎ Pencil</button>
+        <button disabled={mode !== 'map'} onClick={() => { setMapTool('pencil'); setRectangleStart(null); }}>✎ Pencil</button>
         <button disabled={mode !== 'map'} onClick={() => { setMapTool('rectangle'); setRectangleStart(null); }}>□ Rectangle</button>
-        <button disabled={mode !== 'map'} onClick={() => setMapTool('eraser')}>◇ Eraser</button>
-        <button disabled={mode !== 'map'} onClick={() => setMapTool('fill')}>▣ Flood Fill</button>
-        <button disabled={mode !== 'map'} onClick={() => setMapTool('collision')}>▨ Collision Mark</button>
+        <button disabled={mode !== 'map'} onClick={() => { setMapTool('circle'); setRectangleStart(null); }}>○ Circle</button>
+        <button disabled={mode !== 'map'} onClick={() => { setMapTool('shadow'); setRectangleStart(null); }}>◐ Shadow Pen</button>
+        <button disabled={mode !== 'map'} onClick={() => { setMapTool('fill'); setRectangleStart(null); }}>▣ Flood Fill</button>
+        <button disabled={mode !== 'map'} onClick={() => { setMapTool('eraser'); setRectangleStart(null); }}>◇ Eraser</button>
+        <button disabled={mode !== 'map'} onClick={() => { setMapTool('collision'); setRectangleStart(null); }}>▨ Collision Mark</button>
       </div></details>
       <details className="mv-menu"><summary>Layer</summary><div>
         {(['auto', 0, 1, 2, 3] as LayerSelection[]).map(layer => (
@@ -2424,7 +2923,9 @@ export function App() {
         ))}
       </div></details>
       <details className="mv-menu"><summary>Tools</summary><div>
-        <button onClick={() => setMode('database')}>Database… <kbd>F9</kbd></button>
+        <button onClick={() => setModal('database')}>Database… <kbd>F9</kbd></button>
+        <button disabled={!bundle} onClick={() => setModal('resourceManager')}>Resource Manager… <kbd>F10</kbd></button>
+        <button disabled={!bundle} onClick={() => setModal('soundTest')}>Sound Test…</button>
         <button onClick={() => setMode('search')}>Reference Search…</button>
         <button onClick={() => setShowInspector(v => !v)}>{showInspector ? '✓ ' : ''}Inspector Panel…</button>
         <button disabled={!bundle || busy} onClick={() => void importMv()}>Import RPG Maker MV Subset…</button>
@@ -2433,6 +2934,9 @@ export function App() {
         <button disabled={!canPlay} onClick={() => void api.playtest({ mapId: selectedMap, debug: true })}>
           Playtest <kbd>F6</kbd>
         </button>
+      </div></details>
+      <details className="mv-menu"><summary>Help</summary><div>
+        <button onClick={() => alert('NUSV Engine Next - RPG Maker MZ Compatible Environment')}>About…</button>
       </div></details>
       <span className="mv-menu-spacer" />
       <span className={`mv-save-state ${dirty ? 'dirty' : ''}`}>{busy ? 'Working…' : dirty ? 'Modified' : bundle ? 'Saved' : 'No project'}</span>
@@ -2455,6 +2959,7 @@ export function App() {
         <ToolButton icon={<MZIcons.Paste />} label="Paste (Ctrl+V)" disabled={!bundle || (mode === 'event' && !clipboard)} onClick={pasteEvent} />
         <ToolButton icon={<MZIcons.Delete />} label="Delete (Del)" disabled={!bundle || (mode === 'event' && !selectedEvent)} onClick={handleDeleteEvent} />
         <ToolButton icon={<MZIcons.Undo />} label="Undo (Ctrl+Z)" disabled={!past.length} onClick={undo} />
+        <ToolButton icon={<MZIcons.Redo />} label="Redo (Ctrl+Y / Ctrl+Shift+Z)" disabled={!future.length} onClick={redo} />
       </div>
 
       <span className="mz-tool-divider" />
@@ -2470,11 +2975,11 @@ export function App() {
         <>
           <span className="mz-tool-divider" />
           <div className="mv-tool-group draw-tools">
-            <ToolButton icon={<MZIcons.Pencil />} label="Pencil" active={mapTool === 'pencil'} onClick={() => setMapTool('pencil')} />
+            <ToolButton icon={<MZIcons.Pencil />} label="Pencil" active={mapTool === 'pencil'} onClick={() => { setMapTool('pencil'); setRectangleStart(null); }} />
             <ToolButton icon={<MZIcons.Rectangle />} label="Rectangle" active={mapTool === 'rectangle'} onClick={() => { setMapTool('rectangle'); setRectangleStart(null); }} />
-            <ToolButton icon={<MZIcons.Circle />} label="Circle" active={mapTool === 'circle'} onClick={() => openToolPlaceholder('Circle Tool', 'Peralatan melukis area peta tile berbentuk lingkaran.')} />
-            <ToolButton icon={<MZIcons.Fill />} label="Flood Fill" active={mapTool === 'fill'} onClick={() => setMapTool('fill')} />
-            <ToolButton icon={<MZIcons.Shadow />} label="Shadow Pen" active={mapTool === 'shadow'} onClick={() => openToolPlaceholder('Shadow Pen', 'Peralatan menggambar bayangan otomatis dinding/tebing.')} />
+            <ToolButton icon={<MZIcons.Circle />} label="Circle" active={mapTool === 'circle'} onClick={() => { setMapTool('circle'); setRectangleStart(null); }} />
+            <ToolButton icon={<MZIcons.Fill />} label="Flood Fill" active={mapTool === 'fill'} onClick={() => { setMapTool('fill'); setRectangleStart(null); }} />
+            <ToolButton icon={<MZIcons.Shadow />} label="Shadow Pen" active={mapTool === 'shadow'} onClick={() => { setMapTool('shadow'); setRectangleStart(null); }} />
           </div>
 
           <span className="mz-tool-divider" />
@@ -2510,11 +3015,11 @@ export function App() {
 
       {/* 6. Tools & Managers Group */}
       <div className="mv-tool-group">
-        <ToolButton icon={<MZIcons.Database />} label="Database (F9)" active={mode === 'database'} disabled={!bundle} onClick={() => setMode('database')} />
+        <ToolButton icon={<MZIcons.Database />} label="Database (F9)" active={modal === 'database'} disabled={!bundle} onClick={() => setModal('database')} />
         <ToolButton icon={<MZIcons.Search />} label="Event Searcher / Reference Search" active={mode === 'search'} disabled={!bundle} onClick={() => setMode('search')} />
         <ToolButton icon={<MZIcons.Sound />} label="Sound Test" disabled={!bundle} onClick={() => setModal('soundTest')} />
         <ToolButton icon={<MZIcons.Chara />} label="Character Generator" disabled={!bundle} onClick={() => openToolPlaceholder('Character Generator', 'Pembuat sprite karakter kustom, face grafis, dan animasi gerak.')} />
-        <ToolButton icon={<MZIcons.Resource />} label="Resource Manager" disabled={!bundle} onClick={() => openToolPlaceholder('Resource Manager', 'Pengelola berkas aset visual, audio, tileset, dan sistem.')} />
+        <ToolButton icon={<MZIcons.Resource />} label="Resource Manager (F10)" active={modal === 'resourceManager'} disabled={!bundle} onClick={() => setModal('resourceManager')} />
         <ToolButton icon={<MZIcons.Plugin />} label="Plugin Manager" disabled={!bundle} onClick={() => openToolPlaceholder('Plugin Manager', 'Pengelola modul ekstensi gameplay dan skrip.')} />
       </div>
 
@@ -2531,32 +3036,39 @@ export function App() {
         {mode === 'map' ? (
           <div className="mz-tile-pane">
             <div className="mz-tile-palette-body">
-              <div className="mv-palette-grid">
-                {TILE_CATALOG.filter(tile => tile.group === paletteGroup && (tile.id !== 0 || paletteGroup === 'A')).map(tile => (
-                  <button
-                    className={selectedTile === tile.id ? 'selected' : ''}
-                    key={tile.id}
-                    title={`${tile.name} · Auto Layer ${tile.defaultLayer + 1}`}
-                    onClick={() => { setSelectedTile(tile.id); setMapTool(tile.id === 0 ? 'eraser' : 'pencil'); }}
-                    style={{ '--tile-color': `#${tile.color.toString(16).padStart(6, '0')}` } as React.CSSProperties}
-                  >
-                    <span>{tile.glyph}</span>
-                    <small>{tile.name}</small>
-                  </button>
-                ))}
-              </div>
+              <MapPaletteCanvas
+                paletteGroup={paletteGroup}
+                paletteTiles={paletteTiles}
+                selectedTile={selectedTile}
+                onSelectTile={(tileId) => {
+                  setSelectedTile(tileId);
+                  setMapTool(tileId === 0 ? 'eraser' : 'pencil');
+                }}
+                activeSheetUrl={
+                  paletteGroup === 'B' ? (assetUrls[resolveSheetPath(currentTileset?.tilesetNames?.[5] || 'Outside_B')] || '') :
+                  paletteGroup === 'C' ? (assetUrls[resolveSheetPath(currentTileset?.tilesetNames?.[6] || 'Outside_C')] || '') :
+                  paletteGroup === 'D' ? (assetUrls[resolveSheetPath(currentTileset?.tilesetNames?.[7] || '')] || '') :
+                  paletteGroup === 'E' ? (assetUrls[resolveSheetPath(currentTileset?.tilesetNames?.[8] || '')] || '') :
+                  ''
+                }
+                assetUrls={assetUrls}
+              />
             </div>
-            {/* Tab A, B, C, R tepat di bawah palette */}
+            {/* Tab A, B, C, (D), (E), R tepat di bawah palette */}
             <div className="mv-palette-tabs">
-              {(['A', 'B', 'C', 'R'] as const).map(group => (
-                <button
-                  className={paletteGroup === (group === 'R' ? 'D' : group) ? 'active' : ''}
-                  key={group}
-                  onClick={() => setPaletteGroup(group === 'R' ? 'D' : group)}
-                >
-                  {group}
-                </button>
-              ))}
+              {(['A', 'B', 'C', ...(currentTileset?.tilesetNames?.[7] ? ['D'] : []), ...(currentTileset?.tilesetNames?.[8] ? ['E'] : []), 'R'] as const).map(group => {
+                const targetGroup = group as 'A' | 'B' | 'C' | 'D' | 'E' | 'R';
+                const isActive = paletteGroup === targetGroup;
+                return (
+                  <button
+                    className={isActive ? 'active' : ''}
+                    key={group}
+                    onClick={() => setPaletteGroup(targetGroup)}
+                  >
+                    {group}
+                  </button>
+                );
+              })}
             </div>
           </div>
         ) : (
@@ -2626,6 +3138,9 @@ export function App() {
                   <span>{bundle.maps[id]?.name || id}</span>
                 </button>
               ))}
+              {Array.from({ length: Math.max(0, 14 - bundle.project.maps.length) }, (_, i) => (
+                <div className="mz-tree-item mz-tree-empty-row" key={`empty-${i}`} />
+              ))}
             </div>
           </div>
         </div>
@@ -2633,119 +3148,159 @@ export function App() {
 
       <section className="mv-document-area">
         <div className="mv-document-tabs">
-          <button className="active"><span>{mode === 'map' ? '▦' : mode === 'event' ? '◆' : mode === 'database' ? '▤' : '⌕'}</span>{mode === 'map' ? map?.name ?? 'Map' : mode === 'event' ? currentEvent?.name ?? 'Event Editor' : mode === 'database' ? 'Database' : 'Reference Search'}{dirty && <i>●</i>}</button>
+          <button className="active"><span>{mode === 'map' ? '▦' : mode === 'event' ? '◆' : '⌕'}</span>{mode === 'map' ? map?.name ?? 'Map' : mode === 'event' ? currentEvent?.name ?? 'Event Editor' : 'Reference Search'}{dirty && <i>●</i>}</button>
         </div>
 
         {!map ? <div className="mv-welcome"><div className="mv-welcome-logo">N</div><h1>{bundle.project.title}</h1><p>Pilih map dari panel proyek untuk mulai menyunting.</p></div> : <div className="mv-document">
           {(mode === 'map' || mode === 'event') && (
             <div
               className="mv-map-viewport full-canvas"
-              onMouseLeave={() => setHoverCoord(null)}
+              onMouseLeave={() => {
+                const coordEl = document.getElementById('mz-status-coord-display');
+                if (coordEl) coordEl.textContent = '';
+              }}
             >
-              <div className="mv-map-stage" style={{ width: `${Math.max(520, map.width * 34 * zoom / 100)}px` }}>
-                <div className="mv-ruler horizontal">
-                  {Array.from({ length: map.width }, (_, x) => <span key={x}>{x}</span>)}
-                </div>
-                <div className="mv-map-row">
-                  <div className="mv-ruler vertical">
-                    {Array.from({ length: map.height }, (_, y) => <span key={y}>{y}</span>)}
-                  </div>
+              <div
+                className="mv-map-zoom-wrapper"
+                style={{
+                  width: `${Math.round(map.width * 48 * (zoom / 100))}px`,
+                  height: `${Math.round(map.height * 48 * (zoom / 100))}px`,
+                  transform: `scale(${zoom / 100})`,
+                  transformOrigin: '0 0',
+                }}
+              >
+                <div className="mv-map-stage" style={{ width: `${map.width * 48}px`, height: `${map.height * 48}px` }}>
+                  <canvas
+                    ref={canvasRef}
+                    className="mv-map-canvas"
+                    width={map.width * 48}
+                    height={map.height * 48}
+                  />
                   <div
                     className={`mv-map-grid ${mode === 'event' ? 'event-grid-mode' : 'map-mode-clean'} ${activeLayer !== 'auto' ? 'layer-focus' : ''}`}
-                    style={{ gridTemplateColumns: `repeat(${map.width}, minmax(20px, 1fr))` }}
+                    style={{
+                      gridTemplateColumns: `repeat(${map.width}, 48px)`,
+                      gridTemplateRows: `repeat(${map.height}, 48px)`,
+                      width: `${map.width * 48}px`,
+                      height: `${map.height * 48}px`,
+                    }}
                   >
-                    {map.collision.map((cell, index) => {
-                      const x = index % map.width, y = Math.floor(index / map.width);
-                      const marker = map.events.find(event => event.x === x && event.y === y);
-                      const isSelected = selectedCell?.x === x && selectedCell?.y === y;
-                      return (
-                        <button
-                          title={mode === 'event'
-                            ? `${x}, ${y}${marker ? ` — ${marker.name}` : ' (Kosong)'} · Double click untuk ${marker ? 'edit' : 'buat'} event`
-                            : `${x}, ${y}${marker ? ` — ${marker.name}` : ''} · Right-click to pick tile`}
-                          className={`${cell ? 'blocked' : ''} ${marker ? 'has-event' : ''} ${marker?.id === selectedEvent || isSelected ? 'selected' : ''} ${isSelected && mode === 'event' ? 'cell-selected' : ''} ${rectangleStart?.x === x && rectangleStart.y === y ? 'rectangle-origin' : ''}`}
-                          key={index}
-                          onMouseEnter={() => setHoverCoord({ x, y })}
-                          onClick={() => handleMapCell(x, y, marker)}
-                          onDoubleClick={() => handleCellDoubleClick(x, y, marker)}
-                          onContextMenu={event => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            if (mode === 'map') {
-                              pickTile(x, y);
-                            } else {
-                              setSelectedCell({ x, y });
-                              if (marker) {
-                                selectEvent(marker.id);
+                      {map.collision.map((cell, index) => {
+                        const x = index % map.width, y = Math.floor(index / map.width);
+                        const marker = map.events.find(event => event.x === x && event.y === y);
+                        const isSelected = selectedCell?.x === x && selectedCell?.y === y;
+                        return (
+                          <button
+                            title={mode === 'event'
+                              ? `${x}, ${y}${marker ? ` — ${marker.name}` : ' (Kosong)'} · Double click untuk ${marker ? 'edit' : 'buat'} event`
+                              : `${x}, ${y}${marker ? ` — ${marker.name}` : ''} · Right-click to pick tile`}
+                            className={`${cell ? 'blocked' : ''} ${marker ? 'has-event' : ''} ${marker?.id === selectedEvent || isSelected ? 'selected' : ''} ${isSelected && mode === 'event' ? 'cell-selected' : ''} ${rectangleStart?.x === x && rectangleStart.y === y ? 'rectangle-origin' : ''}`}
+                            key={index}
+                            onDragStart={e => e.preventDefault()}
+                            onMouseDown={(e) => {
+                              if (e.button === 0) {
+                                if (mode === 'map') {
+                                  if (mapTool === 'pencil' || mapTool === 'eraser' || mapTool === 'shadow') {
+                                    const curr = bundleRef.current || bundle;
+                                    if (curr) {
+                                      isMouseDownRef.current = true;
+                                      strokeInitialBundleRef.current = clone(curr);
+                                      activeStrokeBundleRef.current = clone(curr);
+                                      strokeModifiedRef.current = false;
+                                      applyPaint(x, y, true);
+                                    }
+                                  }
+                                }
                               }
-                              setCellContextMenu({ x: event.clientX, y: event.clientY, cellX: x, cellY: y, marker });
-                            }
-                          }}
-                        >
-                          <span className="mv-tile-stack">
-                            {map.layers.map((layer, layerIndex) => {
-                              const tileId = layer.data[index], tile = TILE_CATALOG.find(entry => entry.id === tileId), mask = layerIndex === 0 ? autotileMask(layer.data, index, map.width, map.height) : 15;
-                              const edges = [!(mask & 1) ? 'inset 0 2px #ffffff55' : '', !(mask & 2) ? 'inset -2px 0 #00000030' : '', !(mask & 4) ? 'inset 0 -2px #00000045' : '', !(mask & 8) ? 'inset 2px 0 #ffffff35' : ''].filter(Boolean).join(',');
-                              return tileId !== 0 && visibleLayers[layerIndex] ? (
-                                <i
-                                  className={`map-layer layer-${layerIndex} ${activeLayer !== 'auto' && activeLayer !== layerIndex ? 'dimmed' : ''}`}
-                                  key={layer.id}
-                                  style={{ '--tile-color': `#${(tile?.color ?? 0).toString(16).padStart(6, '0')}`, boxShadow: edges } as React.CSSProperties}
+                            }}
+                            onMouseEnter={() => {
+                              const coordEl = document.getElementById('mz-status-coord-display');
+                              if (coordEl) coordEl.textContent = `(X: ${x}, Y: ${y})`;
+                              if (isMouseDownRef.current && mode === 'map') {
+                                if (mapTool === 'pencil' || mapTool === 'eraser' || mapTool === 'shadow') {
+                                  applyPaint(x, y, true);
+                                }
+                              }
+                            }}
+                            onClick={() => {
+                              if (mode === 'event' || mapTool === 'collision' || mapTool === 'fill' || mapTool === 'rectangle' || mapTool === 'circle') {
+                                handleMapCell(x, y, marker);
+                              }
+                            }}
+                            onDoubleClick={() => handleCellDoubleClick(x, y, marker)}
+                            onContextMenu={event => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              if (mode === 'map') {
+                                pickTile(x, y);
+                              } else {
+                                setSelectedCell({ x, y });
+                                if (marker) {
+                                  selectEvent(marker.id);
+                                }
+                                setCellContextMenu({ x: event.clientX, y: event.clientY, cellX: x, cellY: y, marker });
+                              }
+                            }}
+                          >
+                            {mapTool === 'collision' && cell ? <span className="collision-mark">×</span> : null}
+                            {bundle.project.start.mapId === map.id && bundle.project.start.x === x && bundle.project.start.y === y && (
+                              <span
+                                className={`mv-start-marker ${assetUrls['assets/characters/Actor1.png'] ? 'textured-actor' : ''}`}
+                                title="Starting Position: Player"
+                                style={assetUrls['assets/characters/Actor1.png'] ? {
+                                  backgroundImage: `url("${assetUrls['assets/characters/Actor1.png']}")`,
+                                  backgroundPosition: '-48px 0px',
+                                  backgroundSize: '576px 384px',
+                                  imageRendering: 'pixelated'
+                                } : undefined}
+                              >
+                                {!assetUrls['assets/characters/Actor1.png'] && <>👤<small>S</small></>}
+                              </span>
+                            )}
+                            {marker && (() => {
+                              let eventSprite: string | null = null;
+                              let bgPos = '-48px 0px';
+                              let bgSize = '576px 384px';
+                              const lowerName = marker.name.toLowerCase();
+                              const lowerId = marker.id.toLowerCase();
+
+                              if (lowerId.includes('gate') || lowerName.includes('gerbang') || lowerName.includes('pintu')) {
+                                eventSprite = assetUrls['assets/characters/Door1.png'];
+                                bgPos = '-48px 0px';
+                              } else if (lowerId.includes('chest') || lowerName.includes('peti')) {
+                                eventSprite = assetUrls['assets/characters/Chest.png'];
+                                bgPos = '-48px 0px';
+                                bgSize = '144px 192px';
+                              } else if (lowerId.includes('guide') || lowerName.includes('penjaga')) {
+                                eventSprite = assetUrls['assets/characters/Actor2.png'];
+                                bgPos = '-48px 0px';
+                              }
+
+                              return (
+                                <span
+                                  className={`mv-event-marker ${eventSprite ? 'textured-event' : ''}`}
+                                  style={eventSprite ? {
+                                    backgroundImage: `url("${eventSprite}")`,
+                                    backgroundPosition: bgPos,
+                                    backgroundSize: bgSize,
+                                    imageRendering: 'pixelated'
+                                  } : undefined}
                                 >
-                                  {tile?.glyph}
-                                </i>
-                              ) : null;
-                            })}
-                          </span>
-                          {mapTool === 'collision' && cell ? <span className="collision-mark">×</span> : null}
-                          {bundle.project.start.mapId === map.id && bundle.project.start.x === x && bundle.project.start.y === y && (
-                            <span className="mv-start-marker" title="Starting Position: Player">👤<small>S</small></span>
-                          )}
-                          {marker && (
-                            <span className="mv-event-marker">
-                              ◆<small>{marker.name}</small>
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+                                  {!eventSprite && '◆'}
+                                  <small>{marker.name}</small>
+                                </span>
+                              );
+                            })()}
+                          </button>
+                        );
+                      })}
+                    </div>
                 </div>
               </div>
             </div>
           )}
 
-          {mode === 'database' && <div className="mv-database-view">
-            <aside className="mv-database-nav"><div className="mv-subtitle">Data Types</div>{collections.map(name => <button className={collection === name ? 'active' : ''} key={name} onClick={() => { selectCollection(name); setSelectedRecordIndex(null); setRecordView('form'); }}><span>▤</span>{collectionLabel(name)}<small>{Array.isArray(bundle.game[name]) ? bundle.game[name].length : 0}</small></button>)}</aside>
-            <section className="mv-database-editor"><div className="mv-view-header"><div><span className="mv-kicker">DATABASE</span><h2>{collectionLabel(collection)}</h2><p>Runtime records and cross-reference validation</p></div><div className="mv-header-actions"><button onClick={addRecord}>＋ New Record</button><button disabled={selectedRecordIndex === null} onClick={removeRecord}>× Delete</button><button disabled={!currentEvent && selectedRecordIndex === null} onClick={() => setRecordView(recordView === 'form' ? 'json' : 'form')}>{recordView === 'form' ? 'JSON' : 'Form'}</button><button disabled={busy} onClick={() => void importMv()}>Import MV Subset…</button></div></div>
-              {bundle && selectedRecordIndex !== null && recordView === 'form' ? (
-                <div className="mv-record-form">
-                  <div className="mv-record-header">
-                    <span>{collectionLabel(collection)} #{selectedRecordIndex + 1}</span>
-                    <button className="mv-icon-button mv-delete" onClick={() => { setRecordView('json'); }}>JSON</button>
-                  </div>
-                  <RecordForm collection={collection} record={(bundle.game[collection] as unknown[])[selectedRecordIndex] as Record<string, unknown>} bundle={bundle} onChange={updateRecordField} />
-                </div>
-              ) : (
-                <div className="mv-code-panel"><div className="mv-code-title"><span>{collectionLabel(collection)} Records</span><code>{collection}.json</code></div>
-                  {bundle ? <div className="mv-record-list">
-                    {(bundle.game[collection] as unknown[]).map((record, index) => (
-                      <div className={`mv-record-item ${index === selectedRecordIndex ? 'selected' : ''}`} key={index} onClick={() => selectRecord(index)}>
-                        <span className="mv-record-id">{String(record && typeof record === 'object' && 'id' in record ? (record as Record<string, unknown>).id : index)}</span>
-                        <span className="mv-record-name">{String(record && typeof record === 'object' && 'name' in record ? (record as Record<string, unknown>).name : '')}</span>
-                      </div>
-                    ))}
-                  </div> : null}
-                  <textarea className="mv-code-editor" spellCheck={false} value={dataDraft} onChange={event => setDataDraft(event.target.value)} />
-                  <div className="mv-applybar"><span>Each record requires a unique string ID.</span><button className="primary" onClick={applyCollection}>Apply Collection</button></div>
-                </div>
-              )}
-            </section>
-          </div>}
-
           {mode === 'search' && <div className="mv-search-view"><div className="mv-view-header"><div><span className="mv-kicker">PROJECT TOOLS</span><h2>Reference Search</h2><p>Find IDs, names, switches, items, and references across the project.</p></div></div><div className="mv-search-box"><span>⌕</span><input autoFocus value={query} onChange={event => setQuery(event.target.value)} placeholder="Search project references…" /></div><div className="mv-results"><div className="mv-results-title">{query ? `${references.length} results` : 'Enter a search term'}</div>{references.map(hit => <article key={hit.path}><code>{hit.path}</code><p>{hit.preview}</p></article>)}{query && !references.length && <div className="mv-blank-state"><span>⌕</span><p>No references found</p></div>}</div></div>}
-
-          {report && mode === 'database' && <details className="mv-import-report" open><summary>Import report — {report.source}</summary><div><section><h3>Converted</h3>{report.converted.map(line => <p key={line}>{line}</p>)}</section><section><h3>Warnings & manual work</h3>{[...report.warnings, ...report.unsupported, ...report.errors].map((line, index) => <p key={index}>{line}</p>)}</section></div></details>}
         </div>}
       </section>
 
@@ -2773,11 +3328,7 @@ export function App() {
       <div className="mz-status-cell mz-status-layer">
         {activeLayer === 'auto' ? 'Automatic' : `Layer ${activeLayer + 1}`}
       </div>
-      {hoverCoord && (
-        <div className="mz-status-cell mz-status-coord">
-          (X: {hoverCoord.x}, Y: {hoverCoord.y})
-        </div>
-      )}
+      <div id="mz-status-coord-display" className="mz-status-cell mz-status-coord" />
       <div className="mz-status-cell mz-status-msg">
         <span className={`mv-status-light ${errorCount ? 'error' : dirty ? 'dirty' : ''}`} />
         <span>{message}</span>

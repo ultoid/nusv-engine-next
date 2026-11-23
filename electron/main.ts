@@ -1,18 +1,19 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createProject, loadProject, saveProject, getRecentProjects, saveRecentProject, removeRecentProject, getDefaultProjectsDirectory } from './project-service.js';
 import { loadProgress, saveProgress } from './progress-service.js';
 import { importMvSubset } from './import-service.js';
+import { importAssetFile, exportAssetFile, deleteAssetFile, scanProjectAssets } from './asset-service.js';
 const here = dirname(fileURLToPath(import.meta.url)); const appRoot = resolve(here, '..', '..'); const smokeTest = process.argv.includes('--smoke-test'); let smokeDirectory: string | null = smokeTest ? (process.env.NUSV_SMOKE_ROOT ?? mkdtempSync(join(tmpdir(), 'nusv-electron-smoke-'))) : null; let editor: BrowserWindow | null = null; let currentRoot: string | null = null;
 interface PlaytestSession { root:string;mapId?:string;debug?:boolean }
 const playtestRoots = new Map<number, PlaytestSession>();
 if (smokeDirectory) app.setPath('userData', join(smokeDirectory, 'user-data'));
 const page = (name: string) => join(appRoot, 'dist', name); const template = () => join(appRoot, 'fixtures', 'stage0-safe-project');
 function harden(win:BrowserWindow){win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith('file://'))event.preventDefault();});}
-function createEditor(show = true) { editor = new BrowserWindow({ show, width: 1180, height: 760, minWidth: 820, minHeight: 600, backgroundColor: '#091118', webPreferences: { preload: join(here, 'editor-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } });harden(editor); void editor.loadFile(page('index.html')); return editor; }
+function createEditor(show = true) { editor = new BrowserWindow({ show, width: 1180, height: 760, minWidth: 820, minHeight: 600, backgroundColor: '#091118', autoHideMenuBar: true, webPreferences: { preload: join(here, 'editor-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } });harden(editor); void editor.loadFile(page('index.html')); return editor; }
 function createPlaytest(session: PlaytestSession, show = true) { const win = new BrowserWindow({ show, width: 1100, height: 760, backgroundColor: '#020609', autoHideMenuBar: true, webPreferences: { preload: join(here, 'player-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false } });harden(win); const webContentsId=win.webContents.id;playtestRoots.set(webContentsId, session); win.on('closed', () => playtestRoots.delete(webContentsId)); if (smokeTest) verifySmokePlayer(win); void win.loadFile(page('player.html')); return win; }
 function finishSmoke(code: number, result?: unknown) { if (result) console.log(JSON.stringify(result)); process.exitCode=code; for (const window of BrowserWindow.getAllWindows()) window.destroy(); app.quit(); }
 function verifySmokePlayer(player: BrowserWindow) {
@@ -137,6 +138,78 @@ ipcMain.handle('project:save', (_event, bundle: unknown) => {
   return saved;
 });
 ipcMain.handle('import:mv-subset', async (_event, bundle: unknown) => { const choice=await dialog.showOpenDialog(editor!,{title:'Pilih folder proyek MV atau folder data',properties:['openDirectory']});if(choice.canceled)return null;if(!currentRoot)throw new Error('Tidak ada proyek aktif');return importMvSubset(choice.filePaths[0],bundle as never,currentRoot); });
+ipcMain.handle('assets:import', async (_event, options?: { sourcePath?: string; category?: string; customId?: string }) => {
+  if (!currentRoot) throw new Error('Tidak ada proyek aktif');
+  let source = options?.sourcePath;
+  if (!source) {
+    const choice = await dialog.showOpenDialog(editor!, {
+      title: 'Pilih file aset untuk diimpor',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Media Files', extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'ogg', 'mp3', 'wav', 'm4a', 'woff', 'ttf'] },
+        { name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg'] },
+        { name: 'Audio', extensions: ['ogg', 'mp3', 'wav', 'm4a'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    });
+    if (choice.canceled || !choice.filePaths[0]) return null;
+    source = choice.filePaths[0];
+  }
+  return importAssetFile(currentRoot, source, options?.category || 'other', options?.customId);
+});
+ipcMain.handle('assets:export', async (_event, assetPath: string) => {
+  if (!currentRoot) throw new Error('Tidak ada proyek aktif');
+  const filename = assetPath.split(/[/\\]/).pop() || 'asset';
+  const ext = filename.split('.').pop() || '';
+  const choice = await dialog.showSaveDialog(editor!, {
+    title: 'Ekspor file aset',
+    defaultPath: filename,
+    filters: ext ? [{ name: 'Asset File', extensions: [ext] }] : undefined
+  });
+  if (choice.canceled || !choice.filePath) return false;
+  exportAssetFile(currentRoot, assetPath, choice.filePath);
+  return true;
+});
+ipcMain.handle('assets:delete', async (_event, assetPath: string, assetId?: string) => {
+  if (!currentRoot) throw new Error('Tidak ada proyek aktif');
+  deleteAssetFile(currentRoot, assetPath, assetId);
+  return true;
+});
+ipcMain.handle('assets:scan', async () => {
+  if (!currentRoot) throw new Error('Tidak ada proyek aktif');
+  return scanProjectAssets(currentRoot);
+});
+ipcMain.handle('assets:open-folder', async (_event, relativeFolder = 'assets') => {
+  if (!currentRoot) throw new Error('Tidak ada proyek aktif');
+  const target = join(currentRoot, relativeFolder);
+  await shell.openPath(target);
+  return true;
+});
+ipcMain.handle('assets:read-data', async (_event, relativePath: string) => {
+  if (!currentRoot) return null;
+  const full = join(currentRoot, relativePath);
+  if (!existsSync(full)) return null;
+  const ext = extname(full).toLowerCase().replace('.', '');
+  const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'ogg' ? 'audio/ogg' : ext === 'mp3' ? 'audio/mpeg' : ext === 'wav' ? 'audio/wav' : 'application/octet-stream';
+  const buf = readFileSync(full);
+  return {
+    dataUrl: `data:${mime};base64,${buf.toString('base64')}`,
+    buffer: buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+  };
+});
+ipcMain.handle('runtime:read-asset', (event, relativePath: string) => {
+  const session = playtestRoots.get(event.sender.id);
+  if (!session) return null;
+  const full = join(session.root, relativePath);
+  if (!existsSync(full)) return null;
+  const ext = extname(full).toLowerCase().replace('.', '');
+  const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'ogg' ? 'audio/ogg' : ext === 'mp3' ? 'audio/mpeg' : ext === 'wav' ? 'audio/wav' : 'application/octet-stream';
+  const buf = readFileSync(full);
+  return {
+    dataUrl: `data:${mime};base64,${buf.toString('base64')}`,
+    buffer: buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+  };
+});
 ipcMain.handle('playtest:start', (_event, options?:{mapId?:string;debug?:boolean}) => { if (!currentRoot) throw new Error('Tidak ada proyek aktif'); const bundle=loadProject(currentRoot);if(options?.mapId&&!bundle.maps[options.mapId])throw new Error(`Map ${options.mapId} tidak ditemukan`); createPlaytest({root:currentRoot,mapId:options?.mapId,debug:options?.debug}, !smokeTest); });
 ipcMain.handle('runtime:load-project', event => { const session = playtestRoots.get(event.sender.id); if (!session) throw new Error('Sesi playtest tidak dikenal'); const bundle=loadProject(session.root);if(session.mapId){const map=bundle.maps[session.mapId];let x=1,y=1;const same=bundle.project.start.mapId===map.id;if(same&&map.collision[bundle.project.start.y*map.width+bundle.project.start.x]===0){x=bundle.project.start.x;y=bundle.project.start.y;}else{const index=map.collision.findIndex(value=>value===0);if(index<0)throw new Error(`Map ${map.id} tidak memiliki tile yang dapat dilalui`);x=index%map.width;y=Math.floor(index/map.width);}bundle.project={...bundle.project,start:{mapId:map.id,x,y},debug:!!session.debug};}else if(session.debug)bundle.project={...bundle.project,debug:true};return bundle; });
 ipcMain.handle('runtime:save-progress', (event, state: unknown) => { const session = playtestRoots.get(event.sender.id); if (!session) throw new Error('Sesi playtest tidak dikenal'); const bundle = loadProject(session.root); return saveProgress(join(app.getPath('userData'), 'saves'), bundle, state); });

@@ -41,6 +41,7 @@ Eksekutable Windows ada di `release/win-unpacked/NUSV Engine.exe`. Proyek pemain
 
 ## Dokumentasi Utama
 
+- [Changelog](CHANGELOG.md)
 - [Tahap 7](audit/TAHAP_7.md)
 - [Format dan API](audit/FORMAT_AND_API.md)
 - [Upgrade Guide](audit/UPGRADE_GUIDE.md)

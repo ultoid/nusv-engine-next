@@ -10,5 +10,11 @@ contextBridge.exposeInMainWorld('nusvEditor', {
   removeRecentProject: (path: string) => ipcRenderer.invoke('project:remove-recent', path),
   playtest: (options?: { mapId?: string; debug?: boolean }) => ipcRenderer.invoke('playtest:start', options),
   launchProjectPlaytest: (path: string) => ipcRenderer.invoke('playtest:launch-path', path),
-  importMvSubset: (bundle: unknown) => ipcRenderer.invoke('import:mv-subset', bundle)
+  importMvSubset: (bundle: unknown) => ipcRenderer.invoke('import:mv-subset', bundle),
+  importAsset: (options?: { sourcePath?: string; category?: string; customId?: string }) => ipcRenderer.invoke('assets:import', options),
+  exportAsset: (assetPath: string) => ipcRenderer.invoke('assets:export', assetPath),
+  deleteAsset: (assetPath: string, assetId?: string) => ipcRenderer.invoke('assets:delete', assetPath, assetId),
+  scanAssets: () => ipcRenderer.invoke('assets:scan'),
+  openAssetFolder: (folder?: string) => ipcRenderer.invoke('assets:open-folder', folder),
+  readAssetData: (path: string) => ipcRenderer.invoke('assets:read-data', path)
 });
