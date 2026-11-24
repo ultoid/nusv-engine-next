@@ -165,16 +165,18 @@ export function useProjectIO({
     }
   };
 
-  const handleSaveProject = async () => {
-    if (!bundle) return;
+  const handleSaveProject = async (): Promise<boolean> => {
+    if (!bundle) return false;
     setBusy(true);
     try {
       await api!.saveProject(bundle);
       setDirty(false);
       setMessage(`Proyek "${bundle.project.title}" berhasil disimpan.`);
       refreshRecent();
+      return true;
     } catch (error) {
       setMessage(error instanceof Error ? error.message : String(error));
+      return false;
     } finally {
       setBusy(false);
     }

@@ -18,7 +18,7 @@ export interface UseEditorShortcutsParams {
   rectangleStart: { x: number; y: number } | null;
   setRectangleStart: (pt: { x: number; y: number } | null) => void;
   setActiveLayer: React.Dispatch<React.SetStateAction<LayerSelection>>;
-  handleSaveProject: () => Promise<void>;
+  handleSaveProject: () => Promise<any>;
   guardDirty: (action: () => Promise<void> | void, label: string) => void;
   openNewProjectModal: () => void;
   handleOpenProject: (targetPath?: string) => Promise<void>;

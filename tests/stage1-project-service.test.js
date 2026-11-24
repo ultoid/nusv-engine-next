@@ -44,3 +44,21 @@ test('data rusak ditolak dan save invalid tidak mengubah manifest', async () => 
 test('runtime dan editor baru tidak merujuk runtime MV', async () => { const root = fileURLToPath(new URL('../', import.meta.url)); const files = ['src/runtime/Runtime.ts','src/runtime/WorldScene.ts','electron/main.ts','electron/project-service.ts']; for (const relative of files) { const text = await readFile(join(root, relative), 'utf8'); assert.doesNotMatch(text, /RPG Maker|rpg_core|rpg_managers|YEP_/i, relative); } });
 test('field manifest yang belum dikenal dipertahankan saat save', async () => { const parent = await mkdtemp(join(tmpdir(), 'nusv-stage1-fields-')); const created = createProject(parent, 'Future Fields', template); created.project.extensionData = { future: 7 }; const saved = saveProject(created.root, created); assert.deepEqual(saved.project.extensionData, { future: 7 }); });
 test('load memulihkan journal prepared yang terputus', async () => { const parent = await mkdtemp(join(tmpdir(), 'nusv-stage1-recover-')); const created = createProject(parent, 'Recoverable', template); const target = join(created.root, 'nusv.project.json'); const original = await readFile(target, 'utf8'); const changed = JSON.parse(original); changed.title = 'Partial Write'; await writeFile(target, JSON.stringify(changed)); const journal = join(created.root, '.nusv-save'); await mkdir(journal); await writeFile(join(journal, 'backup-0'), original); await writeFile(join(journal, 'manifest.json'), JSON.stringify({ state: 'prepared', files: [{ path: 'nusv.project.json', existed: true }] })); assert.equal(loadProject(created.root).project.title, 'Recoverable'); });
+test('alert konfirmasi tutup aplikasi tanpa save memiliki opsi Save, Tidak, dan Cancel', async () => {
+  const root = fileURLToPath(new URL('../', import.meta.url));
+  const mainTs = await readFile(join(root, 'electron/main.ts'), 'utf8');
+  assert.match(mainTs, /buttons:\s*\['Save',\s*'Tidak',\s*'Cancel'\]/);
+  assert.match(mainTs, /app:request-save-and-close/);
+  assert.match(mainTs, /app:confirm-close/);
+  assert.match(mainTs, /app:set-dirty/);
+
+  const preloadCts = await readFile(join(root, 'electron/editor-preload.cts'), 'utf8');
+  assert.match(preloadCts, /onRequestSaveAndClose/);
+  assert.match(preloadCts, /confirmClose/);
+  assert.match(preloadCts, /setDirty/);
+
+  const modalTsx = await readFile(join(root, 'src/editor/modals/UnsavedConfirmModal.tsx'), 'utf8');
+  assert.match(modalTsx, /saveLabel\s*=\s*'Save'/);
+  assert.match(modalTsx, /discardLabel\s*=\s*'Tidak'/);
+  assert.match(modalTsx, /cancelLabel\s*=\s*'Cancel'/);
+});

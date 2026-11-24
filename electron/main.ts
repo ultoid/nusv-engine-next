@@ -8,12 +8,85 @@ import { loadProgress, saveProgress } from './progress-service.js';
 import { importMvSubset } from './import-service.js';
 import { importAssetFile, exportAssetFile, deleteAssetFile, scanProjectAssets } from './asset-service.js';
 const here = dirname(fileURLToPath(import.meta.url)); const appRoot = resolve(here, '..', '..'); const smokeTest = process.argv.includes('--smoke-test'); let smokeDirectory: string | null = smokeTest ? (process.env.NUSV_SMOKE_ROOT ?? mkdtempSync(join(tmpdir(), 'nusv-electron-smoke-'))) : null; let editor: BrowserWindow | null = null; let currentRoot: string | null = null;
+let isEditorDirty = false;
+let isQuitting = false;
+let isDialogShowing = false;
+
+ipcMain.on('app:set-dirty', (_event, dirty: boolean) => {
+  isEditorDirty = Boolean(dirty);
+});
+ipcMain.on('app:close', () => {
+  if (editor && !editor.isDestroyed()) {
+    editor.close();
+  }
+});
+ipcMain.on('app:confirm-close', () => {
+  isQuitting = true;
+  if (editor && !editor.isDestroyed()) {
+    editor.close();
+  }
+});
+
 interface PlaytestSession { root:string;mapId?:string;debug?:boolean }
 const playtestRoots = new Map<number, PlaytestSession>();
 if (smokeDirectory) app.setPath('userData', join(smokeDirectory, 'user-data'));
 const page = (name: string) => join(appRoot, 'dist', name); const template = () => join(appRoot, 'fixtures', 'stage0-safe-project');
 function harden(win:BrowserWindow){win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',(event,url)=>{if(!url.startsWith('file://'))event.preventDefault();});}
-function createEditor(show = true) { editor = new BrowserWindow({ show, width: 1180, height: 760, minWidth: 820, minHeight: 600, backgroundColor: '#091118', autoHideMenuBar: true, webPreferences: { preload: join(here, 'editor-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } });harden(editor); void editor.loadFile(page('index.html')); return editor; }
+function createEditor(show = true) {
+  editor = new BrowserWindow({
+    show,
+    width: 1180,
+    height: 760,
+    minWidth: 820,
+    minHeight: 600,
+    backgroundColor: '#091118',
+    autoHideMenuBar: true,
+    webPreferences: {
+      preload: join(here, 'editor-preload.cjs'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true
+    }
+  });
+  harden(editor);
+
+  editor.on('close', async (event) => {
+    if (smokeTest || isQuitting) {
+      return;
+    }
+    if (!currentRoot || !isEditorDirty) {
+      return;
+    }
+    event.preventDefault();
+    if (isDialogShowing) {
+      return;
+    }
+    isDialogShowing = true;
+    try {
+      const choice = await dialog.showMessageBox(editor!, {
+        type: 'question',
+        buttons: ['Save', 'Tidak', 'Cancel'],
+        defaultId: 0,
+        cancelId: 2,
+        noLink: true,
+        title: 'Perubahan Belum Disimpan',
+        message: 'Apakah Anda ingin menyimpan perubahan sebelum menutup aplikasi?',
+        detail: 'Pilih "Save" untuk menyimpan proyek, "Tidak" untuk menutup tanpa menyimpan, atau "Cancel" untuk membatalkan.'
+      });
+      if (choice.response === 0) {
+        editor!.webContents.send('app:request-save-and-close');
+      } else if (choice.response === 1) {
+        isQuitting = true;
+        editor!.close();
+      }
+    } finally {
+      isDialogShowing = false;
+    }
+  });
+
+  void editor.loadFile(page('index.html'));
+  return editor;
+}
 function createPlaytest(session: PlaytestSession, show = true) { const win = new BrowserWindow({ show, width: 1100, height: 760, backgroundColor: '#020609', autoHideMenuBar: true, webPreferences: { preload: join(here, 'player-preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false } });harden(win); const webContentsId=win.webContents.id;playtestRoots.set(webContentsId, session); win.on('closed', () => playtestRoots.delete(webContentsId)); if (smokeTest) verifySmokePlayer(win); void win.loadFile(page('player.html')); return win; }
 function finishSmoke(code: number, result?: unknown) { if (result) console.log(JSON.stringify(result)); process.exitCode=code; for (const window of BrowserWindow.getAllWindows()) window.destroy(); app.quit(); }
 function verifySmokePlayer(player: BrowserWindow) {
@@ -117,6 +190,7 @@ ipcMain.handle('project:open', async (_event, targetPath?: string) => {
 });
 ipcMain.handle('project:close', () => {
   currentRoot = null;
+  isEditorDirty = false;
   return true;
 });
 ipcMain.handle('project:get-recent', () => {
@@ -134,6 +208,7 @@ ipcMain.handle('playtest:launch-path', async (_event, projectPath: string) => {
 ipcMain.handle('project:save', (_event, bundle: unknown) => {
   if (!currentRoot) throw new Error('Tidak ada proyek aktif');
   const saved = saveProject(currentRoot, bundle);
+  isEditorDirty = false;
   saveRecentProject(app.getPath('userData'), currentRoot, saved.project.title);
   return saved;
 });

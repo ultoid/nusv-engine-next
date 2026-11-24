@@ -16,5 +16,13 @@ contextBridge.exposeInMainWorld('nusvEditor', {
   deleteAsset: (assetPath: string, assetId?: string) => ipcRenderer.invoke('assets:delete', assetPath, assetId),
   scanAssets: () => ipcRenderer.invoke('assets:scan'),
   openAssetFolder: (folder?: string) => ipcRenderer.invoke('assets:open-folder', folder),
-  readAssetData: (path: string) => ipcRenderer.invoke('assets:read-data', path)
+  readAssetData: (path: string) => ipcRenderer.invoke('assets:read-data', path),
+  setDirty: (dirty: boolean) => ipcRenderer.send('app:set-dirty', dirty),
+  closeApp: () => ipcRenderer.send('app:close'),
+  confirmClose: () => ipcRenderer.send('app:confirm-close'),
+  onRequestSaveAndClose: (callback: () => void) => {
+    const handler = () => callback();
+    ipcRenderer.on('app:request-save-and-close', handler);
+    return () => ipcRenderer.removeListener('app:request-save-and-close', handler);
+  }
 });

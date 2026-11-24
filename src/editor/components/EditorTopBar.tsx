@@ -34,6 +34,7 @@ export interface EditorTopBarProps {
   setShowInspector: (fn: (v: boolean) => boolean) => void;
   onImportMv: () => void;
   onPlaytest: () => void;
+  onExitApp: () => void;
 }
 
 export function EditorTopBar({
@@ -66,7 +67,8 @@ export function EditorTopBar({
   setZoom,
   setShowInspector,
   onImportMv,
-  onPlaytest
+  onPlaytest,
+  onExitApp
 }: EditorTopBarProps) {
   return (
     <>
@@ -111,6 +113,8 @@ export function EditorTopBar({
           <button disabled={!bundle || !dirty || busy} onClick={onSaveProject}>Save Project <kbd>Ctrl+S</kbd></button>
           <hr />
           <button disabled={!bundle} onClick={onOpenSettings}>Project Settings…</button>
+          <hr />
+          <button onClick={onExitApp}>Exit <kbd>Alt+F4</kbd></button>
         </div></details>
         <details className="mv-menu"><summary>Edit</summary><div>
           <button disabled={!canUndo} onClick={onUndo}>Undo <kbd>Ctrl+Z</kbd></button>

@@ -6,7 +6,20 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Paritas Penuh Transfer Player RPG Maker MZ & Visual Map Location Picker Modal
+### 1. Alert Konfirmasi Penutupan Aplikasi Saat Perubahan Belum Disimpan (Save, Tidak, dan Cancel)
+- **Proteksi Penutupan Aplikasi Desktop (Electron)**:
+  - Mengintersepsi event `close` pada jendela editor (`editor.on('close')`) saat terdapat perubahan proyek yang belum disimpan (`dirty`).
+  - Menampilkan dialog alert konfirmasi asli sistem operasi (*Native Message Box*) dengan 3 opsi pilihan:
+    - **Save**: Menyimpan seluruh progres dan perubahan proyek ke penyimpanan sebelum menutup aplikasi.
+    - **Tidak**: Menutup aplikasi langsung dan membuang perubahan yang belum disimpan (*discard changes*).
+    - **Cancel**: Membatalkan penutupan dan tetap berada di dalam aplikasi tanpa kehilangan progres apapun.
+  - Menambahkan menu `Exit` (<kbd>Alt+F4</kbd>) pada menu `File` di *Top Bar* untuk keluar dengan perlindungan yang sama.
+- **Sinkronisasi State Antara Renderer dan Main Process**:
+  - Saluran IPC dua arah `app:set-dirty`, `app:request-save-and-close`, dan `app:confirm-close` melalui `contextBridge` di `editor-preload.cts`.
+  - Penyesuaian `handleSaveProject` menjadi `Promise<boolean>` yang memastikan aplikasi hanya tertutup apabila operasi penyimpanan berhasil.
+  - Integrasi proteksi `beforeunload` pada browser saat dijalankan di luar Electron, serta pembaruan modal `UnsavedConfirmModal` dengan label aksi default **Save**, **Tidak**, dan **Cancel**.
+
+### 2. Paritas Penuh Transfer Player RPG Maker MZ & Visual Map Location Picker Modal
 - **Visual Map Location Picker Modal (`MapLocationPickerModal`)**:
   - Modal visual pemilihan lokasi peta interaktif setara RPG Maker MZ untuk menentukan peta tujuan dan koordinat target `(X, Y)` tanpa perlu menghafal angka koordinat.
   - Panel kiri: Daftar peta proyek (`Search Filter` + Map List) yang mendukung filter pencarian nama atau ID peta.

@@ -326,6 +326,47 @@ export function App() {
     }
   }, [api, bundle, projectIO]);
 
+  // Synchronize dirty state to electron main process
+  useEffect(() => {
+    api?.setDirty?.(dirty);
+  }, [api, dirty]);
+
+  // Handle request save-and-close from Electron main process
+  useEffect(() => {
+    if (!api?.onRequestSaveAndClose) return;
+    const unsub = api.onRequestSaveAndClose(async () => {
+      const ok = await projectIO.handleSaveProject();
+      if (ok) {
+        api.confirmClose?.();
+      }
+    });
+    return unsub;
+  }, [api, projectIO]);
+
+  // Web browser beforeunload protection if running in browser
+  useEffect(() => {
+    if (api) return;
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (dirty) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [api, dirty]);
+
+  const handleExitApp = () => {
+    if (api?.closeApp) {
+      api.closeApp();
+    } else {
+      projectIO.guardDirty(() => {
+        window.close();
+      }, 'menutup aplikasi');
+    }
+  };
+
   if (!api) {
     return (
       <main className="editor-shell">
@@ -423,6 +464,7 @@ export function App() {
         setShowInspector={setShowInspector}
         onImportMv={() => void projectIO.importMv()}
         onPlaytest={() => void api.playtest({ mapId: selectedMap, debug: true })}
+        onExitApp={handleExitApp}
       />
 
       <EditorToolbar

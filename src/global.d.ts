@@ -21,6 +21,10 @@ declare global {
       scanAssets?(): Promise<import('./core/types.js').AssetEntry[]>;
       openAssetFolder?(folder?: string): Promise<boolean>;
       readAssetData?(path: string): Promise<{ dataUrl: string; buffer?: ArrayBuffer } | null>;
+      setDirty?(dirty: boolean): void;
+      closeApp?(): void;
+      confirmClose?(): void;
+      onRequestSaveAndClose?(callback: () => void): () => void;
     };
     nusvRuntime?: {
       loadProject(): Promise<ProjectBundle>;

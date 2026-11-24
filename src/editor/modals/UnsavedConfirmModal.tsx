@@ -5,13 +5,19 @@ export interface UnsavedConfirmModalProps {
   onCancel: () => void;
   onDiscard: () => void;
   onSaveAndContinue: () => void;
+  saveLabel?: string;
+  discardLabel?: string;
+  cancelLabel?: string;
 }
 
 export function UnsavedConfirmModal({
   pendingActionLabel,
   onCancel,
   onDiscard,
-  onSaveAndContinue
+  onSaveAndContinue,
+  saveLabel = 'Save',
+  discardLabel = 'Tidak',
+  cancelLabel = 'Cancel'
 }: UnsavedConfirmModalProps) {
   return (
     <div className="mv-modal-backdrop" onClick={onCancel}>
@@ -25,10 +31,10 @@ export function UnsavedConfirmModal({
           <p>Apakah Anda ingin menyimpan perubahan sebelum melanjutkan tindakan <b>{pendingActionLabel}</b>?</p>
         </div>
         <div className="mv-modal-footer">
-          <button onClick={onCancel}>Batal</button>
-          <button onClick={onDiscard}>Jangan Simpan</button>
+          <button onClick={onCancel}>{cancelLabel}</button>
+          <button onClick={onDiscard}>{discardLabel}</button>
           <button className="primary" onClick={onSaveAndContinue}>
-            Simpan & Lanjutkan
+            {saveLabel}
           </button>
         </div>
       </div>
