@@ -1,3 +1,5 @@
+@import './theme.css';
+
 :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; background: #091118; color: #e9f0f1; }
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 760px; min-height: 100vh; background: radial-gradient(circle at 80% -20%, #28454b 0, transparent 40%), #091118; }
@@ -20,6 +22,7 @@ label { color: #a7b9bd; display: grid; gap: .45rem; }
 input { width: 100%; padding: .75rem; color: #fff; background: #0b161d; border: 1px solid #34505a; border-radius: 6px; }
 textarea { width: 100%; min-height: 68px; padding: .65rem; resize: vertical; color: #fff; background: #0b161d; border: 1px solid #34505a; border-radius: 6px; }
 select { width:100%;padding:.65rem;color:#fff;background:#0b161d;border:1px solid #34505a;border-radius:6px; }
+input::placeholder, textarea::placeholder { color: #8fa0a6; opacity: 1; }
 .map-tabs { display: flex; gap: .45rem; margin-bottom: 1rem; }
 .map-tabs button.active { border-color: #d5b16f; color: #f4d89d; }
 .event-list { max-height: 440px; overflow: auto; }
@@ -48,17 +51,17 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
 .reference code { color:#e5c985;overflow-wrap:anywhere; }.import-report { margin-top:1rem; }.import-report>div { display:inline-block;vertical-align:top;width:49%;padding-right:1rem; }.import-report pre { overflow:auto; }
 /* Desktop editor — a focused, familiar JRPG authoring workspace. */
 .mv-app {
-  --chrome: #e7e8ea;
-  --chrome-dark: #d2d4d8;
-  --line: #b8bbc1;
-  --line-soft: #d8dade;
-  --ink: #282c33;
-  --muted: #66707b;
-  --blue: #2977ba;
-  --blue-dark: #1e5f99;
-  --blue-soft: #dcecf9;
-  --panel: #f7f7f8;
-  --canvas: #3e434a;
+  --chrome: var(--nusv-chrome);
+  --chrome-dark: var(--nusv-chrome-dark);
+  --line: var(--nusv-border-strong);
+  --line-soft: var(--nusv-border-subtle);
+  --ink: var(--nusv-text-body);
+  --muted: var(--nusv-text-muted);
+  --blue: var(--nusv-primary);
+  --blue-dark: var(--nusv-primary-active);
+  --blue-soft: var(--nusv-primary-soft);
+  --panel: var(--nusv-surface-panel);
+  --canvas: var(--nusv-canvas);
   width: 100vw;
   height: 100vh;
   min-width: 960px;
@@ -71,7 +74,19 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
   font: 13px/1.35 "Segoe UI", Inter, sans-serif;
 }
 .mv-app button, .mv-app input, .mv-app textarea, .mv-app select { font: inherit; }
-.mv-app input:not(.mv-code-editor), .mv-app select, .mv-app textarea:not(.mv-code-editor) { color: var(--ink); }
+.mv-app input:not(.mv-code-editor):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mv-app select,
+.mv-app textarea:not(.mv-code-editor):not(.mz-db-json-textarea) {
+  color: var(--ink);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+}
+.mv-app input::placeholder,
+.mv-app textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #64748b !important;
+}
 .mv-app button { color: var(--ink); background: #f7f7f8; border: 1px solid #b8bbc1; border-radius: 2px; padding: 5px 10px; box-shadow: none; }
 .mv-app button:hover:not(:disabled) { color: var(--ink); border-color: #7c8996; background: #fff; }
 .mv-app button:focus-visible, .mv-app input:focus-visible, .mv-app textarea:focus-visible, .mv-app select:focus-visible { outline: 2px solid #58a3df; outline-offset: -1px; }
@@ -2711,8 +2726,37 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
 .mv-field-group input::placeholder, .mv-field-group select::placeholder { color: #7a8694; }
 .mv-field-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; min-width: 0; }
 .mv-field-row input { flex: 1; color: #1c242c !important; background: #fff; min-width: 60px; box-sizing: border-box; }
-.mv-modal input, .mv-modal select, .mv-modal textarea { color: #1c242c !important; background: #ffffff; box-sizing: border-box; }
-.mv-modal input::placeholder, .mv-modal textarea::placeholder { color: #7a8694; }
+.mv-modal input, .mv-modal select, .mv-modal textarea,
+.mv-modal-card input:not([type="checkbox"]):not([type="radio"]),
+.mv-modal-card select,
+.mv-modal-card textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-style input:not([type="checkbox"]):not([type="radio"]),
+.mz-style select,
+.mz-style textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mv-database-view input:not([type="checkbox"]):not([type="radio"]),
+.mv-database-view select,
+.mv-database-view textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-db-layout input:not([type="checkbox"]):not([type="radio"]),
+.mz-db-layout select,
+.mz-db-layout textarea:not(.mz-db-json-textarea):not(.mv-code-editor) {
+  color: #1e293b !important;
+  background: #ffffff !important;
+  box-sizing: border-box;
+}
+.mv-modal input::placeholder,
+.mv-modal textarea::placeholder,
+.mv-modal-card input::placeholder,
+.mv-modal-card textarea::placeholder,
+.mz-style input::placeholder,
+.mz-style textarea::placeholder,
+.mv-database-view input::placeholder,
+.mv-database-view textarea::placeholder,
+.mz-db-layout input::placeholder,
+.mz-db-layout textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #64748b !important;
+}
 .mv-path-preview { padding: 6px 8px; background: #e8ecf0; border: 1px dashed #9da6b2; border-radius: 3px; font-size: 11px; color: #394553; word-break: break-all; font-family: monospace; }
 .mv-preset-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
 .mv-preset-chips button { font-size: 10px; padding: 2px 6px; border-radius: 2px; background: #e2e5e8; border: 1px solid #b2b8c0; }
@@ -4693,6 +4737,8 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
   font-size: 12px;
   border: 1px solid #cbd5e1;
   border-radius: 4px;
+  background: #ffffff !important;
+  color: #1e293b !important;
 }
 
 .mz-slot-quick-pick {
@@ -4702,6 +4748,7 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
   border: 1px solid #cbd5e1;
   border-radius: 4px;
   background: #f8fafc;
+  color: #1e293b !important;
   cursor: pointer;
 }
 
@@ -4839,35 +4886,104 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
 }
 
 .mz-input,
-.mz-select {
+.mz-select,
+.mz-db-layout input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-db-layout select,
+.mz-db-content input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-db-content select,
+.mz-groupbox input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-groupbox select,
+.mz-field-item input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-field-item select,
+.mz-field-row input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-field-row select,
+.mz-field-col input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-field-col select,
+.mv-database-view input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mv-database-view select,
+.mz-form-card input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+.mz-form-card select,
+.mz-table input:not([type="checkbox"]):not([type="radio"]) {
   height: 24px;
   padding: 0 6px;
   font-size: 11px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 2px;
-  background: #ffffff;
-  color: #1e293b;
+  background-color: #ffffff !important;
+  color: #1e293b !important;
   outline: none;
   box-sizing: border-box;
 }
 
 .mz-input:focus,
 .mz-select:focus,
-.mz-textarea:focus {
-  border-color: #0078d7;
-  outline: 1px solid #0078d7;
+.mz-textarea:focus,
+.mz-db-layout input:focus,
+.mz-db-layout select:focus,
+.mz-db-layout textarea:focus,
+.mz-groupbox input:focus,
+.mz-groupbox select:focus,
+.mz-groupbox textarea:focus,
+.mz-field-item input:focus,
+.mz-field-item select:focus,
+.mz-field-item textarea:focus,
+.mz-field-row input:focus,
+.mz-field-row select:focus,
+.mz-field-row textarea:focus,
+.mz-field-col input:focus,
+.mz-field-col select:focus,
+.mz-field-col textarea:focus,
+.mv-database-view input:focus,
+.mv-database-view select:focus,
+.mv-database-view textarea:focus {
+  border-color: #0078d7 !important;
+  outline: 1px solid #0078d7 !important;
 }
 
-.mz-textarea {
+.mz-textarea,
+.mz-db-layout textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-db-content textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-groupbox textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-field-item textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-field-row textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-field-col textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mv-database-view textarea:not(.mz-db-json-textarea):not(.mv-code-editor),
+.mz-style textarea:not(.mz-db-json-textarea):not(.mv-code-editor) {
   font-size: 11px;
   font-family: inherit;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 2px;
   padding: 4px 6px;
-  background: #ffffff;
-  color: #1e293b;
+  background-color: #ffffff !important;
+  color: #1e293b !important;
   box-sizing: border-box;
   resize: vertical;
+}
+
+/* Universal high-contrast placeholder styling across RPG Maker MZ layout */
+.mz-input::placeholder,
+.mz-textarea::placeholder,
+.mz-db-layout input::placeholder,
+.mz-db-layout textarea::placeholder,
+.mz-db-content input::placeholder,
+.mz-db-content textarea::placeholder,
+.mz-groupbox input::placeholder,
+.mz-groupbox textarea::placeholder,
+.mz-field-item input::placeholder,
+.mz-field-item textarea::placeholder,
+.mz-field-row input::placeholder,
+.mz-field-row textarea::placeholder,
+.mz-field-col input::placeholder,
+.mz-field-col textarea::placeholder,
+.mv-database-view input::placeholder,
+.mv-database-view textarea::placeholder,
+.mz-modal-overlay input::placeholder,
+.mz-modal-overlay textarea::placeholder,
+.mz-modal-box input::placeholder,
+.mz-modal-box textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #64748b !important;
 }
 
 .mz-profile-textarea {

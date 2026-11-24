@@ -148,6 +148,7 @@ export function EditMessageModal({ label, initialValue, onSave, onClose }: EditM
             <span style={{ fontSize: 11, fontWeight: 600, color: '#475569' }}>Format Text:</span>
             <input
               type="text"
+              className="mz-input"
               value={val}
               onChange={(e) => setVal(e.target.value)}
               autoFocus
@@ -272,6 +273,7 @@ export function TermsEditor({
                     <span style={{ fontSize: 10, color: '#475569' }}>{f.label}</span>
                     <input
                       type="text"
+                      className="mz-input"
                       value={basic[f.index] ?? ''}
                       onChange={(e) => handleUpdateBasic(f.index, e.target.value)}
                       style={{ padding: '3px 6px', fontSize: 11 }}
@@ -292,6 +294,7 @@ export function TermsEditor({
                     <span style={{ fontSize: 10, color: '#475569' }}>{f.label}</span>
                     <input
                       type="text"
+                      className="mz-input"
                       value={params[f.index] ?? ''}
                       onChange={(e) => handleUpdateParam(f.index, e.target.value)}
                       style={{ padding: '3px 6px', fontSize: 11 }}
@@ -313,6 +316,7 @@ export function TermsEditor({
                   <span style={{ fontSize: 10, color: '#475569' }}>{f.label}</span>
                   <input
                     type="text"
+                    className="mz-input"
                     value={commands[f.index] ?? ''}
                     onChange={(e) => handleUpdateCommand(f.index, e.target.value)}
                     style={{ padding: '3px 6px', fontSize: 11 }}
@@ -410,6 +414,7 @@ export function TermsEditor({
               </div>
               <input
                 type="text"
+                className="mz-input"
                 value={activeMsgText}
                 onChange={(e) => handleUpdateMessage(selectedMessageKey, e.target.value)}
                 style={{ width: '100%', padding: '5px 8px', fontSize: 12, border: '1px solid #94a3b8', borderRadius: 3 }}

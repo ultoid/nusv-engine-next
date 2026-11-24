@@ -228,9 +228,9 @@
     "semantic_hash": "4c9cc5fb1b22d0754370e12f5740e212"
   },
   "src/core/types.ts": {
-    "mtime": 1795534219.4229326,
-    "seen": 1795534304.7764041,
-    "ast_hash": "47db6f11f07490c223f4e1cb8dae6b79",
+    "mtime": 1795535386.9253252,
+    "seen": 1795538651.0398922,
+    "ast_hash": "77e4e482d3ce5816a1c9b1fd8f4ed49b",
     "semantic_hash": ""
   },
   "src/core/validation.ts": {
@@ -258,8 +258,8 @@
     "semantic_hash": "e27eb4bbad79093a9a9a58f2eeda8c43"
   },
   "src/global.d.ts": {
-    "mtime": 1795534226.766163,
-    "seen": 1795534304.776531,
+    "mtime": 1795535388.8783658,
+    "seen": 1795538651.040105,
     "ast_hash": "f49228085b42fd4f8e23b1d02300b8f8",
     "semantic_hash": ""
   },
@@ -714,9 +714,9 @@
     "semantic_hash": ""
   },
   "src/editor/DatabaseView.tsx": {
-    "mtime": 1795533872.6722767,
-    "seen": 1795533960.202319,
-    "ast_hash": "ed36c7e9ef06beebd29beca778a6745d",
+    "mtime": 1795538584.2590735,
+    "seen": 1795538651.0399418,
+    "ast_hash": "b80fe794642b24e5fe41e872742db1cf",
     "semantic_hash": ""
   },
   "src/editor/ResourceManagerModal.tsx": {
@@ -762,8 +762,8 @@
     "semantic_hash": ""
   },
   "tests/stage9-database-and-resources.test.js": {
-    "mtime": 1795533912.6265326,
-    "seen": 1795533960.2024724,
+    "mtime": 1795535386.4235888,
+    "seen": 1795538651.0402083,
     "ast_hash": "7641001ecdccfe819d6cbafd0882c19e",
     "semantic_hash": ""
   },
@@ -8898,8 +8898,8 @@
     "semantic_hash": ""
   },
   "src/editor/components/EditorTopBar.tsx": {
-    "mtime": 1795534233.0619717,
-    "seen": 1795534304.776461,
+    "mtime": 1795535387.8699093,
+    "seen": 1795538651.039998,
     "ast_hash": "079d693ade4a746d07eb5277ea41410c",
     "semantic_hash": ""
   },
@@ -8976,8 +8976,8 @@
     "semantic_hash": ""
   },
   "src/editor/hooks/useProjectIO.ts": {
-    "mtime": 1795534233.2114806,
-    "seen": 1795534304.7764885,
+    "mtime": 1795535388.4411547,
+    "seen": 1795538651.0400414,
     "ast_hash": "aac1b3345bc51a9a9edefdb7c4de5a72",
     "semantic_hash": ""
   },
@@ -9084,8 +9084,8 @@
     "semantic_hash": ""
   },
   "src/editor/views/ProjectManagerView.tsx": {
-    "mtime": 1795534233.3805277,
-    "seen": 1795534304.7765288,
+    "mtime": 1795535388.5950694,
+    "seen": 1795538651.040102,
     "ast_hash": "78033dbb25849db61b324295ac9ad12f",
     "semantic_hash": ""
   },
@@ -11748,8 +11748,8 @@
     "semantic_hash": ""
   },
   "src/editor/SkillEditorComponents.tsx": {
-    "mtime": 1795534127.1263018,
-    "seen": 1795534304.7764356,
+    "mtime": 1795535387.581404,
+    "seen": 1795538651.0399585,
     "ast_hash": "19255fd48e07e303b7971659f34653e6",
     "semantic_hash": ""
   },
@@ -11766,27 +11766,27 @@
     "semantic_hash": ""
   },
   "src/editor/ArmorEditorComponents.tsx": {
-    "mtime": 1795534146.3790214,
-    "seen": 1795534304.7764182,
+    "mtime": 1795535387.2947626,
+    "seen": 1795538651.0399303,
     "ast_hash": "ffbb5ceced0105c4a5e6df92d0c7e403",
     "semantic_hash": ""
   },
   "src/editor/EnemyEditorComponents.tsx": {
-    "mtime": 1795529501.0845048,
-    "seen": 1795529534.5406744,
-    "ast_hash": "a4eb4230dc269ac48e8d3901d6dcfb86",
+    "mtime": 1795538373.1168385,
+    "seen": 1795538651.039946,
+    "ast_hash": "fcb3bcab5c69a8bac469b5a9b60885ae",
     "semantic_hash": ""
   },
   "src/editor/TroopEditorComponents.tsx": {
-    "mtime": 1795529970.3707914,
-    "seen": 1795530017.3582082,
-    "ast_hash": "d9e4275bb615f313fd8c73efc0fe89ea",
+    "mtime": 1795538453.8330374,
+    "seen": 1795538651.039973,
+    "ast_hash": "f23711c243bb01777f77d9450cd3bce6",
     "semantic_hash": ""
   },
   "src/editor/StateEditorComponents.tsx": {
-    "mtime": 1795530176.0019815,
-    "seen": 1795530293.9939418,
-    "ast_hash": "ace7dba15a201cb6f4c569a890f803a5",
+    "mtime": 1795538403.2624393,
+    "seen": 1795538651.0399613,
+    "ast_hash": "2c437056c66d5f4097dd5e8654aa8f08",
     "semantic_hash": ""
   },
   "src/editor/AnimationEditorComponents.tsx": {
@@ -11802,9 +11802,9 @@
     "semantic_hash": ""
   },
   "src/editor/SystemEditorComponents.tsx": {
-    "mtime": 1795532560.536355,
-    "seen": 1795532667.5251942,
-    "ast_hash": "8280309c4504acfcbd1399b59557bb06",
+    "mtime": 1795538500.3398902,
+    "seen": 1795538651.0399642,
+    "ast_hash": "b1c315ca318f088e7d5c01d044a613d1",
     "semantic_hash": ""
   },
   "src/editor/TypesEditorComponents.tsx": {
@@ -11814,9 +11814,9 @@
     "semantic_hash": ""
   },
   "src/editor/TermsEditorComponents.tsx": {
-    "mtime": 1795533188.8353753,
-    "seen": 1795533509.0614376,
-    "ast_hash": "5e0b58620416a5623c4e2219cc0bed53",
+    "mtime": 1795538546.6317341,
+    "seen": 1795538651.0399692,
+    "ast_hash": "817cf871eaba04899db70e246b1b1646",
     "semantic_hash": ""
   },
   "src/editor/archived/LegacyQuestShopComponents.tsx": {

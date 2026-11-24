@@ -757,6 +757,7 @@ export function System1Editor({
             </span>
             <input
               type="text"
+              className="mz-input"
               value={gameTitle}
               onChange={(e) => updateSystem({ gameTitle: e.target.value })}
               style={{ width: '100%', padding: '5px 8px', fontSize: 12 }}
@@ -845,6 +846,7 @@ export function System1Editor({
                 </span>
                 <input
                   type="text"
+                  className="mz-input"
                   value={String(currency)}
                   onChange={(e) => updateSystem({ currencyUnit: e.target.value })}
                   style={{ width: '100%', padding: '4px 6px', fontSize: 11 }}

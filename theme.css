@@ -1,0 +1,774 @@
+/**
+ * NUSV Engine Next - Unified Theme System
+ * =============================================================================
+ * Single Source of Truth (SSOT) untuk seluruh gaya visual, token desain,
+ * container, warna, tipografi, dan kontrol formulir di NUSV Engine Next.
+ *
+ * Di coding React / TypeScript maupun HTML, cukup gunakan token CSS variable
+ * var(--nusv-*) atau langsung gunakan class utilitas .nusv-*.
+ * =============================================================================
+ */
+
+:root {
+  /* =========================================================================
+     1. PALET WARNA (COLOR TOKENS)
+     ========================================================================= */
+
+  /* Brand / Primary Accent (RPG Maker MZ Classic Slate-Blue) */
+  --nusv-primary: #0078d7;
+  --nusv-primary-hover: #1084e3;
+  --nusv-primary-active: #0060ad;
+  --nusv-primary-soft: #e0f2fe;
+  --nusv-primary-soft-hover: #bae6fd;
+  --nusv-primary-contrast: #ffffff;
+
+  /* Secondary / Dark Slate Accents */
+  --nusv-secondary: #273747;
+  --nusv-secondary-hover: #3a4f63;
+  --nusv-secondary-soft: #f1f5f9;
+
+  /* Neutral Surfaces & Backgrounds */
+  --nusv-chrome: #e7e8ea;
+  --nusv-chrome-dark: #d2d4d8;
+  --nusv-chrome-light: #f4f4f5;
+  --nusv-canvas: #3e434a;
+  --nusv-surface: #ffffff;
+  --nusv-surface-alt: #f8fafc;
+  --nusv-surface-raised: #ffffff;
+  --nusv-surface-sunken: #f1f5f9;
+  --nusv-surface-panel: #f7f7f8;
+  --nusv-backdrop: rgba(15, 23, 42, 0.45);
+
+  /* Headers & Gradients */
+  --nusv-header-gradient-from: #3a4f63;
+  --nusv-header-gradient-to: #273747;
+  --nusv-header-text: #f8fafc;
+
+  /* Text & Inks */
+  --nusv-text-primary: #0f172a;       /* Slate 900 - Headings & High Contrast Text */
+  --nusv-text-body: #1e293b;          /* Slate 800 - Standard Form & Content Text */
+  --nusv-text-secondary: #334155;     /* Slate 700 - Labels, Subtitles, Field Items */
+  --nusv-text-muted: #64748b;         /* Slate 500 - Hints, Metadata, Captions */
+  --nusv-text-disabled: #94a3b8;      /* Slate 400 - Disabled text & Placeholders */
+  --nusv-text-inverse: #ffffff;       /* Pure white on dark backgrounds */
+
+  /* Borders & Outlines */
+  --nusv-border-subtle: #e2e8f0;      /* Slate 200 - Dividers & subtle cards */
+  --nusv-border-default: #cbd5e1;     /* Slate 300 - Standard inputs, cards, groupboxes */
+  --nusv-border-strong: #94a3b8;      /* Slate 400 - Focused panels, active tab lines */
+  --nusv-border-focus: #0078d7;       /* Primary focus outline */
+
+  /* State & Feedback Colors */
+  --nusv-success: #10b981;
+  --nusv-success-bg: #ecfdf5;
+  --nusv-success-border: #a7f3d0;
+  --nusv-success-text: #065f46;
+
+  --nusv-danger: #ef4444;
+  --nusv-danger-bg: #fef2f2;
+  --nusv-danger-border: #fecaca;
+  --nusv-danger-text: #991b1b;
+
+  --nusv-warning: #f59e0b;
+  --nusv-warning-bg: #fffbeb;
+  --nusv-warning-border: #fde68a;
+  --nusv-warning-text: #92400e;
+
+  --nusv-info: #0284c7;
+  --nusv-info-bg: #f0f9ff;
+  --nusv-info-border: #bae6fd;
+  --nusv-info-text: #075985;
+
+  /* High-Contrast Placeholders */
+  --nusv-placeholder-color: #64748b;
+
+  /* =========================================================================
+     2. TIPOGRAFI (TYPOGRAPHY TOKENS)
+     ========================================================================= */
+
+  --nusv-font-sans: "Segoe UI", Inter, system-ui, -apple-system, sans-serif;
+  --nusv-font-mono: ui-monospace, "Cascadia Code", "Consolas", Menlo, monospace;
+
+  --nusv-text-xs: 10px;
+  --nusv-text-sm: 11px;
+  --nusv-text-base: 12px;
+  --nusv-text-md: 13px;
+  --nusv-text-lg: 14px;
+  --nusv-text-xl: 16px;
+  --nusv-text-2xl: 20px;
+
+  --nusv-font-regular: 400;
+  --nusv-font-medium: 500;
+  --nusv-font-semibold: 600;
+  --nusv-font-bold: 700;
+
+  --nusv-leading-tight: 1.25;
+  --nusv-leading-normal: 1.35;
+  --nusv-leading-relaxed: 1.5;
+
+  /* =========================================================================
+     3. SPASI, RADIUS & ELEVASI (SPACING & SHADOWS)
+     ========================================================================= */
+
+  --nusv-space-1: 2px;
+  --nusv-space-2: 4px;
+  --nusv-space-3: 6px;
+  --nusv-space-4: 8px;
+  --nusv-space-5: 10px;
+  --nusv-space-6: 12px;
+  --nusv-space-7: 16px;
+  --nusv-space-8: 20px;
+
+  --nusv-radius-xs: 2px;
+  --nusv-radius-sm: 3px;
+  --nusv-radius-md: 4px;
+  --nusv-radius-lg: 6px;
+  --nusv-radius-full: 9999px;
+
+  --nusv-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --nusv-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --nusv-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --nusv-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --nusv-shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2);
+
+  --nusv-transition-fast: 0.12s ease;
+  --nusv-transition-normal: 0.2s ease;
+
+  --nusv-z-base: 1;
+  --nusv-z-dropdown: 20;
+  --nusv-z-sticky: 30;
+  --nusv-z-modal-backdrop: 900;
+  --nusv-z-modal: 1000;
+  --nusv-z-popover: 1100;
+  --nusv-z-tooltip: 1200;
+}
+
+/* =============================================================================
+   4. CONTAINER & STRUKTUR HALAMAN
+   ============================================================================= */
+
+/* Main App Shell / Window */
+.nusv-app {
+  width: 100vw;
+  height: 100vh;
+  min-width: 960px;
+  min-height: 620px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--nusv-chrome);
+  color: var(--nusv-text-body);
+  font-family: var(--nusv-font-sans);
+  font-size: var(--nusv-text-md);
+  line-height: var(--nusv-leading-normal);
+  box-sizing: border-box;
+}
+
+/* Card / Box Kontainer Utama */
+.nusv-card {
+  background-color: var(--nusv-surface);
+  border: 1px solid var(--nusv-border-default);
+  border-radius: var(--nusv-radius-md);
+  padding: var(--nusv-space-6);
+  box-shadow: var(--nusv-shadow-xs);
+  box-sizing: border-box;
+}
+
+.nusv-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--nusv-space-4);
+  margin-bottom: var(--nusv-space-4);
+  border-bottom: 1px solid var(--nusv-border-subtle);
+}
+
+.nusv-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nusv-space-4);
+  padding-top: var(--nusv-space-4);
+  margin-top: var(--nusv-space-4);
+  border-top: 1px solid var(--nusv-border-subtle);
+}
+
+/* Groupbox Klasik (Fieldset RPG Maker MZ style) */
+.nusv-groupbox {
+  border: 1px solid var(--nusv-border-default);
+  border-radius: var(--nusv-radius-sm);
+  background-color: var(--nusv-surface);
+  padding: var(--nusv-space-5) var(--nusv-space-6) var(--nusv-space-6);
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nusv-space-3);
+}
+
+.nusv-groupbox-legend {
+  font-size: var(--nusv-text-sm);
+  font-weight: var(--nusv-font-semibold);
+  color: var(--nusv-text-secondary);
+  padding: 0 var(--nusv-space-2);
+}
+
+/* Modal Window & Backdrop */
+.nusv-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: var(--nusv-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--nusv-z-modal);
+  padding: var(--nusv-space-6);
+  box-sizing: border-box;
+}
+
+.nusv-modal-card {
+  background-color: var(--nusv-chrome-light);
+  border: 1px solid var(--nusv-border-strong);
+  border-radius: var(--nusv-radius-md);
+  box-shadow: var(--nusv-shadow-modal);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.nusv-modal-header {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--nusv-space-6);
+  background: linear-gradient(var(--nusv-header-gradient-from), var(--nusv-header-gradient-to));
+  color: var(--nusv-header-text);
+  font-size: var(--nusv-text-base);
+  font-weight: var(--nusv-font-bold);
+  border-bottom: 1px solid #1a2733;
+  user-select: none;
+}
+
+.nusv-modal-close-btn {
+  background: transparent !important;
+  border: 0 !important;
+  color: #cbd5e1 !important;
+  font-size: 16px;
+  font-weight: var(--nusv-font-bold);
+  padding: 2px 6px !important;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.nusv-modal-close-btn:hover {
+  color: #ffffff !important;
+}
+
+.nusv-modal-body {
+  padding: var(--nusv-space-6);
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nusv-space-5);
+  box-sizing: border-box;
+}
+
+.nusv-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nusv-space-4);
+  padding: var(--nusv-space-5) var(--nusv-space-6);
+  background-color: #edeef0;
+  border-top: 1px solid var(--nusv-border-default);
+  box-sizing: border-box;
+}
+
+/* =============================================================================
+   5. LAYOUT UTILITIES (ROWS, COLS, GRIDS)
+   ============================================================================= */
+
+.nusv-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nusv-space-4);
+  flex-wrap: wrap;
+}
+
+.nusv-row-nowrap {
+  display: flex;
+  align-items: center;
+  gap: var(--nusv-space-4);
+  flex-wrap: nowrap;
+}
+
+.nusv-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nusv-space-3);
+  flex: 1;
+  min-width: 0;
+}
+
+.nusv-grid {
+  display: grid;
+  gap: var(--nusv-space-4);
+}
+
+.nusv-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--nusv-space-4);
+}
+
+.nusv-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nusv-space-4);
+}
+
+.nusv-grid-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--nusv-space-4);
+}
+
+.nusv-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nusv-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nusv-scroll-y {
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* =============================================================================
+   6. TIPOGRAFI & TEKS (TEXT STYLES)
+   ============================================================================= */
+
+.nusv-title-xl {
+  font-size: var(--nusv-text-2xl);
+  font-weight: var(--nusv-font-bold);
+  color: var(--nusv-text-primary);
+  margin: 0;
+}
+
+.nusv-title-lg {
+  font-size: var(--nusv-text-xl);
+  font-weight: var(--nusv-font-bold);
+  color: var(--nusv-text-primary);
+  margin: 0;
+}
+
+.nusv-title {
+  font-size: var(--nusv-text-md);
+  font-weight: var(--nusv-font-bold);
+  color: var(--nusv-text-primary);
+  margin: 0;
+}
+
+.nusv-subtitle {
+  font-size: var(--nusv-text-sm);
+  font-weight: var(--nusv-font-semibold);
+  color: var(--nusv-text-secondary);
+  margin: 0;
+}
+
+.nusv-label {
+  font-size: var(--nusv-text-sm);
+  font-weight: var(--nusv-font-semibold);
+  color: var(--nusv-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--nusv-space-2);
+}
+
+.nusv-hint {
+  font-size: var(--nusv-text-xs);
+  color: var(--nusv-text-muted);
+  line-height: var(--nusv-leading-normal);
+}
+
+.nusv-code {
+  font-family: var(--nusv-font-mono);
+  font-size: var(--nusv-text-xs);
+  padding: 1px 4px;
+  border-radius: var(--nusv-radius-xs);
+  background-color: var(--nusv-surface-sunken);
+  border: 1px solid var(--nusv-border-subtle);
+  color: var(--nusv-primary);
+}
+
+.nusv-text-primary { color: var(--nusv-text-primary) !important; }
+.nusv-text-secondary { color: var(--nusv-text-secondary) !important; }
+.nusv-text-muted { color: var(--nusv-text-muted) !important; }
+.nusv-text-success { color: var(--nusv-success-text) !important; }
+.nusv-text-danger { color: var(--nusv-danger-text) !important; }
+.nusv-text-warning { color: var(--nusv-warning-text) !important; }
+.nusv-text-info { color: var(--nusv-info-text) !important; }
+
+/* Status Badges */
+.nusv-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  font-size: var(--nusv-text-xs);
+  font-weight: var(--nusv-font-semibold);
+  border-radius: var(--nusv-radius-full);
+  line-height: 1.2;
+}
+
+.nusv-badge-primary { background: var(--nusv-primary-soft); color: var(--nusv-primary); }
+.nusv-badge-success { background: var(--nusv-success-bg); color: var(--nusv-success-text); border: 1px solid var(--nusv-success-border); }
+.nusv-badge-danger { background: var(--nusv-danger-bg); color: var(--nusv-danger-text); border: 1px solid var(--nusv-danger-border); }
+.nusv-badge-warning { background: var(--nusv-warning-bg); color: var(--nusv-warning-text); border: 1px solid var(--nusv-warning-border); }
+.nusv-badge-info { background: var(--nusv-info-bg); color: var(--nusv-info-text); border: 1px solid var(--nusv-info-border); }
+
+/* =============================================================================
+   7. FORMULIR & KONTROL INPUT (INPUTS, SELECTS, TEXTAREAS, BUTTONS)
+   ============================================================================= */
+
+/* Form Item wrapper */
+.nusv-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nusv-space-1);
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Input standar */
+.nusv-input,
+.nusv-select {
+  height: 24px;
+  padding: 0 var(--nusv-space-3);
+  font-size: var(--nusv-text-sm);
+  font-family: inherit;
+  border: 1px solid var(--nusv-border-default);
+  border-radius: var(--nusv-radius-xs);
+  background-color: var(--nusv-surface) !important;
+  color: var(--nusv-text-body) !important;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color var(--nusv-transition-fast), outline var(--nusv-transition-fast);
+}
+
+.nusv-input:focus,
+.nusv-select:focus,
+.nusv-textarea:focus {
+  border-color: var(--nusv-border-focus) !important;
+  outline: 1px solid var(--nusv-border-focus) !important;
+}
+
+.nusv-input:disabled,
+.nusv-select:disabled,
+.nusv-textarea:disabled {
+  background-color: var(--nusv-surface-sunken) !important;
+  color: var(--nusv-text-disabled) !important;
+  cursor: not-allowed;
+}
+
+/* Textarea standar */
+.nusv-textarea {
+  font-size: var(--nusv-text-sm);
+  font-family: inherit;
+  border: 1px solid var(--nusv-border-default);
+  border-radius: var(--nusv-radius-xs);
+  padding: var(--nusv-space-2) var(--nusv-space-3);
+  background-color: var(--nusv-surface) !important;
+  color: var(--nusv-text-body) !important;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.nusv-textarea-note {
+  min-height: 120px;
+  flex: 1;
+}
+
+/* Universal high-contrast placeholders */
+.nusv-input::placeholder,
+.nusv-textarea::placeholder {
+  color: var(--nusv-placeholder-color) !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: var(--nusv-placeholder-color) !important;
+}
+
+/* Tombol (Buttons) */
+.nusv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nusv-space-2);
+  padding: 4px 10px;
+  font-size: var(--nusv-text-sm);
+  font-family: inherit;
+  font-weight: var(--nusv-font-medium);
+  border-radius: var(--nusv-radius-xs);
+  border: 1px solid var(--nusv-border-strong);
+  background-color: var(--nusv-surface-panel);
+  color: var(--nusv-text-body);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--nusv-transition-fast);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.nusv-btn:hover:not(:disabled) {
+  background-color: var(--nusv-surface);
+  border-color: var(--nusv-primary);
+  color: var(--nusv-text-primary);
+}
+
+.nusv-btn:active:not(:disabled) {
+  background-color: var(--nusv-surface-sunken);
+}
+
+.nusv-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nusv-btn-primary {
+  background-color: var(--nusv-primary) !important;
+  border-color: var(--nusv-primary-active) !important;
+  color: var(--nusv-primary-contrast) !important;
+  font-weight: var(--nusv-font-semibold);
+}
+
+.nusv-btn-primary:hover:not(:disabled) {
+  background-color: var(--nusv-primary-hover) !important;
+  color: #ffffff !important;
+}
+
+.nusv-btn-danger {
+  background-color: var(--nusv-danger) !important;
+  border-color: #b91c1c !important;
+  color: #ffffff !important;
+}
+
+.nusv-btn-danger:hover:not(:disabled) {
+  background-color: #dc2626 !important;
+}
+
+.nusv-btn-sm {
+  padding: 2px 6px;
+  font-size: var(--nusv-text-xs);
+}
+
+.nusv-btn-icon {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+}
+
+/* =============================================================================
+   8. TABEL & RECORD LIST (DATABASE / RECORD BROWSING)
+   ============================================================================= */
+
+/* Table container */
+.nusv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--nusv-text-sm);
+  background-color: var(--nusv-surface);
+  box-sizing: border-box;
+}
+
+.nusv-table th {
+  background-color: var(--nusv-surface-sunken);
+  color: var(--nusv-text-secondary);
+  font-weight: var(--nusv-font-semibold);
+  padding: var(--nusv-space-2) var(--nusv-space-4);
+  border: 1px solid var(--nusv-border-default);
+  text-align: left;
+  user-select: none;
+}
+
+.nusv-table td {
+  padding: var(--nusv-space-2) var(--nusv-space-4);
+  border: 1px solid var(--nusv-border-subtle);
+  color: var(--nusv-text-body);
+}
+
+.nusv-table tr:hover td {
+  background-color: var(--nusv-primary-soft);
+}
+
+.nusv-table tr.active td {
+  background-color: var(--nusv-primary);
+  color: var(--nusv-primary-contrast);
+}
+
+/* Record Item di Sidebar Database */
+.nusv-record-item {
+  display: flex;
+  align-items: center;
+  gap: var(--nusv-space-3);
+  padding: 3px var(--nusv-space-4);
+  font-size: var(--nusv-text-sm);
+  color: var(--nusv-text-body);
+  border-bottom: 1px solid var(--nusv-border-subtle);
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--nusv-surface);
+  transition: background-color var(--nusv-transition-fast);
+}
+
+.nusv-record-item:hover {
+  background-color: var(--nusv-primary-soft);
+}
+
+.nusv-record-item.active {
+  background-color: var(--nusv-primary) !important;
+  color: var(--nusv-primary-contrast) !important;
+}
+
+.nusv-record-id {
+  font-family: var(--nusv-font-mono);
+  font-size: var(--nusv-text-xs);
+  opacity: 0.75;
+  width: 32px;
+}
+
+.nusv-record-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =============================================================================
+   9. TABS & ACCORDION (NAVIGASI & EXPANSION)
+   ============================================================================= */
+
+.nusv-tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--nusv-space-1);
+  border-bottom: 1px solid var(--nusv-border-default);
+  background-color: var(--nusv-surface-sunken);
+  padding: var(--nusv-space-1) var(--nusv-space-3) 0;
+}
+
+.nusv-tab-btn {
+  padding: 5px 12px;
+  font-size: var(--nusv-text-sm);
+  font-weight: var(--nusv-font-medium);
+  border: 1px solid transparent;
+  border-bottom: none;
+  background: transparent;
+  color: var(--nusv-text-secondary);
+  border-radius: var(--nusv-radius-xs) var(--nusv-radius-xs) 0 0;
+  cursor: pointer;
+  transition: all var(--nusv-transition-fast);
+}
+
+.nusv-tab-btn:hover {
+  color: var(--nusv-text-primary);
+  background-color: var(--nusv-chrome);
+}
+
+.nusv-tab-btn.active {
+  background-color: var(--nusv-surface);
+  border-color: var(--nusv-border-default);
+  color: var(--nusv-primary);
+  font-weight: var(--nusv-font-bold);
+  border-bottom: 1px solid var(--nusv-surface);
+  margin-bottom: -1px;
+}
+
+/* Accordion */
+.nusv-accordion {
+  border: 1px solid var(--nusv-border-default);
+  border-radius: var(--nusv-radius-sm);
+  background-color: var(--nusv-surface);
+  overflow: hidden;
+}
+
+.nusv-accordion-header {
+  padding: var(--nusv-space-4) var(--nusv-space-5);
+  font-size: var(--nusv-text-sm);
+  font-weight: var(--nusv-font-semibold);
+  color: var(--nusv-text-secondary);
+  background-color: var(--nusv-surface-sunken);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.nusv-accordion-header:hover {
+  background-color: #e2e8f0;
+}
+
+.nusv-accordion-body {
+  padding: var(--nusv-space-6);
+  border-top: 1px solid var(--nusv-border-default);
+}
+
+/* =============================================================================
+   10. BRIDGE MAPPING KE STYLE SISTEM SAAT INI (COMPATIBILITY)
+   =============================================================================
+   Menghubungkan variabel internal .mv-app dan RPG Maker MZ style (.mz-*)
+   ke Design Tokens --nusv-* di atas sehingga seluruh sistem terpusat.
+   ============================================================================= */
+
+.mv-app {
+  --chrome: var(--nusv-chrome);
+  --chrome-dark: var(--nusv-chrome-dark);
+  --line: var(--nusv-border-strong);
+  --line-soft: var(--nusv-border-subtle);
+  --ink: var(--nusv-text-body);
+  --muted: var(--nusv-text-muted);
+  --blue: var(--nusv-primary);
+  --blue-dark: var(--nusv-primary-active);
+  --blue-soft: var(--nusv-primary-soft);
+  --panel: var(--nusv-surface-panel);
+  --canvas: var(--nusv-canvas);
+}
+
+/* Bridge selector class untuk backward compatibility */
+.mz-groupbox {
+  border-color: var(--nusv-border-default) !important;
+  background-color: var(--nusv-surface) !important;
+}
+
+.mz-groupbox legend {
+  color: var(--nusv-text-secondary) !important;
+  font-weight: var(--nusv-font-semibold) !important;
+}
+
+.mz-form-card {
+  background-color: var(--nusv-surface) !important;
+  border-color: var(--nusv-border-default) !important;
+}
+
+.mz-input,
+.mz-select {
+  background-color: var(--nusv-surface) !important;
+  color: var(--nusv-text-body) !important;
+  border-color: var(--nusv-border-default) !important;
+}
+
+.mz-textarea {
+  background-color: var(--nusv-surface) !important;
+  color: var(--nusv-text-body) !important;
+  border-color: var(--nusv-border-default) !important;
+}

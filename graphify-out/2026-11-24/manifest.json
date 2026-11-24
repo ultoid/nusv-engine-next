@@ -228,9 +228,9 @@
     "semantic_hash": "4c9cc5fb1b22d0754370e12f5740e212"
   },
   "src/core/types.ts": {
-    "mtime": 1795533499.014817,
-    "seen": 1795533509.0614107,
-    "ast_hash": "a960bc04211c56c2aa5545d6de914c5d",
+    "mtime": 1795534219.4229326,
+    "seen": 1795534304.7764041,
+    "ast_hash": "47db6f11f07490c223f4e1cb8dae6b79",
     "semantic_hash": ""
   },
   "src/core/validation.ts": {
@@ -258,9 +258,9 @@
     "semantic_hash": "e27eb4bbad79093a9a9a58f2eeda8c43"
   },
   "src/global.d.ts": {
-    "mtime": 1795519000.3200915,
-    "seen": 1795519016.7165022,
-    "ast_hash": "eb05b425d01da01ac48f6c57b1d9a9eb",
+    "mtime": 1795534226.766163,
+    "seen": 1795534304.776531,
+    "ast_hash": "f49228085b42fd4f8e23b1d02300b8f8",
     "semantic_hash": ""
   },
   "src/player/main.ts": {
@@ -8898,9 +8898,9 @@
     "semantic_hash": ""
   },
   "src/editor/components/EditorTopBar.tsx": {
-    "mtime": 1795519000.2947543,
-    "seen": 1795519016.716458,
-    "ast_hash": "e5b77c7579ddfdee023d4c6c520fbd54",
+    "mtime": 1795534233.0619717,
+    "seen": 1795534304.776461,
+    "ast_hash": "079d693ade4a746d07eb5277ea41410c",
     "semantic_hash": ""
   },
   "src/editor/components/InspectorPanel.tsx": {
@@ -8976,9 +8976,9 @@
     "semantic_hash": ""
   },
   "src/editor/hooks/useProjectIO.ts": {
-    "mtime": 1795519000.300818,
-    "seen": 1795519016.716476,
-    "ast_hash": "766dff156f3078464a1f02f8ca5b4413",
+    "mtime": 1795534233.2114806,
+    "seen": 1795534304.7764885,
+    "ast_hash": "aac1b3345bc51a9a9edefdb7c4de5a72",
     "semantic_hash": ""
   },
   "src/editor/modals/CharacterPickerModal.tsx": {
@@ -9084,9 +9084,9 @@
     "semantic_hash": ""
   },
   "src/editor/views/ProjectManagerView.tsx": {
-    "mtime": 1795519000.319632,
-    "seen": 1795519016.7165008,
-    "ast_hash": "8f770aaff623aed57cd2ee3e3d475bb0",
+    "mtime": 1795534233.3805277,
+    "seen": 1795534304.7765288,
+    "ast_hash": "78033dbb25849db61b324295ac9ad12f",
     "semantic_hash": ""
   },
   "tests/stage12-mz-events.test.js": {
@@ -11748,9 +11748,9 @@
     "semantic_hash": ""
   },
   "src/editor/SkillEditorComponents.tsx": {
-    "mtime": 1795527953.5747821,
-    "seen": 1795528038.4412904,
-    "ast_hash": "799461abe42576b2d10489e76decd79b",
+    "mtime": 1795534127.1263018,
+    "seen": 1795534304.7764356,
+    "ast_hash": "19255fd48e07e303b7971659f34653e6",
     "semantic_hash": ""
   },
   "src/editor/ItemEditorComponents.tsx": {
@@ -11766,9 +11766,9 @@
     "semantic_hash": ""
   },
   "src/editor/ArmorEditorComponents.tsx": {
-    "mtime": 1795528711.8393967,
-    "seen": 1795528869.840065,
-    "ast_hash": "2829cc6710117e8b068c5643e8d7f67b",
+    "mtime": 1795534146.3790214,
+    "seen": 1795534304.7764182,
+    "ast_hash": "ffbb5ceced0105c4a5e6df92d0c7e403",
     "semantic_hash": ""
   },
   "src/editor/EnemyEditorComponents.tsx": {

@@ -1,7 +1,7 @@
 # Graph Report - NUSV Engine Next  (2026-11-24)
 
 ## Corpus Check
-- 192 files · ~206,313 words
+- 192 files · ~206,440 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 145 file(s) not represented in the graph (top: .efkefc 120, .efkmodel 7, .bak 3)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `689a7202`
+- Built from commit: `26d9f054`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -99,10 +99,10 @@
 10. `MapEvent` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `2. Paritas Penuh Transfer Player RPG Maker MZ & Visual Map Location Picker Modal` --references--> `validateBundle()`  [INFERRED]
-  CHANGELOG.md → src/core/validation.ts
 - `2. Pemetaan & Implementasi Lengkap Perintah Tab 1 RPG Maker MZ (Message, Progression, Flow Control, Party, Actor)` --references--> `changeClass()`  [INFERRED]
   CHANGELOG.md → src/core/adventure.ts
+- `2. Paritas Penuh Transfer Player RPG Maker MZ & Visual Map Location Picker Modal` --references--> `validateBundle()`  [INFERRED]
+  CHANGELOG.md → src/core/validation.ts
 - `2. Show Text & Face Graphic Picker (Standar RPG Maker MZ)` --references--> `WorldScene`  [INFERRED]
   CHANGELOG.md → src/runtime/WorldScene.ts
 - `2. Show Text & Face Graphic Picker (Standar RPG Maker MZ)` --references--> `EventIO`  [INFERRED]
@@ -366,7 +366,7 @@ Nodes (5): analyzeBundle(), Diagnostic, findReferences(), ReferenceHit, walkComm
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `ProjectBundle` connect `ProjectBundle` to `PartyController.ts`, `Runtime.ts`, `battle.ts`, `map-layers.ts`, `electron/main.ts`, `Global Types & Project Bundle`, `TermsEditorComponents.tsx`, `DatabaseView.tsx`, `SystemEditorComponents.tsx`, `world.ts`, `AnimationEditorComponents.tsx`, `MapTreePanel.tsx`, `EditorModals.tsx`, `App.tsx`, `import-service.ts`, `types.ts`, `EventCommand`, `CommandFields.tsx`, `EditorToolbar.tsx`, `ProgressState`, `TypesEditorComponents.tsx`, `EnemyEditorComponents.tsx`, `ClassEditorComponents.tsx`, `SkillEditorComponents.tsx`, `StateEditorComponents.tsx`, `.constructor`, `useMapOperations.ts`, `LegacyQuestShopComponents.tsx`, `TroopEditorComponents.tsx`, `progress-service.ts`, `diagnostics.ts`?**
-  _High betweenness centrality (0.174) - this node is a cross-community bridge._
+  _High betweenness centrality (0.172) - this node is a cross-community bridge._
 - **Are the 73 inferred relationships involving `runCommandList()` (e.g. with `.abortBattle()` and `.battle()`) actually correct?**
   _`runCommandList()` has 73 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Sample Marker Asset`, `Cutscene Orchestration & VFX`, `Quest Journal & Shop/Inn Economy` to the rest of the system?**
@@ -374,7 +374,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `import-mz-database.mjs` be split into smaller, more focused modules?**
   _Cohesion score 0.05263157894736842 - nodes in this community are weakly interconnected._
 - **Why does `EventIO` connect `runCommandList` to `world.ts`, `Global Types & Project Bundle`, `.createEventIO`?**
-  _High betweenness centrality (0.040) - this node is a cross-community bridge._
+  _High betweenness centrality (0.060) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `EventIO` (e.g. with `2. Pemetaan & Implementasi Lengkap Perintah Tab 2 RPG Maker MZ (Movement, Character, Picture, Timing, Screen, Audio & Video)` and `2. Show Text & Face Graphic Picker (Standar RPG Maker MZ)`) actually correct?**
   _`EventIO` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `Runtime.ts` be split into smaller, more focused modules?**

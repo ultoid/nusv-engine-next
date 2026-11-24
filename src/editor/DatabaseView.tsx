@@ -1985,6 +1985,7 @@ function TilesetDetailForm({
         <div className="mz-form-card" style={{ marginTop: 12, flex: 1, display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ margin: '0 0 6px 0' }}>Note</h3>
           <textarea
+            className="mz-textarea mz-note-textarea"
             value={ts.note || ''}
             onChange={(e) => onUpdate({ note: e.target.value })}
             style={{ flex: 1, minHeight: 180, resize: 'vertical' }}

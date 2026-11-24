@@ -853,8 +853,10 @@ export function TroopDetailForm({
             <span style={{ fontSize: 11, fontWeight: 600 }}>Name:</span>
             <input
               type="text"
+              className="mz-input"
               value={troop.name || ''}
               onChange={(e) => onUpdate({ name: e.target.value })}
+              placeholder="Troop Name"
               style={{ flex: 1 }}
             />
           </label>

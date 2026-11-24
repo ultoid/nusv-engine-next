@@ -131,6 +131,7 @@ export function StateDetailForm({
                 <span>Name:</span>
                 <input
                   type="text"
+                  className="mz-input"
                   value={state.name || ''}
                   onChange={(e) => onUpdate({ name: e.target.value })}
                 />
@@ -141,6 +142,7 @@ export function StateDetailForm({
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={iconIndex}
                     onChange={(e) => onUpdate({ iconIndex: Number(e.target.value) })}
@@ -173,6 +175,7 @@ export function StateDetailForm({
               <label className="mz-field-item" style={{ flex: 2 }}>
                 <span>Restriction:</span>
                 <select
+                  className="mz-select"
                   value={restrictionVal}
                   onChange={(e) => handleRestrictionChange(Number(e.target.value))}
                 >
@@ -188,6 +191,7 @@ export function StateDetailForm({
                 <span>Priority:</span>
                 <input
                   type="number"
+                  className="mz-input"
                   min={0}
                   max={100}
                   value={state.priority ?? 50}
@@ -349,6 +353,7 @@ export function StateDetailForm({
               <span>If an actor is inflicted with the state:</span>
               <input
                 type="text"
+                className="mz-input"
                 value={state.message1 || ''}
                 onChange={(e) => onUpdate({ message1: e.target.value })}
                 placeholder="%1 has fallen!"
@@ -359,6 +364,7 @@ export function StateDetailForm({
               <span>If an enemy is inflicted with the state:</span>
               <input
                 type="text"
+                className="mz-input"
                 value={state.message2 || ''}
                 onChange={(e) => onUpdate({ message2: e.target.value })}
                 placeholder="%1 is slain!"
@@ -369,6 +375,7 @@ export function StateDetailForm({
               <span>If the state persists:</span>
               <input
                 type="text"
+                className="mz-input"
                 value={state.message3 || ''}
                 onChange={(e) => onUpdate({ message3: e.target.value })}
               />
@@ -378,6 +385,7 @@ export function StateDetailForm({
               <span>If the state is removed:</span>
               <input
                 type="text"
+                className="mz-input"
                 value={state.message4 || ''}
                 onChange={(e) => onUpdate({ message4: e.target.value })}
                 placeholder="%1 revives!"
@@ -466,6 +474,7 @@ export function StateDetailForm({
           <fieldset className="mz-groupbox" style={{ flex: 1 }}>
             <legend>Note</legend>
             <textarea
+              className="mz-textarea mz-note-textarea"
               value={state.note || ''}
               onChange={(e) => onUpdate({ note: e.target.value })}
               placeholder="Developer notes for this state..."

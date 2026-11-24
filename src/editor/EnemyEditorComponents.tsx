@@ -962,8 +962,10 @@ export function EnemyDetailForm({
                 <span>Name:</span>
                 <input
                   type="text"
+                  className="mz-input"
                   value={enemy.name || ''}
                   onChange={(e) => onUpdate({ name: e.target.value })}
+                  placeholder="Enemy Name"
                 />
               </label>
             </div>
@@ -1025,6 +1027,7 @@ export function EnemyDetailForm({
                   <span>Max HP:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={1}
                     value={params[0]}
                     onChange={(e) => updateParam(0, Number(e.target.value))}
@@ -1034,6 +1037,7 @@ export function EnemyDetailForm({
                   <span>Max MP:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[1]}
                     onChange={(e) => updateParam(1, Number(e.target.value))}
@@ -1045,6 +1049,7 @@ export function EnemyDetailForm({
                   <span>Attack:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[2]}
                     onChange={(e) => updateParam(2, Number(e.target.value))}
@@ -1054,6 +1059,7 @@ export function EnemyDetailForm({
                   <span>Defense:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[3]}
                     onChange={(e) => updateParam(3, Number(e.target.value))}
@@ -1065,6 +1071,7 @@ export function EnemyDetailForm({
                   <span>M.Attack:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[4]}
                     onChange={(e) => updateParam(4, Number(e.target.value))}
@@ -1074,6 +1081,7 @@ export function EnemyDetailForm({
                   <span>M.Defense:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[5]}
                     onChange={(e) => updateParam(5, Number(e.target.value))}
@@ -1085,6 +1093,7 @@ export function EnemyDetailForm({
                   <span>Agility:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[6]}
                     onChange={(e) => updateParam(6, Number(e.target.value))}
@@ -1094,6 +1103,7 @@ export function EnemyDetailForm({
                   <span>Luck:</span>
                   <input
                     type="number"
+                    className="mz-input"
                     min={0}
                     value={params[7]}
                     onChange={(e) => updateParam(7, Number(e.target.value))}
@@ -1112,6 +1122,7 @@ export function EnemyDetailForm({
                 <span>EXP:</span>
                 <input
                   type="number"
+                  className="mz-input"
                   min={0}
                   value={reward.baseExp ?? enemy.exp ?? 0}
                   onChange={(e) => handleUpdateReward('baseExp', Number(e.target.value))}
@@ -1121,6 +1132,7 @@ export function EnemyDetailForm({
                 <span>Gold:</span>
                 <input
                   type="number"
+                  className="mz-input"
                   min={0}
                   value={reward.gold ?? enemy.gold ?? 0}
                   onChange={(e) => handleUpdateReward('gold', Number(e.target.value))}
@@ -1336,6 +1348,7 @@ export function EnemyDetailForm({
           <fieldset className="mz-groupbox" style={{ flex: 1 }}>
             <legend>Note</legend>
             <textarea
+              className="mz-textarea mz-note-textarea"
               value={enemy.note || ''}
               onChange={(e) => onUpdate({ note: e.target.value })}
               placeholder="Developer notes for this enemy..."

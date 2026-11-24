@@ -4,7 +4,34 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ---
 
-## [Unreleased] — 2026-11-24
+## [Unreleased] — 2026-11-25
+
+### 1. Sistem Tema Terpadu (Unified Theme System: theme.css)
+- **Single Source of Truth (SSOT) Desain & Gaya Visual**:
+  - Dibuat berkas `theme.css` yang mendefinisikan seluruh Design Tokens untuk NUSV Engine Next.
+  - **Palet Warna**: `--nusv-primary` (`#0078d7`), `--nusv-primary-hover`, `--nusv-primary-soft`, neutral surfaces (`--nusv-chrome`, `--nusv-surface`, `--nusv-surface-sunken`), header gradients (`#3a4f63` -> `#273747`), teks (`--nusv-text-primary`, `--nusv-text-body`, `--nusv-text-muted`), dan status feedback (Success, Danger, Warning, Info).
+  - **Tipografi**: Font sans-serif dan monospace, skala ukuran font (`--nusv-text-xs` hingga `--nusv-text-2xl`), font weight, dan line-height.
+  - **Spasi & Elevasi**: Skala spasi modular (`--nusv-space-1` s.d. `--nusv-space-8`), border radius, drop shadows, dan z-index terstruktur.
+- **Komponen Utilitas Siap Pakai**:
+  - Container: `.nusv-card`, `.nusv-groupbox`, `.nusv-modal-card`, `.nusv-modal-header`, `.nusv-modal-body`, `.nusv-modal-footer`.
+  - Layout: `.nusv-row`, `.nusv-col`, `.nusv-grid`, `.nusv-grid-2col`, `.nusv-grid-3col`, `.nusv-grid-4col`.
+  - Formulir: `.nusv-input`, `.nusv-select`, `.nusv-textarea`, `.nusv-btn` (primary, danger, sm, icon), status badges.
+  - Data: `.nusv-table`, `.nusv-record-item`, `.nusv-tabs`, `.nusv-accordion`.
+- **Bridge & Backward-Compatibility Layer**:
+  - Di-import langsung di baris pertama `style.css` (`@import './theme.css';`).
+  - Menghubungkan variabel `.mv-app` (`--chrome`, `--ink`, `--panel`, `--blue`, dll.) serta selector RPG Maker MZ style (`.mz-*`) ke token `--nusv-*` sehingga seluruh komponen lama otomatis mewarisi tema ini tanpa breaking changes.
+
+### 2. Perbaikan Kontras Teks Formulir & Placeholder di Database Editor & Modals
+- **Pencegahan Kebocoran Background Gelap**:
+  - Menetapkan background `#ffffff` dan warna teks `#1e293b` secara eksplisit pada seluruh input, select, dan textarea di dalam `.mv-app`, `.mv-modal-card`, `.mz-db-layout`, `.mz-groupbox`, dan `.mz-field-item`.
+- **Placeholder Kontras Tinggi Universal**:
+  - Menambahkan aturan placeholder kontras tinggi (`color: #64748b !important; opacity: 1 !important; -webkit-text-fill-color: #64748b !important;`) sehingga teks placeholder jelas terbaca di atas background putih (rasio kontras > 4.5:1, standar WCAG AA).
+- **Standardisasi Class di Seluruh Editor Komponen**:
+  - Memperbarui komponen `EnemyEditorComponents`, `StateEditorComponents`, `TroopEditorComponents`, `SystemEditorComponents`, `TermsEditorComponents`, dan `DatabaseView` dengan class `.mz-input`, `.mz-select`, dan `.mz-textarea mz-note-textarea`.
+
+---
+
+## 2026-11-24
 
 ### 1. Alert Konfirmasi Penutupan Aplikasi Saat Perubahan Belum Disimpan (Save, Tidak, dan Cancel)
 - **Proteksi Penutupan Aplikasi Desktop (Electron)**:
