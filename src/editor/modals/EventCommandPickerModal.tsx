@@ -160,29 +160,64 @@ const TAB_2_GROUPS: CommandGroupDef[] = [
 
 const TAB_3_GROUPS: CommandGroupDef[] = [
   {
-    title: 'Audio',
-    commands: [
-      { type: 'playSe', label: 'Play SE...' },
-      { type: 'stopSe', label: 'Stop SE' },
-      { type: 'playMe', label: 'Play ME...' },
-      { type: 'playBgs', label: 'Play BGS...' },
-      { type: 'fadeoutBgs', label: 'Fadeout BGS...' },
-      { type: 'music', label: 'Change Music...' },
-    ]
-  },
-  {
-    title: 'Scenes & Battle',
+    title: 'Scene Control',
     commands: [
       { type: 'battle', label: 'Battle Processing...' },
       { type: 'shop', label: 'Shop Processing...' },
-      { type: 'inn', label: 'Innkeeper Processing...' },
+      { type: 'nameInput', label: 'Name Input Processing...' },
+      { type: 'openMenu', label: 'Open Menu Screen' },
+      { type: 'openSave', label: 'Open Save Screen' },
       { type: 'gameOver', label: 'Game Over' },
+      { type: 'returnToTitle', label: 'Return to Title Screen' },
+      { type: 'inn', label: 'Innkeeper Processing...' },
+    ]
+  },
+  {
+    title: 'System Settings',
+    commands: [
+      { type: 'changeBattleBgm', label: 'Change Battle BGM...' },
+      { type: 'changeVictoryMe', label: 'Change Victory ME...' },
+      { type: 'changeDefeatMe', label: 'Change Defeat ME...' },
+      { type: 'changeVehicleBgm', label: 'Change Vehicle BGM...' },
+      { type: 'changeSaveAccess', label: 'Change Save Access...' },
+      { type: 'changeMenuAccess', label: 'Change Menu Access...' },
+      { type: 'changeEncounter', label: 'Change Encounter...' },
+      { type: 'changeFormationAccess', label: 'Change Formation Access...' },
+      { type: 'changeWindowColor', label: 'Change Window Color...' },
+      { type: 'changeActorImages', label: 'Change Actor Images...' },
+      { type: 'changeVehicleImage', label: 'Change Vehicle Image...' },
+    ]
+  },
+  {
+    title: 'Map',
+    commands: [
+      { type: 'changeMapNameDisplay', label: 'Change Map Name Display...' },
+      { type: 'changeTileset', label: 'Change Tileset...' },
+      { type: 'changeBattleBack', label: 'Change Battle Background...' },
+      { type: 'changeParallax', label: 'Change Parallax...' },
+      { type: 'getLocationInfo', label: 'Get Location Info...' },
+    ]
+  },
+  {
+    title: 'Battle',
+    commands: [
+      { type: 'changeEnemyHp', label: 'Change Enemy HP...' },
+      { type: 'changeEnemyMp', label: 'Change Enemy MP...' },
+      { type: 'changeEnemyTp', label: 'Change Enemy TP...' },
+      { type: 'changeEnemyState', label: 'Change Enemy State...' },
+      { type: 'enemyRecoverAll', label: 'Enemy Recover All...' },
+      { type: 'enemyAppear', label: 'Enemy Appear...' },
+      { type: 'enemyTransform', label: 'Enemy Transform...' },
+      { type: 'showBattleAnimation', label: 'Show Battle Animation...' },
+      { type: 'forceAction', label: 'Force Action...' },
+      { type: 'abortBattle', label: 'Abort Battle' },
     ]
   },
   {
     title: 'Advanced',
     commands: [
       { type: 'script', label: 'Script...' },
+      { type: 'pluginCommand', label: 'Plugin Command...' },
     ]
   }
 ];
@@ -222,8 +257,8 @@ export function EventCommandPickerModal({ onSelect, onClose }: EventCommandPicke
       };
     } else {
       return {
-        col1: TAB_3_GROUPS.filter(g => ['Audio'].includes(g.title)),
-        col2: TAB_3_GROUPS.filter(g => ['Scenes & Battle', 'Advanced'].includes(g.title))
+        col1: TAB_3_GROUPS.filter(g => ['Scene Control', 'System Settings'].includes(g.title)),
+        col2: TAB_3_GROUPS.filter(g => ['Map', 'Battle', 'Advanced'].includes(g.title))
       };
     }
   }, [activeTab]);
@@ -273,7 +308,7 @@ export function EventCommandPickerModal({ onSelect, onClose }: EventCommandPicke
               className={`mz-tab-item ${activeTab === 3 ? 'active' : ''}`}
               onClick={() => setActiveTab(3)}
             >
-              3 Audio & Scene
+              3 Scene & System
             </button>
           </div>
         )}

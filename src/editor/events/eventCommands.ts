@@ -8,7 +8,8 @@ export const commandTypes: Array<EventCommand['type']> = [
   'giveItem','transfer','battle','questStart','questAdvance','questComplete','shop','inn','cutscene','music',
   'setMovementRoute','changeHp','changeMp','recoverAll','changeLevel','changeExp','changePartyMember','changeSkill','setEventLocation','scrollMap','eraseEvent','gameOver','script',
   'inputNumber','selectItem','scrollingText','controlTimer','commonEvent','comment','changeWeapons','changeArmors','changeTp','changeState','changeParameter','changeEquipment','changeName','changeClass','changeNickname','changeProfile',
-  'setVehicleLocation','getOnOffVehicle','changePlayerFollowers','gatherFollowers','rotatePicture','tintPicture','playBgm','fadeoutBgm','saveBgm','replayBgm','playMovie'
+  'setVehicleLocation','getOnOffVehicle','changePlayerFollowers','gatherFollowers','rotatePicture','tintPicture','playBgm','fadeoutBgm','saveBgm','replayBgm','playMovie',
+  'nameInput','openMenu','openSave','returnToTitle','changeBattleBgm','changeVictoryMe','changeDefeatMe','changeVehicleBgm','changeSaveAccess','changeMenuAccess','changeEncounter','changeFormationAccess','changeWindowColor','changeActorImages','changeVehicleImage','changeMapNameDisplay','changeTileset','changeBattleBack','changeParallax','getLocationInfo','changeEnemyHp','changeEnemyMp','changeEnemyTp','changeEnemyState','enemyRecoverAll','enemyAppear','enemyTransform','showBattleAnimation','forceAction','abortBattle','pluginCommand'
 ];
 
 export const commandName: Record<EventCommand['type'], string> = {
@@ -19,7 +20,15 @@ export const commandName: Record<EventCommand['type'], string> = {
   giveItem:'Give Item',transfer:'Transfer Player',battle:'Start Battle',questStart:'Start Quest',questAdvance:'Advance Quest',questComplete:'Complete Quest',shop:'Open Shop',inn:'Open Inn',cutscene:'Cutscene',music:'Change Music',
   setMovementRoute:'Set Movement Route',changeHp:'Change HP',changeMp:'Change MP',recoverAll:'Recover All',changeLevel:'Change Level',changeExp:'Change EXP',changePartyMember:'Change Party Member',changeSkill:'Change Skill',setEventLocation:'Set Event Location',scrollMap:'Scroll Map',eraseEvent:'Erase Event',gameOver:'Game Over',script:'Script',
   inputNumber:'Input Number',selectItem:'Select Item',scrollingText:'Show Scrolling Text',controlTimer:'Control Timer',commonEvent:'Common Event',comment:'Comment',changeWeapons:'Change Weapons',changeArmors:'Change Armors',changeTp:'Change TP',changeState:'Change State',changeParameter:'Change Parameter',changeEquipment:'Change Equipment',changeName:'Change Name',changeClass:'Change Class',changeNickname:'Change Nickname',changeProfile:'Change Profile',
-  setVehicleLocation:'Set Vehicle Location',getOnOffVehicle:'Get on/off Vehicle',changePlayerFollowers:'Change Player Followers',gatherFollowers:'Gather Followers',rotatePicture:'Rotate Picture',tintPicture:'Tint Picture',playBgm:'Play BGM',fadeoutBgm:'Fadeout BGM',saveBgm:'Save BGM',replayBgm:'Replay BGM',playMovie:'Play Movie'
+  setVehicleLocation:'Set Vehicle Location',getOnOffVehicle:'Get on/off Vehicle',changePlayerFollowers:'Change Player Followers',gatherFollowers:'Gather Followers',rotatePicture:'Rotate Picture',tintPicture:'Tint Picture',playBgm:'Play BGM',fadeoutBgm:'Fadeout BGM',saveBgm:'Save BGM',replayBgm:'Replay BGM',playMovie:'Play Movie',
+  nameInput:'Name Input Processing',openMenu:'Open Menu Screen',openSave:'Open Save Screen',returnToTitle:'Return to Title Screen',
+  changeBattleBgm:'Change Battle BGM',changeVictoryMe:'Change Victory ME',changeDefeatMe:'Change Defeat ME',changeVehicleBgm:'Change Vehicle BGM',
+  changeSaveAccess:'Change Save Access',changeMenuAccess:'Change Menu Access',changeEncounter:'Change Encounter',changeFormationAccess:'Change Formation Access',
+  changeWindowColor:'Change Window Color',changeActorImages:'Change Actor Images',changeVehicleImage:'Change Vehicle Image',
+  changeMapNameDisplay:'Change Map Name Display',changeTileset:'Change Tileset',changeBattleBack:'Change Battle Background',changeParallax:'Change Parallax',
+  getLocationInfo:'Get Location Info',changeEnemyHp:'Change Enemy HP',changeEnemyMp:'Change Enemy MP',changeEnemyTp:'Change Enemy TP',
+  changeEnemyState:'Change Enemy State',enemyRecoverAll:'Enemy Recover All',enemyAppear:'Enemy Appear',enemyTransform:'Enemy Transform',
+  showBattleAnimation:'Show Battle Animation',forceAction:'Force Action',abortBattle:'Abort Battle',pluginCommand:'Plugin Command'
 };
 
 export const commandPreview = (command: EventCommand): string => {
@@ -114,6 +123,37 @@ export const commandPreview = (command: EventCommand): string => {
   if(command.type==='saveBgm')return `Save BGM`;
   if(command.type==='replayBgm')return `Replay BGM`;
   if(command.type==='playMovie')return `Movie: ${command.path}`;
+  if(command.type==='nameInput')return `Name Input: [${command.actorId}] (${command.maxDigits} digits)`;
+  if(command.type==='openMenu')return `Open Menu Screen`;
+  if(command.type==='openSave')return `Open Save Screen`;
+  if(command.type==='returnToTitle')return `Return to Title Screen`;
+  if(command.type==='changeBattleBgm')return `Battle BGM: ${command.path}`;
+  if(command.type==='changeVictoryMe')return `Victory ME: ${command.path}`;
+  if(command.type==='changeDefeatMe')return `Defeat ME: ${command.path}`;
+  if(command.type==='changeVehicleBgm')return `Vehicle BGM [${command.vehicleType}]: ${command.path}`;
+  if(command.type==='changeSaveAccess')return `Save Access: ${command.enabled ? 'ON' : 'OFF'}`;
+  if(command.type==='changeMenuAccess')return `Menu Access: ${command.enabled ? 'ON' : 'OFF'}`;
+  if(command.type==='changeEncounter')return `Encounter: ${command.enabled ? 'ON' : 'OFF'}`;
+  if(command.type==='changeFormationAccess')return `Formation Access: ${command.enabled ? 'ON' : 'OFF'}`;
+  if(command.type==='changeWindowColor')return `Window Color: [${command.tone.join(',')}]`;
+  if(command.type==='changeActorImages')return `Actor Images: [${command.actorId}]`;
+  if(command.type==='changeVehicleImage')return `Vehicle Image [${command.vehicleType}]: ${command.imageName}(${command.imageIndex})`;
+  if(command.type==='changeMapNameDisplay')return `Map Name Display: ${command.enabled ? 'ON' : 'OFF'}`;
+  if(command.type==='changeTileset')return `Tileset: [${command.tilesetId}]`;
+  if(command.type==='changeBattleBack')return `Battleback: ${command.battleback1Name ?? ''} / ${command.battleback2Name ?? ''}`;
+  if(command.type==='changeParallax')return `Parallax: ${command.name}`;
+  if(command.type==='getLocationInfo')return `Location Info -> Var [${command.variableId}]: ${command.infoType} at (${command.x}, ${command.y})`;
+  if(command.type==='changeEnemyHp')return `Enemy #${command.enemyIndex + 1} HP ${command.operation === 'sub' ? '-' : '+'}${command.amount}`;
+  if(command.type==='changeEnemyMp')return `Enemy #${command.enemyIndex + 1} MP ${command.operation === 'sub' ? '-' : '+'}${command.amount}`;
+  if(command.type==='changeEnemyTp')return `Enemy #${command.enemyIndex + 1} TP ${command.operation === 'sub' ? '-' : '+'}${command.amount}`;
+  if(command.type==='changeEnemyState')return `Enemy #${command.enemyIndex + 1} State: ${command.operation === 'add' ? '+' : '-'}[${command.stateId}]`;
+  if(command.type==='enemyRecoverAll')return `Enemy Recover All: #${command.enemyIndex + 1}`;
+  if(command.type==='enemyAppear')return `Enemy Appear: #${command.enemyIndex + 1}`;
+  if(command.type==='enemyTransform')return `Enemy Transform: #${command.enemyIndex + 1} -> [${command.enemyId}]`;
+  if(command.type==='showBattleAnimation')return `Battle Anim: ${command.animationId} -> Enemy #${command.enemyIndex + 1}`;
+  if(command.type==='forceAction')return `Force Action: ${command.battler} #${command.index + 1} -> ${command.skillId}`;
+  if(command.type==='abortBattle')return `Abort Battle`;
+  if(command.type==='pluginCommand')return `Plugin: ${command.pluginName} -> ${command.commandName}`;
   return '';
 };
 
@@ -197,5 +237,36 @@ export function createCommand(type: EventCommand['type'], bundle: ProjectBundle)
   if(type==='saveBgm')return{type};
   if(type==='replayBgm')return{type};
   if(type==='playMovie')return{type,path:'assets/movies/movie1.webm'};
+  if(type==='nameInput')return{type,actorId:bundle.project.party[0]??'actor.missing',maxDigits:8};
+  if(type==='openMenu')return{type};
+  if(type==='openSave')return{type};
+  if(type==='returnToTitle')return{type};
+  if(type==='changeBattleBgm')return{type,path:'assets/audio/bgm/Battle1.ogg'};
+  if(type==='changeVictoryMe')return{type,path:'assets/audio/me/Victory1.ogg'};
+  if(type==='changeDefeatMe')return{type,path:'assets/audio/me/Defeat1.ogg'};
+  if(type==='changeVehicleBgm')return{type,vehicleType:'boat',path:'assets/audio/bgm/Ship1.ogg'};
+  if(type==='changeSaveAccess')return{type,enabled:true};
+  if(type==='changeMenuAccess')return{type,enabled:true};
+  if(type==='changeEncounter')return{type,enabled:true};
+  if(type==='changeFormationAccess')return{type,enabled:true};
+  if(type==='changeWindowColor')return{type,tone:[0,0,0]};
+  if(type==='changeActorImages')return{type,actorId:bundle.project.party[0]??'actor.missing',characterName:'Actor1',characterIndex:0};
+  if(type==='changeVehicleImage')return{type,vehicleType:'boat',imageName:'Vehicle',imageIndex:0};
+  if(type==='changeMapNameDisplay')return{type,enabled:true};
+  if(type==='changeTileset')return{type,tilesetId:bundle.game.tilesets?.[0]?.id??'tileset.overworld'};
+  if(type==='changeBattleBack')return{type,battleback1Name:'Grassland',battleback2Name:'Grassland'};
+  if(type==='changeParallax')return{type,name:'Mountains',loopX:false,loopY:false,sx:0,sy:0};
+  if(type==='getLocationInfo')return{type,variableId:'info.val',infoType:'terrainTag',x:0,y:0};
+  if(type==='changeEnemyHp')return{type,enemyIndex:0,operation:'sub',amount:50,allowKnockout:false};
+  if(type==='changeEnemyMp')return{type,enemyIndex:0,operation:'sub',amount:20};
+  if(type==='changeEnemyTp')return{type,enemyIndex:0,operation:'add',amount:20};
+  if(type==='changeEnemyState')return{type,enemyIndex:0,operation:'add',stateId:bundle.game.states?.[0]?.id??'state.poison'};
+  if(type==='enemyRecoverAll')return{type,enemyIndex:0};
+  if(type==='enemyAppear')return{type,enemyIndex:0};
+  if(type==='enemyTransform')return{type,enemyIndex:0,enemyId:bundle.game.enemies[0]?.id??'enemy.slime'};
+  if(type==='showBattleAnimation')return{type,enemyIndex:0,animationId:'anim.slash'};
+  if(type==='forceAction')return{type,battler:'actor',index:0,skillId:bundle.game.skills[0]?.id??'skill.attack'};
+  if(type==='abortBattle')return{type};
+  if(type==='pluginCommand')return{type,pluginName:'SamplePlugin',commandName:'runCommand',args:{}};
   return{type:'music',mood:'calm'};
 }

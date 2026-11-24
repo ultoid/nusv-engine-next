@@ -6,7 +6,53 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Pemetaan & Implementasi Lengkap Perintah Tab 2 RPG Maker MZ (Movement, Character, Picture, Timing, Screen, Audio & Video)
+### 1. Pemetaan & Implementasi Lengkap Perintah Tab 3 RPG Maker MZ (Scene Control, System Settings, Map, Battle, Advanced)
+- **31 Perintah Baru Standar RPG Maker MZ Menuntaskan 100% Paritas**:
+  - **Scene Control**:
+    - `Name Input Processing...` (`nameInput`): Membuka dialog input nama kustom untuk aktor dengan batasan digit karakter.
+    - `Open Menu Screen` (`openMenu`): Membuka layar menu utama party langsung dari alur event.
+    - `Open Save Screen` (`openSave`): Membuka layar save/load game secara langsung.
+    - `Return to Title Screen` (`returnToTitle`): Mereset sesi game dan kembali ke title screen.
+  - **System Settings**:
+    - `Change Battle BGM...` (`changeBattleBgm`): Mengubah musik latar pertarungan secara dinamis.
+    - `Change Victory ME...` (`changeVictoryMe`): Mengubah jingle ME saat pertempuran dimenangkan.
+    - `Change Defeat ME...` (`changeDefeatMe`): Mengubah jingle ME saat pertempuran kalah/game over.
+    - `Change Vehicle BGM...` (`changeVehicleBgm`): Mengubah BGM untuk kendaraan (`boat`, `ship`, `airship`).
+    - `Change Save Access...` (`changeSaveAccess`): Mengizinkan atau melarang akses save pemain.
+    - `Change Menu Access...` (`changeMenuAccess`): Mengizinkan atau melarang pembukaan menu utama.
+    - `Change Encounter...` (`changeEncounter`): Mengaktifkan atau menonaktifkan encounter musuh acak di peta.
+    - `Change Formation Access...` (`changeFormationAccess`): Mengizinkan atau mengunci perubahan susunan formasi party.
+    - `Change Window Color...` (`changeWindowColor`): Menyesuaikan tone warna jendela dialog/UI (RGB).
+    - `Change Actor Images...` (`changeActorImages`): Mengganti grafis karakter, wajah (*Face*), atau battler aktor secara dinamis.
+    - `Change Vehicle Image...` (`changeVehicleImage`): Mengganti spritesheet dan frame kendaraan.
+  - **Map**:
+    - `Change Map Name Display...` (`changeMapNameDisplay`): Mengatur apakah nama peta ditampilkan saat transfer masuk.
+    - `Change Tileset...` (`changeTileset`): Mengganti tileset aktif pada peta saat ini.
+    - `Change Battle Background...` (`changeBattleBack`): Mengubah grafis latar medan dan pemandangan pertarungan (*Battleback 1 & 2*).
+    - `Change Parallax...` (`changeParallax`): Mengubah gambar latar belakang parallax peta beserta opsi perulangan (*Loop X/Y*).
+    - `Get Location Info...` (`getLocationInfo`): Membaca informasi sel peta (`terrainTag`, `eventId`, `tileId`, `regionId`) dan menyimpannya ke variabel.
+  - **Battle**:
+    - `Change Enemy HP...` (`changeEnemyHp`): Menambah/mengurangi HP musuh saat pertempuran dengan opsi knock out.
+    - `Change Enemy MP...` (`changeEnemyMp`): Menambah/mengurangi MP musuh.
+    - `Change Enemy TP...` (`changeEnemyTp`): Menambah/mengurangi TP musuh.
+    - `Change Enemy State...` (`changeEnemyState`): Menerapkan atau mencabut status efek pada musuh.
+    - `Enemy Recover All...` (`enemyRecoverAll`): Memulihkan seluruh HP/MP dan menghapus status buruk musuh.
+    - `Enemy Appear...` (`enemyAppear`): Memunculkan musuh yang sebelumnya diset tersembunyi (*Hidden*).
+    - `Enemy Transform...` (`enemyTransform`): Mengubah jenis musuh di slot battle menjadi musuh lain.
+    - `Show Battle Animation...` (`showBattleAnimation`): Memainkan efek animasi pertempuran pada musuh tertentu atau seluruh troop.
+    - `Force Action...` (`forceAction`): Memaksa battler (aktor atau musuh) mengeksekusi skill tertentu seketika.
+    - `Abort Battle` (`abortBattle`): Menghentikan pertempuran aktif dan kembali ke peta.
+  - **Advanced**:
+    - `Plugin Command...` (`pluginCommand`): Mengeksekusi perintah plugin kustom dengan argumen terstruktur.
+- **Tata Letak Otentik 2-Kolom Tab 3 (`EventCommandPickerModal`)**:
+  - Kolom Kiri: `Scene Control` dan `System Settings`.
+  - Kolom Kanan: `Map`, `Battle`, dan `Advanced`.
+- **Form Editor Visual di `CommandFields.tsx`**:
+  - UI terintegrasi untuk seluruh 31 perintah baru di Tab 3.
+- **Pengujian & Validasi**:
+  - Penambahan skenario test lengkap di `tests/stage17-mz-scene-and-battle-commands.test.js` (total 110/110 unit test lulus).
+
+### 2. Pemetaan & Implementasi Lengkap Perintah Tab 2 RPG Maker MZ (Movement, Character, Picture, Timing, Screen, Audio & Video)
 - **11 Perintah Baru Standar RPG Maker MZ**:
   - **Movement**:
     - `Set Vehicle Location...` (`setVehicleLocation`): Menetapkan lokasi kendaraan (`boat`, `ship`, `airship`) ke koordinat peta tertentu.

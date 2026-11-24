@@ -159,6 +159,37 @@ export type EventCommand =
   | { type: 'saveBgm' }
   | { type: 'replayBgm' }
   | { type: 'playMovie'; path: string }
+  | { type: 'nameInput'; actorId: string; maxDigits: number }
+  | { type: 'openMenu' }
+  | { type: 'openSave' }
+  | { type: 'returnToTitle' }
+  | { type: 'changeBattleBgm'; path: string; volume?: number; pitch?: number }
+  | { type: 'changeVictoryMe'; path: string; volume?: number; pitch?: number }
+  | { type: 'changeDefeatMe'; path: string; volume?: number; pitch?: number }
+  | { type: 'changeVehicleBgm'; vehicleType: 'boat' | 'ship' | 'airship'; path: string; volume?: number; pitch?: number }
+  | { type: 'changeSaveAccess'; enabled: boolean }
+  | { type: 'changeMenuAccess'; enabled: boolean }
+  | { type: 'changeEncounter'; enabled: boolean }
+  | { type: 'changeFormationAccess'; enabled: boolean }
+  | { type: 'changeWindowColor'; tone: [number, number, number] }
+  | { type: 'changeActorImages'; actorId: string; characterName?: string; characterIndex?: number; faceName?: string; faceIndex?: number; battlerName?: string }
+  | { type: 'changeVehicleImage'; vehicleType: 'boat' | 'ship' | 'airship'; imageName: string; imageIndex: number }
+  | { type: 'changeMapNameDisplay'; enabled: boolean }
+  | { type: 'changeTileset'; tilesetId: string }
+  | { type: 'changeBattleBack'; battleback1Name?: string; battleback2Name?: string }
+  | { type: 'changeParallax'; name: string; loopX?: boolean; loopY?: boolean; sx?: number; sy?: number }
+  | { type: 'getLocationInfo'; variableId: string; infoType: 'terrainTag' | 'eventId' | 'tileId' | 'regionId'; x: number; y: number }
+  | { type: 'changeEnemyHp'; enemyIndex: number; operation: 'add' | 'sub'; amount: number; allowKnockout?: boolean }
+  | { type: 'changeEnemyMp'; enemyIndex: number; operation: 'add' | 'sub'; amount: number }
+  | { type: 'changeEnemyTp'; enemyIndex: number; operation: 'add' | 'sub'; amount: number }
+  | { type: 'changeEnemyState'; enemyIndex: number; operation: 'add' | 'remove'; stateId: string }
+  | { type: 'enemyRecoverAll'; enemyIndex: number }
+  | { type: 'enemyAppear'; enemyIndex: number }
+  | { type: 'enemyTransform'; enemyIndex: number; enemyId: string }
+  | { type: 'showBattleAnimation'; enemyIndex: number; animationId: string }
+  | { type: 'forceAction'; battler: 'actor' | 'enemy'; index: number; skillId: string; targetIndex?: number }
+  | { type: 'abortBattle' }
+  | { type: 'pluginCommand'; pluginName: string; commandName: string; args?: Record<string, any> }
   | { type: 'script'; code: string };
 
 export interface PictureState {
@@ -260,4 +291,4 @@ export interface MapData {
 export interface AssetEntry { id: string; type: string; path: string; category?: string; license?: string; size?: number; [key: string]: unknown }
 export interface AssetManifest { schemaVersion: 1; assets: Array<AssetEntry>; [key: string]: unknown }
 export interface ProjectBundle { root?: string; project: ProjectManifest; game: GameData; maps: Record<string, MapData>; assets: AssetManifest }
-export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]>; vehiclePositions?: Record<string, { mapId: string; x: number; y: number }>; inVehicle?: 'boat' | 'ship' | 'airship' | null; showFollowers?: boolean; pictureRotations?: Record<number, number> }
+export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]>; vehiclePositions?: Record<string, { mapId: string; x: number; y: number }>; inVehicle?: 'boat' | 'ship' | 'airship' | null; showFollowers?: boolean; pictureRotations?: Record<number, number>; systemSettings?: { saveEnabled?: boolean; menuEnabled?: boolean; encounterEnabled?: boolean; formationEnabled?: boolean; battleBgm?: string; victoryMe?: string; defeatMe?: string; vehicleBgm?: Record<string, string>; windowColor?: [number, number, number] }; mapNameDisplay?: boolean; activeTilesetId?: string; parallax?: { name: string; loopX?: boolean; loopY?: boolean; sx?: number; sy?: number }; battleBack?: { battleback1?: string; battleback2?: string }; actorImages?: Record<string, { characterName?: string; characterIndex?: number; faceName?: string; faceIndex?: number; battlerName?: string }>; vehicleImages?: Record<string, { imageName: string; imageIndex: number }>; enemyBattleState?: Record<number, { hp?: number; mp?: number; tp?: number; states?: string[]; hidden?: boolean; enemyId?: string }> }

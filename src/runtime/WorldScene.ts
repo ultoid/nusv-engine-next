@@ -1,7 +1,7 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
 import type { MapEvent, ProgressState, ProjectBundle } from '../core/types.js';
 import { autotileMask, DEFAULT_TILESETS, getAutotileQuadrants, tileDefinition } from '../core/map-layers.js';
-import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, type Direction, type EventIO } from '../core/world.js';
+import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, terrainTag, type Direction, type EventIO } from '../core/world.js';
 import { AdventureController, applyRuntimeSettings } from './AdventureController.js';
 import type { AudioManager } from './AudioManager.js';
 import { BattleController } from './BattleController.js';
@@ -429,7 +429,48 @@ export class WorldScene {
       setVehicleLocation: () => {},
       getOnOffVehicle: () => {},
       changePlayerFollowers: () => {},
-      gatherFollowers: async () => {}
+      gatherFollowers: async () => {},
+      nameInput: async (actorId: string) => {
+        const currentName = this.state.actorOverrides?.[actorId]?.name ?? this.bundle.game.actors.find(a => a.id === actorId)?.name ?? 'Hero';
+        return currentName;
+      },
+      openMenu: async () => {
+        await this.openParty();
+      },
+      openSave: async () => {},
+      returnToTitle: async () => {},
+      changeBattleBgm: () => {},
+      changeVictoryMe: () => {},
+      changeDefeatMe: () => {},
+      changeVehicleBgm: () => {},
+      changeSaveAccess: () => {},
+      changeMenuAccess: () => {},
+      changeEncounter: () => {},
+      changeFormationAccess: () => {},
+      changeWindowColor: () => {},
+      changeActorImages: () => {},
+      changeVehicleImage: () => {},
+      changeMapNameDisplay: () => {},
+      changeTileset: () => {},
+      changeBattleBack: () => {},
+      changeParallax: () => {},
+      getLocationInfo: async (_varId, infoType, x, y) => {
+        const curMap = this.bundle.maps[this.state.mapId];
+        if (infoType === 'terrainTag') return terrainTag(this.bundle, this.state.mapId, x, y);
+        if (infoType === 'regionId') return curMap?.regions ? (curMap.regions[y * curMap.width + x] ?? 0) : 0;
+        return 0;
+      },
+      changeEnemyHp: () => {},
+      changeEnemyMp: () => {},
+      changeEnemyTp: () => {},
+      changeEnemyState: () => {},
+      enemyRecoverAll: () => {},
+      enemyAppear: () => {},
+      enemyTransform: () => {},
+      showBattleAnimation: async () => {},
+      forceAction: async () => {},
+      abortBattle: () => {},
+      pluginCommand: async () => {}
     };
   }
 

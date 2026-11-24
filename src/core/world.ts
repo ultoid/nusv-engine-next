@@ -59,6 +59,37 @@ export interface EventIO {
   getOnOffVehicle?(): void;
   changePlayerFollowers?(value: boolean): void;
   gatherFollowers?(): Promise<void>;
+  nameInput?(actorId: string, maxDigits: number): Promise<string>;
+  openMenu?(): Promise<void>;
+  openSave?(): Promise<void>;
+  returnToTitle?(): Promise<void>;
+  changeBattleBgm?(path: string, volume?: number, pitch?: number): void;
+  changeVictoryMe?(path: string, volume?: number, pitch?: number): void;
+  changeDefeatMe?(path: string, volume?: number, pitch?: number): void;
+  changeVehicleBgm?(vehicleType: 'boat' | 'ship' | 'airship', path: string, volume?: number, pitch?: number): void;
+  changeSaveAccess?(enabled: boolean): void;
+  changeMenuAccess?(enabled: boolean): void;
+  changeEncounter?(enabled: boolean): void;
+  changeFormationAccess?(enabled: boolean): void;
+  changeWindowColor?(tone: [number, number, number]): void;
+  changeActorImages?(actorId: string, characterName?: string, characterIndex?: number, faceName?: string, faceIndex?: number, battlerName?: string): void;
+  changeVehicleImage?(vehicleType: 'boat' | 'ship' | 'airship', imageName: string, imageIndex: number): void;
+  changeMapNameDisplay?(enabled: boolean): void;
+  changeTileset?(tilesetId: string): void;
+  changeBattleBack?(battleback1Name?: string, battleback2Name?: string): void;
+  changeParallax?(name: string, loopX?: boolean, loopY?: boolean, sx?: number, sy?: number): void;
+  getLocationInfo?(variableId: string, infoType: 'terrainTag' | 'eventId' | 'tileId' | 'regionId', x: number, y: number): Promise<number>;
+  changeEnemyHp?(enemyIndex: number, operation: 'add' | 'sub', amount: number, allowKnockout?: boolean): void;
+  changeEnemyMp?(enemyIndex: number, operation: 'add' | 'sub', amount: number): void;
+  changeEnemyTp?(enemyIndex: number, operation: 'add' | 'sub', amount: number): void;
+  changeEnemyState?(enemyIndex: number, operation: 'add' | 'remove', stateId: string): void;
+  enemyRecoverAll?(enemyIndex: number): void;
+  enemyAppear?(enemyIndex: number): void;
+  enemyTransform?(enemyIndex: number, enemyId: string): void;
+  showBattleAnimation?(enemyIndex: number, animationId: string): Promise<void>;
+  forceAction?(battler: 'actor' | 'enemy', index: number, skillId: string, targetIndex?: number): Promise<void>;
+  abortBattle?(): void;
+  pluginCommand?(pluginName: string, commandName: string, args?: Record<string, any>): Promise<void>;
 }
 
 export const directionDelta: Record<Direction, [number, number]> = {
@@ -812,6 +843,159 @@ async function runCommandList(
       io.replayBgm?.();
     } else if (command.type === 'playMovie') {
       await io.playMovie?.(command.path);
+    } else if (command.type === 'nameInput') {
+      let newName = '';
+      if (io.nameInput) {
+        newName = await io.nameInput(command.actorId, command.maxDigits);
+      } else {
+        newName = next.actorOverrides?.[command.actorId]?.name ?? bundle.game.actors.find(a => a.id === command.actorId)?.name ?? 'Hero';
+      }
+      if (newName) {
+        if (!next.actorOverrides) next.actorOverrides = {};
+        next.actorOverrides[command.actorId] = { ...next.actorOverrides[command.actorId], name: newName };
+      }
+    } else if (command.type === 'openMenu') {
+      await io.openMenu?.();
+    } else if (command.type === 'openSave') {
+      await io.openSave?.();
+    } else if (command.type === 'returnToTitle') {
+      await io.returnToTitle?.();
+    } else if (command.type === 'changeBattleBgm') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.battleBgm = command.path;
+      io.changeBattleBgm?.(command.path, command.volume, command.pitch);
+    } else if (command.type === 'changeVictoryMe') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.victoryMe = command.path;
+      io.changeVictoryMe?.(command.path, command.volume, command.pitch);
+    } else if (command.type === 'changeDefeatMe') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.defeatMe = command.path;
+      io.changeDefeatMe?.(command.path, command.volume, command.pitch);
+    } else if (command.type === 'changeVehicleBgm') {
+      if (!next.systemSettings) next.systemSettings = {};
+      if (!next.systemSettings.vehicleBgm) next.systemSettings.vehicleBgm = {};
+      next.systemSettings.vehicleBgm[command.vehicleType] = command.path;
+      io.changeVehicleBgm?.(command.vehicleType, command.path, command.volume, command.pitch);
+    } else if (command.type === 'changeSaveAccess') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.saveEnabled = command.enabled;
+      io.changeSaveAccess?.(command.enabled);
+    } else if (command.type === 'changeMenuAccess') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.menuEnabled = command.enabled;
+      io.changeMenuAccess?.(command.enabled);
+    } else if (command.type === 'changeEncounter') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.encounterEnabled = command.enabled;
+      io.changeEncounter?.(command.enabled);
+    } else if (command.type === 'changeFormationAccess') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.formationEnabled = command.enabled;
+      io.changeFormationAccess?.(command.enabled);
+    } else if (command.type === 'changeWindowColor') {
+      if (!next.systemSettings) next.systemSettings = {};
+      next.systemSettings.windowColor = command.tone;
+      io.changeWindowColor?.(command.tone);
+    } else if (command.type === 'changeActorImages') {
+      if (!next.actorImages) next.actorImages = {};
+      next.actorImages[command.actorId] = {
+        characterName: command.characterName,
+        characterIndex: command.characterIndex,
+        faceName: command.faceName,
+        faceIndex: command.faceIndex,
+        battlerName: command.battlerName
+      };
+      io.changeActorImages?.(command.actorId, command.characterName, command.characterIndex, command.faceName, command.faceIndex, command.battlerName);
+    } else if (command.type === 'changeVehicleImage') {
+      if (!next.vehicleImages) next.vehicleImages = {};
+      next.vehicleImages[command.vehicleType] = { imageName: command.imageName, imageIndex: command.imageIndex };
+      io.changeVehicleImage?.(command.vehicleType, command.imageName, command.imageIndex);
+    } else if (command.type === 'changeMapNameDisplay') {
+      next.mapNameDisplay = command.enabled;
+      io.changeMapNameDisplay?.(command.enabled);
+    } else if (command.type === 'changeTileset') {
+      next.activeTilesetId = command.tilesetId;
+      io.changeTileset?.(command.tilesetId);
+    } else if (command.type === 'changeBattleBack') {
+      next.battleBack = { battleback1: command.battleback1Name, battleback2: command.battleback2Name };
+      io.changeBattleBack?.(command.battleback1Name, command.battleback2Name);
+    } else if (command.type === 'changeParallax') {
+      next.parallax = { name: command.name, loopX: command.loopX, loopY: command.loopY, sx: command.sx, sy: command.sy };
+      io.changeParallax?.(command.name, command.loopX, command.loopY, command.sx, command.sy);
+    } else if (command.type === 'getLocationInfo') {
+      let val = 0;
+      if (io.getLocationInfo) {
+        val = await io.getLocationInfo(command.variableId, command.infoType, command.x, command.y);
+      } else {
+        const curMap = bundle.maps[currentMapId];
+        if (command.infoType === 'terrainTag') {
+          val = terrainTag(bundle, currentMapId, command.x, command.y);
+        } else if (command.infoType === 'regionId') {
+          if (curMap?.regions) val = curMap.regions[command.y * curMap.width + command.x] ?? 0;
+        } else if (command.infoType === 'eventId') {
+          const ev = curMap?.events.find(e => {
+            const p = eventPosition(next, currentMapId, e);
+            return p.x === command.x && p.y === command.y;
+          });
+          val = ev ? (Number(ev.id) || 1) : 0;
+        } else if (command.infoType === 'tileId') {
+          const l0 = curMap?.layers[0];
+          val = l0 ? (l0.data[command.y * curMap.width + command.x] ?? 0) : 0;
+        }
+      }
+      next.variables[command.variableId] = val;
+    } else if (command.type === 'changeEnemyHp') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      const curHp = cur.hp ?? 100;
+      const newHp = command.operation === 'add' ? curHp + command.amount : (command.allowKnockout ? Math.max(0, curHp - command.amount) : Math.max(1, curHp - command.amount));
+      next.enemyBattleState[command.enemyIndex] = { ...cur, hp: newHp };
+      io.changeEnemyHp?.(command.enemyIndex, command.operation, command.amount, command.allowKnockout);
+    } else if (command.type === 'changeEnemyMp') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      const curMp = cur.mp ?? 50;
+      const newMp = command.operation === 'add' ? curMp + command.amount : Math.max(0, curMp - command.amount);
+      next.enemyBattleState[command.enemyIndex] = { ...cur, mp: newMp };
+      io.changeEnemyMp?.(command.enemyIndex, command.operation, command.amount);
+    } else if (command.type === 'changeEnemyTp') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      const curTp = cur.tp ?? 0;
+      const newTp = command.operation === 'add' ? Math.min(100, curTp + command.amount) : Math.max(0, curTp - command.amount);
+      next.enemyBattleState[command.enemyIndex] = { ...cur, tp: newTp };
+      io.changeEnemyTp?.(command.enemyIndex, command.operation, command.amount);
+    } else if (command.type === 'changeEnemyState') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      const curStates = cur.states ?? [];
+      const newStates = command.operation === 'add' ? (curStates.includes(command.stateId) ? curStates : [...curStates, command.stateId]) : curStates.filter(id => id !== command.stateId);
+      next.enemyBattleState[command.enemyIndex] = { ...cur, states: newStates };
+      io.changeEnemyState?.(command.enemyIndex, command.operation, command.stateId);
+    } else if (command.type === 'enemyRecoverAll') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      next.enemyBattleState[command.enemyIndex] = { ...cur, hp: 9999, mp: 9999, states: [] };
+      io.enemyRecoverAll?.(command.enemyIndex);
+    } else if (command.type === 'enemyAppear') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      next.enemyBattleState[command.enemyIndex] = { ...cur, hidden: false };
+      io.enemyAppear?.(command.enemyIndex);
+    } else if (command.type === 'enemyTransform') {
+      if (!next.enemyBattleState) next.enemyBattleState = {};
+      const cur = next.enemyBattleState[command.enemyIndex] ?? {};
+      next.enemyBattleState[command.enemyIndex] = { ...cur, enemyId: command.enemyId };
+      io.enemyTransform?.(command.enemyIndex, command.enemyId);
+    } else if (command.type === 'showBattleAnimation') {
+      await io.showBattleAnimation?.(command.enemyIndex, command.animationId);
+    } else if (command.type === 'forceAction') {
+      await io.forceAction?.(command.battler, command.index, command.skillId, command.targetIndex);
+    } else if (command.type === 'abortBattle') {
+      io.abortBattle?.();
+    } else if (command.type === 'pluginCommand') {
+      await io.pluginCommand?.(command.pluginName, command.commandName, command.args);
     }
 
     pc++;

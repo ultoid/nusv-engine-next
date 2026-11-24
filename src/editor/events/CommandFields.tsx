@@ -734,6 +734,348 @@ export function CommandFields({
       </label>
     </>;
 
+    if (command.type === 'nameInput') return <>
+      <label>Actor
+        <select value={command.actorId} onChange={e=>onChange({...command,actorId:e.target.value})}>
+          {bundle.game.actors.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}
+        </select>
+      </label>
+      <label>Max Digits (Characters)
+        <input type="number" min="1" max="16" value={command.maxDigits} onChange={e=>onChange({...command,maxDigits:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'openMenu') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Open the main party menu screen. (No parameters)</div>;
+
+    if (command.type === 'openSave') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Open the save/load screen. (No parameters)</div>;
+
+    if (command.type === 'returnToTitle') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Return the game to the title screen. (No parameters)</div>;
+
+    if (command.type === 'changeBattleBgm') return <>
+      <label>Battle BGM Audio File
+        <input type="text" value={command.path} placeholder="assets/audio/bgm/Battle1.ogg" onChange={e=>onChange({...command,path:e.target.value})}/>
+      </label>
+      <label>Volume (0..1)
+        <input type="number" min="0" max="1" step="0.1" value={command.volume ?? 1} onChange={e=>onChange({...command,volume:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeVictoryMe') return <>
+      <label>Victory ME Audio File
+        <input type="text" value={command.path} placeholder="assets/audio/me/Victory1.ogg" onChange={e=>onChange({...command,path:e.target.value})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeDefeatMe') return <>
+      <label>Defeat ME Audio File
+        <input type="text" value={command.path} placeholder="assets/audio/me/Defeat1.ogg" onChange={e=>onChange({...command,path:e.target.value})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeVehicleBgm') return <>
+      <label>Vehicle
+        <select value={command.vehicleType} onChange={e=>onChange({...command,vehicleType:e.target.value as any})}>
+          <option value="boat">Boat</option>
+          <option value="ship">Ship</option>
+          <option value="airship">Airship</option>
+        </select>
+      </label>
+      <label>Audio File
+        <input type="text" value={command.path} placeholder="assets/audio/bgm/Ship1.ogg" onChange={e=>onChange({...command,path:e.target.value})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeSaveAccess') return <>
+      <label>Save Access
+        <select value={command.enabled ? 'ON' : 'OFF'} onChange={e=>onChange({...command,enabled:e.target.value==='ON'})}>
+          <option value="ON">Enable (ON)</option>
+          <option value="OFF">Disable (OFF)</option>
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'changeMenuAccess') return <>
+      <label>Menu Access
+        <select value={command.enabled ? 'ON' : 'OFF'} onChange={e=>onChange({...command,enabled:e.target.value==='ON'})}>
+          <option value="ON">Enable (ON)</option>
+          <option value="OFF">Disable (OFF)</option>
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'changeEncounter') return <>
+      <label>Random Encounters
+        <select value={command.enabled ? 'ON' : 'OFF'} onChange={e=>onChange({...command,enabled:e.target.value==='ON'})}>
+          <option value="ON">Enable (ON)</option>
+          <option value="OFF">Disable (OFF)</option>
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'changeFormationAccess') return <>
+      <label>Formation Access
+        <select value={command.enabled ? 'ON' : 'OFF'} onChange={e=>onChange({...command,enabled:e.target.value==='ON'})}>
+          <option value="ON">Enable (ON)</option>
+          <option value="OFF">Disable (OFF)</option>
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'changeMapNameDisplay') return <>
+      <label>Map Name Display
+        <select value={command.enabled ? 'ON' : 'OFF'} onChange={e=>onChange({...command,enabled:e.target.value==='ON'})}>
+          <option value="ON">ON (Show on map entry)</option>
+          <option value="OFF">OFF (Hide)</option>
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'changeWindowColor') return <>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',gap:'8px'}}>
+        <label>Red (-255..255)
+          <input type="number" min="-255" max="255" value={command.tone[0]} onChange={e=>onChange({...command,tone:[Number(e.target.value),command.tone[1],command.tone[2]]})}/>
+        </label>
+        <label>Green (-255..255)
+          <input type="number" min="-255" max="255" value={command.tone[1]} onChange={e=>onChange({...command,tone:[command.tone[0],Number(e.target.value),command.tone[2]]})}/>
+        </label>
+        <label>Blue (-255..255)
+          <input type="number" min="-255" max="255" value={command.tone[2]} onChange={e=>onChange({...command,tone:[command.tone[0],command.tone[1],Number(e.target.value)]})}/>
+        </label>
+      </div>
+    </>;
+
+    if (command.type === 'changeActorImages') return <>
+      <label>Actor
+        <select value={command.actorId} onChange={e=>onChange({...command,actorId:e.target.value})}>
+          {bundle.game.actors.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}
+        </select>
+      </label>
+      <label>Character Sheet
+        <input type="text" value={command.characterName ?? ''} placeholder="Actor1" onChange={e=>onChange({...command,characterName:e.target.value})}/>
+      </label>
+      <label>Character Index (0..7)
+        <input type="number" min="0" max="7" value={command.characterIndex ?? 0} onChange={e=>onChange({...command,characterIndex:Number(e.target.value)})}/>
+      </label>
+      <label>Face Sheet
+        <input type="text" value={command.faceName ?? ''} placeholder="Actor1" onChange={e=>onChange({...command,faceName:e.target.value})}/>
+      </label>
+      <label>Face Index (0..7)
+        <input type="number" min="0" max="7" value={command.faceIndex ?? 0} onChange={e=>onChange({...command,faceIndex:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeVehicleImage') return <>
+      <label>Vehicle
+        <select value={command.vehicleType} onChange={e=>onChange({...command,vehicleType:e.target.value as any})}>
+          <option value="boat">Boat</option>
+          <option value="ship">Ship</option>
+          <option value="airship">Airship</option>
+        </select>
+      </label>
+      <label>Image File
+        <input type="text" value={command.imageName} placeholder="Vehicle" onChange={e=>onChange({...command,imageName:e.target.value})}/>
+      </label>
+      <label>Index (0..7)
+        <input type="number" min="0" max="7" value={command.imageIndex} onChange={e=>onChange({...command,imageIndex:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeTileset') return <>
+      <label>Tileset
+        <select value={command.tilesetId} onChange={e=>onChange({...command,tilesetId:e.target.value})}>
+          {(bundle.game.tilesets ?? []).map(t=><option key={t.id} value={t.id}>{t.name}</option>)}
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'changeBattleBack') return <>
+      <label>Battleback 1 (Terrain)
+        <input type="text" value={command.battleback1Name ?? ''} placeholder="Grassland" onChange={e=>onChange({...command,battleback1Name:e.target.value})}/>
+      </label>
+      <label>Battleback 2 (Background)
+        <input type="text" value={command.battleback2Name ?? ''} placeholder="Grassland" onChange={e=>onChange({...command,battleback2Name:e.target.value})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeParallax') return <>
+      <label>Parallax Image Name
+        <input type="text" value={command.name} placeholder="Mountains" onChange={e=>onChange({...command,name:e.target.value})}/>
+      </label>
+      <div style={{display:'flex',gap:'16px'}}>
+        <label style={{display:'flex',alignItems:'center',gap:'4px'}}>
+          <input type="checkbox" checked={command.loopX ?? false} onChange={e=>onChange({...command,loopX:e.target.checked})}/>
+          <span>Loop X</span>
+        </label>
+        <label style={{display:'flex',alignItems:'center',gap:'4px'}}>
+          <input type="checkbox" checked={command.loopY ?? false} onChange={e=>onChange({...command,loopY:e.target.checked})}/>
+          <span>Loop Y</span>
+        </label>
+      </div>
+    </>;
+
+    if (command.type === 'getLocationInfo') return <>
+      <label>Target Variable
+        <input type="text" value={command.variableId} onChange={e=>onChange({...command,variableId:e.target.value})}/>
+      </label>
+      <label>Info Type
+        <select value={command.infoType} onChange={e=>onChange({...command,infoType:e.target.value as any})}>
+          <option value="terrainTag">Terrain Tag</option>
+          <option value="eventId">Event ID</option>
+          <option value="tileId">Tile ID (Layer 1)</option>
+          <option value="regionId">Region ID</option>
+        </select>
+      </label>
+      <label>X
+        <input type="number" min="0" value={command.x} onChange={e=>onChange({...command,x:Number(e.target.value)})}/>
+      </label>
+      <label>Y
+        <input type="number" min="0" value={command.y} onChange={e=>onChange({...command,y:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeEnemyHp') return <>
+      <label>Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+      <label>Operation
+        <select value={command.operation} onChange={e=>onChange({...command,operation:e.target.value as any})}>
+          <option value="add">Increase (+)</option>
+          <option value="sub">Decrease (-)</option>
+        </select>
+      </label>
+      <label>Amount
+        <input type="number" min="0" value={command.amount} onChange={e=>onChange({...command,amount:Number(e.target.value)})}/>
+      </label>
+      <label style={{display:'flex',alignItems:'center',gap:'6px'}}>
+        <input type="checkbox" checked={command.allowKnockout ?? false} onChange={e=>onChange({...command,allowKnockout:e.target.checked})}/>
+        <span>Allow Knockout</span>
+      </label>
+    </>;
+
+    if (command.type === 'changeEnemyMp') return <>
+      <label>Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+      <label>Operation
+        <select value={command.operation} onChange={e=>onChange({...command,operation:e.target.value as any})}>
+          <option value="add">Increase (+)</option>
+          <option value="sub">Decrease (-)</option>
+        </select>
+      </label>
+      <label>Amount
+        <input type="number" min="0" value={command.amount} onChange={e=>onChange({...command,amount:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeEnemyTp') return <>
+      <label>Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+      <label>Operation
+        <select value={command.operation} onChange={e=>onChange({...command,operation:e.target.value as any})}>
+          <option value="add">Increase (+)</option>
+          <option value="sub">Decrease (-)</option>
+        </select>
+      </label>
+      <label>Amount
+        <input type="number" min="0" value={command.amount} onChange={e=>onChange({...command,amount:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'changeEnemyState') return <>
+      <label>Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+      <label>Operation
+        <select value={command.operation} onChange={e=>onChange({...command,operation:e.target.value as any})}>
+          <option value="add">Add (+)</option>
+          <option value="remove">Remove (-)</option>
+        </select>
+      </label>
+      <label>State
+        <select value={command.stateId} onChange={e=>onChange({...command,stateId:e.target.value})}>
+          {bundle.game.states.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'enemyRecoverAll') return <>
+      <label>Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'enemyAppear') return <>
+      <label>Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'enemyTransform') return <>
+      <label>Enemy Slot
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+      <label>Transform Into
+        <select value={command.enemyId} onChange={e=>onChange({...command,enemyId:e.target.value})}>
+          {bundle.game.enemies.map(en=><option key={en.id} value={en.id}>{en.name}</option>)}
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'showBattleAnimation') return <>
+      <label>Target Enemy
+        <select value={command.enemyIndex} onChange={e=>onChange({...command,enemyIndex:Number(e.target.value)})}>
+          <option value="-1">Entire Troop</option>
+          {[0,1,2,3,4,5,6,7].map(i=><option key={i} value={i}>Enemy #{i+1}</option>)}
+        </select>
+      </label>
+      <label>Animation ID
+        <input type="text" value={command.animationId} placeholder="anim.slash" onChange={e=>onChange({...command,animationId:e.target.value})}/>
+      </label>
+    </>;
+
+    if (command.type === 'forceAction') return <>
+      <label>Battler Type
+        <select value={command.battler} onChange={e=>onChange({...command,battler:e.target.value as any})}>
+          <option value="actor">Actor</option>
+          <option value="enemy">Enemy</option>
+        </select>
+      </label>
+      <label>Index (0-based)
+        <input type="number" min="0" max="7" value={command.index} onChange={e=>onChange({...command,index:Number(e.target.value)})}/>
+      </label>
+      <label>Skill
+        <select value={command.skillId} onChange={e=>onChange({...command,skillId:e.target.value})}>
+          {bundle.game.skills.map(sk=><option key={sk.id} value={sk.id}>{sk.name}</option>)}
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'abortBattle') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Abort the active battle processing immediately. (No parameters)</div>;
+
+    if (command.type === 'pluginCommand') return <>
+      <label>Plugin Name
+        <input type="text" value={command.pluginName} placeholder="PluginName" onChange={e=>onChange({...command,pluginName:e.target.value})}/>
+      </label>
+      <label>Command Name
+        <input type="text" value={command.commandName} placeholder="commandName" onChange={e=>onChange({...command,commandName:e.target.value})}/>
+      </label>
+    </>;
+
     return <label>Music mood<select value={command.mood} onChange={event=>onChange({...command,mood:event.target.value as typeof command.mood})}><option value="calm">Calm</option><option value="danger">Danger</option><option value="boss">Boss</option><option value="silence">Silence</option></select></label>;
   };
 
