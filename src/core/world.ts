@@ -48,6 +48,17 @@ export interface EventIO {
   selectItem?(variableId: string, itemType?: string): Promise<string>;
   scrollingText?(text: string, speed?: number, noFastForward?: boolean): Promise<void>;
   controlTimer?(operation: 'start' | 'stop', seconds?: number): void;
+  rotatePicture?(id: number, speed: number): void;
+  tintPicture?(id: number, tone: [number, number, number, number], duration: number, wait?: boolean): Promise<void>;
+  playBgm?(path: string, volume?: number, pitch?: number): void;
+  fadeoutBgm?(seconds: number): Promise<void>;
+  saveBgm?(): void;
+  replayBgm?(): void;
+  playMovie?(path: string): Promise<void>;
+  setVehicleLocation?(vehicleType: 'boat' | 'ship' | 'airship', mapId: string, x: number, y: number): void;
+  getOnOffVehicle?(): void;
+  changePlayerFollowers?(value: boolean): void;
+  gatherFollowers?(): Promise<void>;
 }
 
 export const directionDelta: Record<Direction, [number, number]> = {
@@ -764,6 +775,43 @@ async function runCommandList(
     } else if (command.type === 'changeProfile') {
       if (!next.actorOverrides) next.actorOverrides = {};
       next.actorOverrides[command.actorId] = { ...next.actorOverrides[command.actorId], profile: command.profile };
+    } else if (command.type === 'setVehicleLocation') {
+      if (!next.vehiclePositions) next.vehiclePositions = {};
+      next.vehiclePositions[command.vehicleType] = { mapId: command.mapId, x: command.x, y: command.y };
+      io.setVehicleLocation?.(command.vehicleType, command.mapId, command.x, command.y);
+    } else if (command.type === 'getOnOffVehicle') {
+      if (next.inVehicle) {
+        next.inVehicle = null;
+      } else {
+        const boat = next.vehiclePositions?.boat;
+        const ship = next.vehiclePositions?.ship;
+        const airship = next.vehiclePositions?.airship;
+        if (boat && boat.mapId === next.mapId && boat.x === next.x && boat.y === next.y) next.inVehicle = 'boat';
+        else if (ship && ship.mapId === next.mapId && ship.x === next.x && ship.y === next.y) next.inVehicle = 'ship';
+        else if (airship && airship.mapId === next.mapId && airship.x === next.x && airship.y === next.y) next.inVehicle = 'airship';
+      }
+      io.getOnOffVehicle?.();
+    } else if (command.type === 'changePlayerFollowers') {
+      next.showFollowers = command.value;
+      io.changePlayerFollowers?.(command.value);
+    } else if (command.type === 'gatherFollowers') {
+      await io.gatherFollowers?.();
+    } else if (command.type === 'rotatePicture') {
+      if (!next.pictureRotations) next.pictureRotations = {};
+      next.pictureRotations[command.id] = command.speed;
+      io.rotatePicture?.(command.id, command.speed);
+    } else if (command.type === 'tintPicture') {
+      await io.tintPicture?.(command.id, command.tone, command.duration, command.wait);
+    } else if (command.type === 'playBgm') {
+      io.playBgm?.(command.path, command.volume, command.pitch);
+    } else if (command.type === 'fadeoutBgm') {
+      await io.fadeoutBgm?.(command.seconds);
+    } else if (command.type === 'saveBgm') {
+      io.saveBgm?.();
+    } else if (command.type === 'replayBgm') {
+      io.replayBgm?.();
+    } else if (command.type === 'playMovie') {
+      await io.playMovie?.(command.path);
     }
 
     pc++;

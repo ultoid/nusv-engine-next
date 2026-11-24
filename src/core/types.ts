@@ -148,6 +148,17 @@ export type EventCommand =
   | { type: 'changeClass'; actorId: string; classId: string; keepLevel?: boolean }
   | { type: 'changeNickname'; actorId: string; nickname: string }
   | { type: 'changeProfile'; actorId: string; profile: string }
+  | { type: 'setVehicleLocation'; vehicleType: 'boat' | 'ship' | 'airship'; mapId: string; x: number; y: number }
+  | { type: 'getOnOffVehicle' }
+  | { type: 'changePlayerFollowers'; value: boolean }
+  | { type: 'gatherFollowers' }
+  | { type: 'rotatePicture'; id: number; speed: number }
+  | { type: 'tintPicture'; id: number; tone: [number, number, number, number]; duration: number; wait?: boolean }
+  | { type: 'playBgm'; path: string; volume?: number; pitch?: number }
+  | { type: 'fadeoutBgm'; seconds: number }
+  | { type: 'saveBgm' }
+  | { type: 'replayBgm' }
+  | { type: 'playMovie'; path: string }
   | { type: 'script'; code: string };
 
 export interface PictureState {
@@ -249,4 +260,4 @@ export interface MapData {
 export interface AssetEntry { id: string; type: string; path: string; category?: string; license?: string; size?: number; [key: string]: unknown }
 export interface AssetManifest { schemaVersion: 1; assets: Array<AssetEntry>; [key: string]: unknown }
 export interface ProjectBundle { root?: string; project: ProjectManifest; game: GameData; maps: Record<string, MapData>; assets: AssetManifest }
-export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]> }
+export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]>; vehiclePositions?: Record<string, { mapId: string; x: number; y: number }>; inVehicle?: 'boat' | 'ship' | 'airship' | null; showFollowers?: boolean; pictureRotations?: Record<number, number> }

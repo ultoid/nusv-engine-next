@@ -10,6 +10,7 @@ export class AudioManager {
   private currentBgmPath?: string;
   private currentBgsSource?: AudioBufferSourceNode;
   private bufferCache = new Map<string, AudioBuffer>();
+  private savedBgmPath?: string;
   private mood: 'calm' | 'danger' | 'boss' | 'silence' = 'calm';
   private settings: Pick<RuntimeSettings, 'masterVolume' | 'musicVolume' | 'sfxVolume'> = {
     masterVolume: 0.8,
@@ -139,6 +140,32 @@ export class AudioManager {
       this.currentBgmSource = undefined;
     }
     this.currentBgmPath = undefined;
+  }
+
+  async fadeoutBgm(seconds: number) {
+    if (this.currentBgmSource && this.context && this.music) {
+      try {
+        const curr = this.context.currentTime;
+        this.music.gain.setValueAtTime(this.music.gain.value, curr);
+        this.music.gain.linearRampToValueAtTime(0, curr + Math.max(0.05, seconds));
+        setTimeout(() => {
+          this.stopBgm();
+          this.applyMix();
+        }, Math.max(50, seconds * 1000));
+      } catch {
+        this.stopBgm();
+      }
+    }
+  }
+
+  saveBgm() {
+    this.savedBgmPath = this.currentBgmPath;
+  }
+
+  replayBgm() {
+    if (this.savedBgmPath) {
+      void this.playBgm(this.savedBgmPath);
+    }
   }
 
   async playSe(path: string, _options?: { volume?: number }) {

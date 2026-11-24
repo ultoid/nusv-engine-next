@@ -6,7 +6,40 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Pemetaan & Implementasi Lengkap Perintah Tab 1 RPG Maker MZ (Message, Progression, Flow Control, Party, Actor)
+### 1. Pemetaan & Implementasi Lengkap Perintah Tab 2 RPG Maker MZ (Movement, Character, Picture, Timing, Screen, Audio & Video)
+- **11 Perintah Baru Standar RPG Maker MZ**:
+  - **Movement**:
+    - `Set Vehicle Location...` (`setVehicleLocation`): Menetapkan lokasi kendaraan (`boat`, `ship`, `airship`) ke koordinat peta tertentu.
+    - `Get on/off Vehicle` (`getOnOffVehicle`): Memungkinkan pemain menaiki atau turun dari kendaraan yang berada di petak pemain.
+  - **Character**:
+    - `Change Player Followers...` (`changePlayerFollowers`): Menampilkan atau menyembunyikan pengikut pemain (*Party Followers*).
+    - `Gather Followers` (`gatherFollowers`): Mengumpulkan seluruh pengikut ke petak posisi pemain saat ini.
+  - **Picture**:
+    - `Rotate Picture...` (`rotatePicture`): Mengatur kecepatan rotasi kontinyu gambar (kecepatan -90 hingga 90).
+    - `Tint Picture...` (`tintPicture`): Mengubah pewarnaan gambar dengan kurva warna RGBA (Red, Green, Blue, Gray) beserta durasi frame dan opsi wait.
+  - **Audio & Video**:
+    - `Play BGM...` (`playBgm`): Memainkan musik latar (*Background Music*) dengan path berkas, volume, dan pitch.
+    - `Fadeout BGM...` (`fadeoutBgm`): Meredupkan dan menghentikan BGM secara bertahap dalam detik.
+    - `Save BGM` (`saveBgm`): Menyimpan lagu BGM yang sedang aktif saat ini ke memori audio.
+    - `Replay BGM` (`replayBgm`): Memutar kembali BGM yang sebelumnya disimpan dengan `saveBgm`.
+    - `Play Movie...` (`playMovie`): Memainkan berkas video/cutscene (*Movie*).
+- **Tata Letak Otentik 2-Kolom Tab 2 (`EventCommandPickerModal`)**:
+  - Kolom Kiri:
+    - **Movement**: Transfer Player, Set Vehicle Location, Set Event Location, Scroll Map, Set Movement Route, Get on/off Vehicle, Cutscene Movement.
+    - **Character**: Change Transparency, Change Player Followers, Gather Followers, Show Animation, Show Balloon Icon, Erase Event.
+    - **Picture**: Show Picture, Move Picture, Rotate Picture, Tint Picture, Erase Picture.
+  - Kolom Kanan:
+    - **Timing**: Wait.
+    - **Screen**: Fadeout Screen, Fadein Screen, Tint Screen, Flash Screen, Shake Screen, Set Weather Effect.
+    - **Audio & Video**: Play BGM, Fadeout BGM, Save BGM, Replay BGM, Play BGS, Fadeout BGS, Play ME, Play SE, Stop SE, Play Movie.
+- **Form Editor Perintah di `CommandFields.tsx`**:
+  - Input form lengkap untuk seluruh 11 perintah baru dengan validasi nilai default yang aman.
+- **Runtime Audio & WorldScene**:
+  - Dukungan `fadeoutBgm`, `saveBgm`, dan `replayBgm` di `AudioManager.ts` serta integrasi `EventIO` di `WorldScene.ts`.
+- **Pengujian & Validasi**:
+  - Penambahan skenario unit test baru di `tests/stage16-mz-movement-routes-and-commands.test.js` (total 107/107 unit test lulus).
+
+### 2. Pemetaan & Implementasi Lengkap Perintah Tab 1 RPG Maker MZ (Message, Progression, Flow Control, Party, Actor)
 - **16 Perintah Baru Standar RPG Maker MZ**:
   - **Message**:
     - `Input Number...` (`inputNumber`): Membuka dialog input angka numerik dengan batas digit (1–8) dan menyimpan hasilnya ke ID variabel terpilih.

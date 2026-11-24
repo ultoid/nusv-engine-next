@@ -95,16 +95,20 @@ const TAB_2_GROUPS: CommandGroupDef[] = [
     title: 'Movement',
     commands: [
       { type: 'transfer', label: 'Transfer Player...' },
-      { type: 'setMovementRoute', label: 'Set Movement Route...' },
+      { type: 'setVehicleLocation', label: 'Set Vehicle Location...' },
       { type: 'setEventLocation', label: 'Set Event Location...' },
       { type: 'scrollMap', label: 'Scroll Map...' },
+      { type: 'setMovementRoute', label: 'Set Movement Route...' },
+      { type: 'getOnOffVehicle', label: 'Get on/off Vehicle' },
       { type: 'cutscene', label: 'Cutscene Movement...' },
     ]
   },
   {
-    title: 'Character Visuals',
+    title: 'Character',
     commands: [
       { type: 'transparency', label: 'Change Transparency...' },
+      { type: 'changePlayerFollowers', label: 'Change Player Followers...' },
+      { type: 'gatherFollowers', label: 'Gather Followers' },
       { type: 'showAnimation', label: 'Show Animation...' },
       { type: 'showBalloon', label: 'Show Balloon Icon...' },
       { type: 'eraseEvent', label: 'Erase Event' },
@@ -115,18 +119,41 @@ const TAB_2_GROUPS: CommandGroupDef[] = [
     commands: [
       { type: 'showPicture', label: 'Show Picture...' },
       { type: 'movePicture', label: 'Move Picture...' },
+      { type: 'rotatePicture', label: 'Rotate Picture...' },
+      { type: 'tintPicture', label: 'Tint Picture...' },
       { type: 'erasePicture', label: 'Erase Picture...' },
     ]
   },
   {
-    title: 'Screen Effects',
+    title: 'Timing',
     commands: [
-      { type: 'fadeoutScreen', label: 'Fadeout Screen...' },
-      { type: 'fadeinScreen', label: 'Fadein Screen...' },
+      { type: 'wait', label: 'Wait...' },
+    ]
+  },
+  {
+    title: 'Screen',
+    commands: [
+      { type: 'fadeoutScreen', label: 'Fadeout Screen' },
+      { type: 'fadeinScreen', label: 'Fadein Screen' },
       { type: 'tintScreen', label: 'Tint Screen...' },
       { type: 'flashScreen', label: 'Flash Screen...' },
       { type: 'shakeScreen', label: 'Shake Screen...' },
       { type: 'weather', label: 'Set Weather Effect...' },
+    ]
+  },
+  {
+    title: 'Audio & Video',
+    commands: [
+      { type: 'playBgm', label: 'Play BGM...' },
+      { type: 'fadeoutBgm', label: 'Fadeout BGM...' },
+      { type: 'saveBgm', label: 'Save BGM' },
+      { type: 'replayBgm', label: 'Replay BGM' },
+      { type: 'playBgs', label: 'Play BGS...' },
+      { type: 'fadeoutBgs', label: 'Fadeout BGS...' },
+      { type: 'playMe', label: 'Play ME...' },
+      { type: 'playSe', label: 'Play SE...' },
+      { type: 'stopSe', label: 'Stop SE' },
+      { type: 'playMovie', label: 'Play Movie...' },
     ]
   }
 ];
@@ -190,8 +217,8 @@ export function EventCommandPickerModal({ onSelect, onClose }: EventCommandPicke
       };
     } else if (activeTab === 2) {
       return {
-        col1: TAB_2_GROUPS.filter(g => ['Movement', 'Character Visuals'].includes(g.title)),
-        col2: TAB_2_GROUPS.filter(g => ['Picture', 'Screen Effects'].includes(g.title))
+        col1: TAB_2_GROUPS.filter(g => ['Movement', 'Character', 'Picture'].includes(g.title)),
+        col2: TAB_2_GROUPS.filter(g => ['Timing', 'Screen', 'Audio & Video'].includes(g.title))
       };
     } else {
       return {

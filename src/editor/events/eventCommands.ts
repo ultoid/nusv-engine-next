@@ -7,7 +7,8 @@ export const commandTypes: Array<EventCommand['type']> = [
   'playSe','stopSe','playMe','playBgs','fadeoutBgs',
   'giveItem','transfer','battle','questStart','questAdvance','questComplete','shop','inn','cutscene','music',
   'setMovementRoute','changeHp','changeMp','recoverAll','changeLevel','changeExp','changePartyMember','changeSkill','setEventLocation','scrollMap','eraseEvent','gameOver','script',
-  'inputNumber','selectItem','scrollingText','controlTimer','commonEvent','comment','changeWeapons','changeArmors','changeTp','changeState','changeParameter','changeEquipment','changeName','changeClass','changeNickname','changeProfile'
+  'inputNumber','selectItem','scrollingText','controlTimer','commonEvent','comment','changeWeapons','changeArmors','changeTp','changeState','changeParameter','changeEquipment','changeName','changeClass','changeNickname','changeProfile',
+  'setVehicleLocation','getOnOffVehicle','changePlayerFollowers','gatherFollowers','rotatePicture','tintPicture','playBgm','fadeoutBgm','saveBgm','replayBgm','playMovie'
 ];
 
 export const commandName: Record<EventCommand['type'], string> = {
@@ -17,7 +18,8 @@ export const commandName: Record<EventCommand['type'], string> = {
   playSe:'Play SE',stopSe:'Stop SE',playMe:'Play ME',playBgs:'Play BGS',fadeoutBgs:'Fadeout BGS',
   giveItem:'Give Item',transfer:'Transfer Player',battle:'Start Battle',questStart:'Start Quest',questAdvance:'Advance Quest',questComplete:'Complete Quest',shop:'Open Shop',inn:'Open Inn',cutscene:'Cutscene',music:'Change Music',
   setMovementRoute:'Set Movement Route',changeHp:'Change HP',changeMp:'Change MP',recoverAll:'Recover All',changeLevel:'Change Level',changeExp:'Change EXP',changePartyMember:'Change Party Member',changeSkill:'Change Skill',setEventLocation:'Set Event Location',scrollMap:'Scroll Map',eraseEvent:'Erase Event',gameOver:'Game Over',script:'Script',
-  inputNumber:'Input Number',selectItem:'Select Item',scrollingText:'Show Scrolling Text',controlTimer:'Control Timer',commonEvent:'Common Event',comment:'Comment',changeWeapons:'Change Weapons',changeArmors:'Change Armors',changeTp:'Change TP',changeState:'Change State',changeParameter:'Change Parameter',changeEquipment:'Change Equipment',changeName:'Change Name',changeClass:'Change Class',changeNickname:'Change Nickname',changeProfile:'Change Profile'
+  inputNumber:'Input Number',selectItem:'Select Item',scrollingText:'Show Scrolling Text',controlTimer:'Control Timer',commonEvent:'Common Event',comment:'Comment',changeWeapons:'Change Weapons',changeArmors:'Change Armors',changeTp:'Change TP',changeState:'Change State',changeParameter:'Change Parameter',changeEquipment:'Change Equipment',changeName:'Change Name',changeClass:'Change Class',changeNickname:'Change Nickname',changeProfile:'Change Profile',
+  setVehicleLocation:'Set Vehicle Location',getOnOffVehicle:'Get on/off Vehicle',changePlayerFollowers:'Change Player Followers',gatherFollowers:'Gather Followers',rotatePicture:'Rotate Picture',tintPicture:'Tint Picture',playBgm:'Play BGM',fadeoutBgm:'Fadeout BGM',saveBgm:'Save BGM',replayBgm:'Replay BGM',playMovie:'Play Movie'
 };
 
 export const commandPreview = (command: EventCommand): string => {
@@ -101,6 +103,17 @@ export const commandPreview = (command: EventCommand): string => {
   if(command.type==='changeClass')return `Class ${command.actorId}: [${command.classId}]`;
   if(command.type==='changeNickname')return `Nickname ${command.actorId}: "${command.nickname}"`;
   if(command.type==='changeProfile')return `Profile ${command.actorId}: "${command.profile.slice(0, 25)}..."`;
+  if(command.type==='setVehicleLocation')return `Vehicle [${command.vehicleType}] -> ${command.mapId} (${command.x}, ${command.y})`;
+  if(command.type==='getOnOffVehicle')return `Get on/off Vehicle`;
+  if(command.type==='changePlayerFollowers')return `Player Followers: ${command.value ? 'ON' : 'OFF'}`;
+  if(command.type==='gatherFollowers')return `Gather Followers`;
+  if(command.type==='rotatePicture')return `Rotate Pic #${command.id} (speed ${command.speed})`;
+  if(command.type==='tintPicture')return `Tint Pic #${command.id} [${command.tone.join(',')}] (${command.duration}f)`;
+  if(command.type==='playBgm')return `BGM: ${command.path}`;
+  if(command.type==='fadeoutBgm')return `Fadeout BGM (${command.seconds}s)`;
+  if(command.type==='saveBgm')return `Save BGM`;
+  if(command.type==='replayBgm')return `Replay BGM`;
+  if(command.type==='playMovie')return `Movie: ${command.path}`;
   return '';
 };
 
@@ -173,5 +186,16 @@ export function createCommand(type: EventCommand['type'], bundle: ProjectBundle)
   if(type==='changeClass')return{type,actorId:bundle.project.party[0]??'actor.missing',classId:bundle.game.classes?.[0]?.id??'class.warrior',keepLevel:true};
   if(type==='changeNickname')return{type,actorId:bundle.project.party[0]??'actor.missing',nickname:'The Brave'};
   if(type==='changeProfile')return{type,actorId:bundle.project.party[0]??'actor.missing',profile:'A young hero from the village.'};
+  if(type==='setVehicleLocation')return{type,vehicleType:'boat',mapId:bundle.project.start.mapId,x:0,y:0};
+  if(type==='getOnOffVehicle')return{type};
+  if(type==='changePlayerFollowers')return{type,value:true};
+  if(type==='gatherFollowers')return{type};
+  if(type==='rotatePicture')return{type,id:1,speed:2};
+  if(type==='tintPicture')return{type,id:1,tone:[0,0,0,0],duration:60};
+  if(type==='playBgm')return{type,path:'assets/audio/bgm/Theme1.ogg'};
+  if(type==='fadeoutBgm')return{type,seconds:2};
+  if(type==='saveBgm')return{type};
+  if(type==='replayBgm')return{type};
+  if(type==='playMovie')return{type,path:'assets/movies/movie1.webm'};
   return{type:'music',mood:'calm'};
 }

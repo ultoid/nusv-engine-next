@@ -304,3 +304,85 @@ test('RPG Maker MZ Party & Actor Logic Commands: changeWeapons, changeArmors, ch
   assert.equal(next.actorOverrides[actorId].name, 'Reid the Brave');
   assert.equal(next.actorProgress[actorId].activeClassId, 'class.paladin');
 });
+
+test('RPG Maker MZ Movement & Character Commands: setVehicleLocation, getOnOffVehicle, changePlayerFollowers, gatherFollowers', async () => {
+  const { executeCommands, initialProgress } = await import('../.electron-dist/src/core/world.js');
+  const bundle = loadProject(fixture);
+  const state = initialProgress(bundle);
+  state.x = 5;
+  state.y = 5;
+
+  let gathered = false;
+  let followerState;
+  const io = {
+    showText: async () => {},
+    choose: async () => 0,
+    battle: async () => ({ victory: true, actorResources: {}, actorProgress: {}, inventory: {}, gold: 0 }),
+    changePlayerFollowers: (v) => { followerState = v; },
+    gatherFollowers: async () => { gathered = true; }
+  };
+
+  const commands = [
+    { type: 'setVehicleLocation', vehicleType: 'boat', mapId: state.mapId, x: 5, y: 5 },
+    { type: 'getOnOffVehicle' },
+    { type: 'changePlayerFollowers', value: false },
+    { type: 'gatherFollowers' }
+  ];
+
+  const next = await executeCommands(bundle, state, commands, io);
+
+  assert.deepEqual(next.vehiclePositions?.boat, { mapId: state.mapId, x: 5, y: 5 });
+  assert.equal(next.inVehicle, 'boat');
+  assert.equal(next.showFollowers, false);
+  assert.equal(followerState, false);
+  assert.equal(gathered, true);
+
+  // Test get off vehicle
+  const next2 = await executeCommands(bundle, next, [{ type: 'getOnOffVehicle' }], io);
+  assert.equal(next2.inVehicle, null);
+});
+
+test('RPG Maker MZ Picture, Audio & Video Commands: rotatePicture, tintPicture, playBgm, fadeoutBgm, saveBgm, replayBgm, playMovie', async () => {
+  const { executeCommands, initialProgress } = await import('../.electron-dist/src/core/world.js');
+  const bundle = loadProject(fixture);
+  const state = initialProgress(bundle);
+
+  let playedBgm;
+  let fadeoutSec;
+  let bgmSaved = false;
+  let bgmReplayed = false;
+  let moviePlayed;
+  let pictureTinted = null;
+
+  const io = {
+    showText: async () => {},
+    choose: async () => 0,
+    battle: async () => ({ victory: true, actorResources: {}, actorProgress: {}, inventory: {}, gold: 0 }),
+    playBgm: (path) => { playedBgm = path; },
+    fadeoutBgm: async (sec) => { fadeoutSec = sec; },
+    saveBgm: () => { bgmSaved = true; },
+    replayBgm: () => { bgmReplayed = true; },
+    playMovie: async (path) => { moviePlayed = path; },
+    tintPicture: async (id, tone, duration, wait) => { pictureTinted = { id, tone, duration, wait }; }
+  };
+
+  const commands = [
+    { type: 'rotatePicture', id: 1, speed: 5 },
+    { type: 'tintPicture', id: 1, tone: [68, -34, -34, 0], duration: 60, wait: true },
+    { type: 'playBgm', path: 'assets/audio/bgm/Theme2.ogg' },
+    { type: 'saveBgm' },
+    { type: 'fadeoutBgm', seconds: 3 },
+    { type: 'replayBgm' },
+    { type: 'playMovie', path: 'assets/movies/opening.webm' }
+  ];
+
+  const next = await executeCommands(bundle, state, commands, io);
+
+  assert.equal(next.pictureRotations?.[1], 5);
+  assert.deepEqual(pictureTinted, { id: 1, tone: [68, -34, -34, 0], duration: 60, wait: true });
+  assert.equal(playedBgm, 'assets/audio/bgm/Theme2.ogg');
+  assert.equal(fadeoutSec, 3);
+  assert.equal(bgmSaved, true);
+  assert.equal(bgmReplayed, true);
+  assert.equal(moviePlayed, 'assets/movies/opening.webm');
+});

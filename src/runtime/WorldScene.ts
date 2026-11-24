@@ -408,7 +408,28 @@ export class WorldScene {
       },
       fadeoutBgs: async (seconds) => {
         await this.audio.fadeoutBgs(seconds);
-      }
+      },
+      rotatePicture: () => {},
+      tintPicture: async (_id, _tone, duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      playBgm: (path, vol) => {
+        void this.audio.playBgm(path, { volume: vol });
+      },
+      fadeoutBgm: async (seconds) => {
+        await this.audio.fadeoutBgm(seconds);
+      },
+      saveBgm: () => {
+        this.audio.saveBgm();
+      },
+      replayBgm: () => {
+        this.audio.replayBgm();
+      },
+      playMovie: async () => {},
+      setVehicleLocation: () => {},
+      getOnOffVehicle: () => {},
+      changePlayerFollowers: () => {},
+      gatherFollowers: async () => {}
     };
   }
 

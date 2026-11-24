@@ -636,6 +636,104 @@ export function CommandFields({
       </label>
     </>;
 
+    if (command.type === 'setVehicleLocation') return <>
+      <label>Vehicle
+        <select value={command.vehicleType} onChange={e=>onChange({...command,vehicleType:e.target.value as any})}>
+          <option value="boat">Boat</option>
+          <option value="ship">Ship</option>
+          <option value="airship">Airship</option>
+        </select>
+      </label>
+      <label>Map
+        <select value={command.mapId} onChange={e=>onChange({...command,mapId:e.target.value})}>
+          {bundle.project.maps.map(m=><option key={m} value={m}>{m}</option>)}
+        </select>
+      </label>
+      <label>X
+        <input type="number" min="0" value={command.x} onChange={e=>onChange({...command,x:Number(e.target.value)})}/>
+      </label>
+      <label>Y
+        <input type="number" min="0" value={command.y} onChange={e=>onChange({...command,y:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'getOnOffVehicle') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Get on or off the vehicle on the current player tile. (No parameters)</div>;
+
+    if (command.type === 'changePlayerFollowers') return <>
+      <label>Player Followers
+        <select value={command.value ? 'ON' : 'OFF'} onChange={e=>onChange({...command,value:e.target.value==='ON'})}>
+          <option value="ON">ON (Visible)</option>
+          <option value="OFF">OFF (Hidden)</option>
+        </select>
+      </label>
+    </>;
+
+    if (command.type === 'gatherFollowers') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Gather all party followers onto the player's position. (No parameters)</div>;
+
+    if (command.type === 'rotatePicture') return <>
+      <label>Picture Number (ID)
+        <input type="number" min="1" max="100" value={command.id} onChange={e=>onChange({...command,id:Number(e.target.value)})}/>
+      </label>
+      <label>Speed (-90 to 90)
+        <input type="number" min="-90" max="90" value={command.speed} onChange={e=>onChange({...command,speed:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'tintPicture') return <>
+      <label>Picture Number (ID)
+        <input type="number" min="1" max="100" value={command.id} onChange={e=>onChange({...command,id:Number(e.target.value)})}/>
+      </label>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4, 1fr)',gap:'8px'}}>
+        <label>Red (-255..255)
+          <input type="number" min="-255" max="255" value={command.tone[0]} onChange={e=>onChange({...command,tone:[Number(e.target.value),command.tone[1],command.tone[2],command.tone[3]]})}/>
+        </label>
+        <label>Green (-255..255)
+          <input type="number" min="-255" max="255" value={command.tone[1]} onChange={e=>onChange({...command,tone:[command.tone[0],Number(e.target.value),command.tone[2],command.tone[3]]})}/>
+        </label>
+        <label>Blue (-255..255)
+          <input type="number" min="-255" max="255" value={command.tone[2]} onChange={e=>onChange({...command,tone:[command.tone[0],command.tone[1],Number(e.target.value),command.tone[3]]})}/>
+        </label>
+        <label>Gray (0..255)
+          <input type="number" min="0" max="255" value={command.tone[3]} onChange={e=>onChange({...command,tone:[command.tone[0],command.tone[1],command.tone[2],Number(e.target.value)]})}/>
+        </label>
+      </div>
+      <label>Duration (Frames)
+        <input type="number" min="1" value={command.duration} onChange={e=>onChange({...command,duration:Number(e.target.value)})}/>
+      </label>
+      <label style={{display:'flex',alignItems:'center',gap:'6px'}}>
+        <input type="checkbox" checked={command.wait??false} onChange={e=>onChange({...command,wait:e.target.checked})}/>
+        <span>Wait for Completion</span>
+      </label>
+    </>;
+
+    if (command.type === 'playBgm') return <>
+      <label>Audio File
+        <input type="text" value={command.path} placeholder="assets/audio/bgm/Theme1.ogg" onChange={e=>onChange({...command,path:e.target.value})}/>
+      </label>
+      <label>Volume (0..1)
+        <input type="number" min="0" max="1" step="0.1" value={command.volume ?? 1} onChange={e=>onChange({...command,volume:Number(e.target.value)})}/>
+      </label>
+      <label>Pitch (0.5..2)
+        <input type="number" min="0.5" max="2" step="0.1" value={command.pitch ?? 1} onChange={e=>onChange({...command,pitch:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'fadeoutBgm') return <>
+      <label>Duration (Seconds)
+        <input type="number" min="1" max="60" value={command.seconds} onChange={e=>onChange({...command,seconds:Number(e.target.value)})}/>
+      </label>
+    </>;
+
+    if (command.type === 'saveBgm') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Save the currently playing BGM to memory. (No parameters)</div>;
+
+    if (command.type === 'replayBgm') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Replay the previously saved BGM. (No parameters)</div>;
+
+    if (command.type === 'playMovie') return <>
+      <label>Movie File
+        <input type="text" value={command.path} placeholder="assets/movies/movie1.webm" onChange={e=>onChange({...command,path:e.target.value})}/>
+      </label>
+    </>;
+
     return <label>Music mood<select value={command.mood} onChange={event=>onChange({...command,mood:event.target.value as typeof command.mood})}><option value="calm">Calm</option><option value="danger">Danger</option><option value="boss">Boss</option><option value="silence">Silence</option></select></label>;
   };
 
