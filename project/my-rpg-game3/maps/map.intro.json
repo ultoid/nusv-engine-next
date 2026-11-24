@@ -4584,13 +4584,19 @@
                   "commands": []
                 }
               ]
+            },
+            {
+              "type": "transfer",
+              "mapId": "map.intro",
+              "x": 17,
+              "y": 11
             }
           ],
           "graphic": {
             "characterName": "assets/characters/Actor3.png",
             "characterIndex": 2,
             "direction": "down",
-            "pattern": 1
+            "pattern": 0
           }
         }
       ]
@@ -4646,6 +4652,24 @@
       "name": "EV001",
       "x": 6,
       "y": 5,
+      "trigger": "interact",
+      "pages": [
+        {
+          "solid": true,
+          "commands": [
+            {
+              "type": "text",
+              "text": "Halo! Ini event baru."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "event.new-2",
+      "name": "EV002",
+      "x": 21,
+      "y": 10,
       "trigger": "interact",
       "pages": [
         {

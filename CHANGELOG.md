@@ -46,7 +46,16 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
   - Kotak event tanpa grafik diselaraskan dengan visual RPG Maker MZ (border bergaris biru muda transparan dan highlight seleksi).
   - Penutupan context menu peta seketika saat pengguna menekan tombol klik di luar atau tombol `Escape`.
 
-### 3. Pengujian & Verifikasi
+### 3. Perbaikan Visual Event di Peta & Kontras Dialog Perintah
+- **Perbaikan Rendering Sprite Event Terpilih (`MapViewport.tsx` & `style.css`)**:
+  - Mengatasi masalah sprite karakter event yang hilang / tidak tampil saat event dipilih di peta. Akar masalah berasal dari shorthand CSS `background: rgba(...) !important;` pada tombol yang dipilih yang menimpa `backgroundImage`. Diganti dengan `background-color` terpisah dan mempertahankan `background-color: transparent !important;` untuk `.textured-event`.
+  - Mendukung pencarian grafik dari halaman aktif maupun multi-halaman (`ev.pages?.find(...)`) serta normalisasi path/basename yang fleksibel terhadap ekstensi `.png` maupun prefiks direktori.
+- **Perbaikan Kontras Input Dialog Perintah (`Edit Command / Show Choices`)**:
+  - Memastikan dialog popover edit perintah (`.mz-edit-popover`, `.mz-command-fields`) menggunakan `color-scheme: light;` dengan background input putih bersih `#ffffff`, teks gelap `#0f172a`, border abu-abu `#94a3b8`, dan label navy `#1e3a5f` dengan kontras tinggi sehingga teks pilihan atau dialog selalu terbaca jelas.
+- **Penyelarasan Latar Peta Kosong**:
+  - Mengubah latar panggung kanvas peta (`.mv-map-stage`) dari warna putih pekat `#ffffff` menjadi latar slate gelap `#20242a`, mencegah ubin yang belum terisi atau terhapus tampak seperti kotak putih menyilaukan.
+
+### 4. Pengujian & Verifikasi
 - Menambahkan suite pengujian `tests/stage16-mz-movement-routes-and-commands.test.js`.
 - Seluruh 102 unit test otomatis lulus (**102 passed, 0 failed**).
 - Verifikasi kompilasi `npm run build` (typecheck TypeScript, bundling Vite, dan kompilasi Electron) lulus 100%.

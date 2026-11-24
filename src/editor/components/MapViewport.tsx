@@ -67,7 +67,8 @@ export function MapViewport({
   references
 }: MapViewportProps) {
   const getEventGraphicStyle = (ev: MapEvent) => {
-    const page = ev.pages?.[0];
+    // Check all pages to find one with a graphic, fallback to first page
+    const page = ev.pages?.find(p => p.graphic?.characterName) ?? ev.pages?.[0];
     const graphic = page?.graphic;
     let spriteUrl: string | undefined;
     let bgPos = '-48px 0px';
@@ -75,6 +76,17 @@ export function MapViewport({
 
     if (graphic?.characterName) {
       spriteUrl = assetUrls[graphic.characterName];
+      if (!spriteUrl) {
+        // Fallback: match by filename or basename
+        const cleanName = graphic.characterName.split('/').pop()?.replace('.png', '').toLowerCase() ?? '';
+        if (cleanName) {
+          const matchedKey = Object.keys(assetUrls).find(k => {
+            const base = k.split('/').pop()?.replace('.png', '').toLowerCase();
+            return base === cleanName;
+          });
+          if (matchedKey) spriteUrl = assetUrls[matchedKey];
+        }
+      }
       if (spriteUrl) {
         const isSingle = graphic.characterName.split('/').pop()?.startsWith('$');
         const charIdx = isSingle ? 0 : (graphic.characterIndex ?? 0);
@@ -224,20 +236,24 @@ export function MapViewport({
                               {cell ? '×' : '○'}
                             </span>
                           )}
-                          {bundle.project.start.mapId === map.id && bundle.project.start.x === x && bundle.project.start.y === y && (
-                            <span
-                              className={`mv-start-marker ${assetUrls['assets/characters/Actor1.png'] ? 'textured-actor' : ''}`}
-                              title="Starting Position: Player"
-                              style={assetUrls['assets/characters/Actor1.png'] ? {
-                                backgroundImage: `url("${assetUrls['assets/characters/Actor1.png']}")`,
-                                backgroundPosition: '-48px 0px',
-                                backgroundSize: '576px 384px',
-                                imageRendering: 'pixelated'
-                              } : undefined}
-                            >
-                              {!assetUrls['assets/characters/Actor1.png'] && <>👤<small>S</small></>}
-                            </span>
-                          )}
+                          {bundle.project.start.mapId === map.id && bundle.project.start.x === x && bundle.project.start.y === y && (() => {
+                            const startUrl = assetUrls['assets/characters/Actor1.png'] ?? Object.entries(assetUrls).find(([k]) => k.includes('Actor1'))?.[1];
+                            return (
+                              <span
+                                className={`mv-start-marker ${startUrl ? 'textured-actor' : ''}`}
+                                title="Starting Position: Player"
+                                style={startUrl ? {
+                                  backgroundImage: `url("${startUrl}")`,
+                                  backgroundPosition: '-48px 0px',
+                                  backgroundSize: '576px 384px',
+                                  backgroundRepeat: 'no-repeat',
+                                  imageRendering: 'pixelated'
+                                } : undefined}
+                              >
+                                {!startUrl && <>👤<small>S</small></>}
+                              </span>
+                            );
+                          })()}
                           {isDragTarget && draggedEv && (
                             <span
                               className="mv-event-ghost"
@@ -247,6 +263,7 @@ export function MapViewport({
                                   backgroundImage: `url("${spriteUrl}")`,
                                   backgroundPosition: bgPos,
                                   backgroundSize: bgSize,
+                                  backgroundRepeat: 'no-repeat',
                                   imageRendering: 'pixelated'
                                 } : undefined;
                               })()}
@@ -264,6 +281,7 @@ export function MapViewport({
                                   backgroundImage: `url("${spriteUrl}")`,
                                   backgroundPosition: bgPos,
                                   backgroundSize: bgSize,
+                                  backgroundRepeat: 'no-repeat',
                                   imageRendering: 'pixelated'
                                 } : undefined}
                               >
