@@ -153,7 +153,19 @@ export function EventEditorModal({
   };
 
   const getGraphicStyle = (g?: EventGraphic) => {
-    if (!g?.characterName || !assetUrls[g.characterName]) return null;
+    if (!g?.characterName) return null;
+    let url = assetUrls[g.characterName];
+    if (!url) {
+      const clean = g.characterName.split('/').pop()?.replace('.png', '').toLowerCase() ?? '';
+      if (clean) {
+        const matchedKey = Object.keys(assetUrls).find(k => {
+          const base = k.split('/').pop()?.replace('.png', '').toLowerCase();
+          return base === clean;
+        });
+        if (matchedKey) url = assetUrls[matchedKey];
+      }
+    }
+    if (!url) return null;
     const isSingle = g.characterName.split('/').pop()?.startsWith('$');
     const charIdx = isSingle ? 0 : (g.characterIndex ?? 0);
     const colChar = isSingle ? 0 : charIdx % 4;
@@ -167,9 +179,10 @@ export function EventEditorModal({
     const frameY = (rowChar * 4 + dirIdx) * 48;
 
     return {
-      backgroundImage: `url("${assetUrls[g.characterName]}")`,
+      backgroundImage: `url("${url}")`,
       backgroundPosition: `-${frameX}px -${frameY}px`,
       backgroundSize: isSingle ? '144px 192px' : '576px 384px',
+      backgroundRepeat: 'no-repeat',
       width: '48px',
       height: '48px',
       imageRendering: 'pixelated' as const,

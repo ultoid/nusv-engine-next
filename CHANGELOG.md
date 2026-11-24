@@ -55,6 +55,12 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 - **Penyelarasan Latar Peta Kosong**:
   - Mengubah latar panggung kanvas peta (`.mv-map-stage`) dari warna putih pekat `#ffffff` menjadi latar slate gelap `#20242a`, mencegah ubin yang belum terisi atau terhapus tampak seperti kotak putih menyilaukan.
 
+- **Pemilihan Frame Karakter Per-Kotak 48x48 (`CharacterPickerModal.tsx` & `style.css`)**:
+  - Mengubah sistem pemilihan grafik karakter dari sebelumnya blok karakter 3x4 menjadi pemilihan frame individual 48x48 persis seperti RPG Maker MZ.
+  - Pengguna dapat mengklik langsung frame pose / arah mana pun pada spritesheet untuk memilih arah hadap (*direction*) dan pola animasi (*pattern*), dengan kotak kursor hitam-putih khas MZ.
+  - Mendukung klik ganda (*double-click*) pada sel frame untuk langsung mengonfirmasi dan menutup dialog.
+  - Menyederhanakan daftar file di panel kiri tanpa ekstensi `.png` (`Actor1`, `Actor2`, dst) dan menghapus tombol kontrol bawah yang redundan agar tata letak dialog murni seperti RPG Maker MZ.
+
 ### 4. Pengujian & Verifikasi
 - Menambahkan suite pengujian `tests/stage16-mz-movement-routes-and-commands.test.js`.
 - Seluruh 102 unit test otomatis lulus (**102 passed, 0 failed**).
@@ -103,6 +109,12 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
   - Bidang `General Settings` (Name, Mode) dan slot gambar (A1–A5, B, C, D, E) diselaraskan ke tampilan vertikal dengan tombol beveled `.mz-mz-picker-field` `[...]`.
 - **Penyelarasan Interface**:
   - Menghapus ikon-ikon berlebih pada sidebar kiri database editor agar bersih dan persis dengan UI bawaan RPG Maker MZ.
+
+- **Pemilihan Frame Karakter Per-Kotak 48x48 (`CharacterPickerModal.tsx` & `style.css`)**:
+  - Mengubah sistem pemilihan grafik karakter dari sebelumnya blok karakter 3x4 menjadi pemilihan frame individual 48x48 persis seperti RPG Maker MZ.
+  - Pengguna dapat mengklik langsung frame pose / arah mana pun pada spritesheet untuk memilih arah hadap (*direction*) dan pola animasi (*pattern*), dengan kotak kursor hitam-putih khas MZ.
+  - Mendukung klik ganda (*double-click*) pada sel frame untuk langsung mengonfirmasi dan menutup dialog.
+  - Menyederhanakan daftar file di panel kiri tanpa ekstensi `.png` (`Actor1`, `Actor2`, dst) dan menghapus tombol kontrol bawah yang redundan agar tata letak dialog murni seperti RPG Maker MZ.
 
 ### 4. Pengujian & Verifikasi
 - Menambahkan test suite `tests/stage12-undo-redo.test.js` untuk menguji:
