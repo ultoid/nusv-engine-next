@@ -683,7 +683,7 @@ export function CommandFields({
       <label>Picture Number (ID)
         <input type="number" min="1" max="100" value={command.id} onChange={e=>onChange({...command,id:Number(e.target.value)})}/>
       </label>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4, 1fr)',gap:'8px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(90px, 1fr))',gap:'8px'}}>
         <label>Red (-255..255)
           <input type="number" min="-255" max="255" value={command.tone[0]} onChange={e=>onChange({...command,tone:[Number(e.target.value),command.tone[1],command.tone[2],command.tone[3]]})}/>
         </label>
@@ -831,7 +831,7 @@ export function CommandFields({
     </>;
 
     if (command.type === 'changeWindowColor') return <>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3, 1fr)',gap:'8px'}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))',gap:'8px'}}>
         <label>Red (-255..255)
           <input type="number" min="-255" max="255" value={command.tone[0]} onChange={e=>onChange({...command,tone:[Number(e.target.value),command.tone[1],command.tone[2]]})}/>
         </label>

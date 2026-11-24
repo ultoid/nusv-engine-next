@@ -235,11 +235,11 @@ export function EventEditorModal({
           </div>
 
           <div className="mz-page-buttons">
-            <button type="button" className="mz-btn" onClick={handleNewPage}>New Event Page</button>
-            <button type="button" className="mz-btn" onClick={handleCopyPage}>Copy Event Page</button>
-            <button type="button" className="mz-btn" disabled={!copiedPage} onClick={handlePastePage}>Paste Event Page</button>
-            <button type="button" className="mz-btn" disabled={activeEv.pages.length <= 1} onClick={handleDeletePage}>Delete Event Page</button>
-            <button type="button" className="mz-btn" onClick={handleClearPage}>Clear Event Page</button>
+            <button type="button" className="mz-btn" onClick={handleNewPage} title="Buat halaman event baru">New Event Page</button>
+            <button type="button" className="mz-btn" onClick={handleCopyPage} title="Salin halaman event saat ini">Copy Event Page</button>
+            <button type="button" className="mz-btn" disabled={!copiedPage} onClick={handlePastePage} title="Tempel halaman event dari clipboard">Paste Event Page</button>
+            <button type="button" className="mz-btn" disabled={activeEv.pages.length <= 1} onClick={handleDeletePage} title="Hapus halaman event saat ini">Delete Event Page</button>
+            <button type="button" className="mz-btn" onClick={handleClearPage} title="Bersihkan seluruh isi halaman event saat ini">Clear Event Page</button>
           </div>
         </div>
 

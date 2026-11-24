@@ -6,7 +6,27 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Pemetaan & Implementasi Lengkap Perintah Tab 3 RPG Maker MZ (Scene Control, System Settings, Map, Battle, Advanced)
+### 1. Refactor UI & UX: Perbaikan Tampilan Responsif dan Bebas Terpotong di Seluruh Bagian Editor
+- **Pemberantasan Pemotongan Elemen (Clipping & Truncation) pada Seluruh Modal Editor**:
+  - **Event Editor Modal**:
+    - Memperbesar ukuran default modal menjadi `1060px` x `720px` (`max-width: 98vw`, `max-height: 96vh`) untuk mengakomodasi tata letak penuh tanpa sesak.
+    - Menambahkan `flex-wrap: wrap`, `gap: 6px 12px`, dan proporsionalitas input (`Name:` 120px, `Note:` 150px) pada `.mz-event-topbar`.
+    - Mengatur tombol kontrol halaman (`New Event Page`, `Copy Event Page`, `Paste Event Page`, `Delete Event Page`, `Clear Event Page`) dengan padding kompak (`2px 8px`), `white-space: nowrap`, dan tooltip interaktif sehingga tombol `Clear Event Page` tidak lagi terpotong (`Clear Event P...`).
+    - Memperbaiki tata letak dua kolom `.mz-event-body` (`360px minmax(0, 1fr)`) dengan `overflow: hidden` dan `min-width: 0` agar pohon perintah dan pengaturan kondisi tidak saling bertabrakan.
+  - **Event Command Picker Dialog**:
+    - Menyesuaikan dimensi modal menjadi `840px` x `680px` (`max-width: 96vw`, `max-height: 94vh`).
+    - Menjamin tombol perintah `.mz-cmd-btn` memiliki `white-space: nowrap`, `overflow: hidden`, `text-overflow: ellipsis`, dan lebar penuh `100%` di dalam grid dua kolom.
+  - **Graphic Pickers (Character & Face)**:
+    - Menyesuaikan ukuran Character Picker menjadi `860px` x `540px` dan Face Picker menjadi `860px` x `520px`.
+    - Memperluas panel daftar berkas aset menjadi `190px` agar nama-nama file tidak saling terhimpit.
+  - **Command Fields & Sub-modals (Show Text, Tint Picture, Change Window Color, Move Route)**:
+    - Memperlebar `.mz-edit-popover` menjadi `min(640px, 95vw)` dengan `max-height: 86vh`.
+    - Menjadikan grid kontrol warna dan input numerik responsif menggunakan `repeat(auto-fit, minmax(...))` sehingga input tidak gepeng pada layar kecil.
+    - Membuat baris bawah Show Text (`Name`, `Background`, `Window Position`) adaptif dengan `minmax(130px, 1fr)` dan spasi bersih.
+  - **Modal Dasar Mesin (`.mv-modal`)**:
+    - Menambahkan `box-sizing: border-box`, `min-width: 0`, dan `flex-wrap: wrap` pada footer modal dan baris input formulir (`.mv-field-row`) untuk mencegah overflow di berbagai resolusi layar dan Windows DPI Scaling (100%, 125%, 150%).
+
+### 2. Pemetaan & Implementasi Lengkap Perintah Tab 3 RPG Maker MZ (Scene Control, System Settings, Map, Battle, Advanced)
 - **31 Perintah Baru Standar RPG Maker MZ Menuntaskan 100% Paritas**:
   - **Scene Control**:
     - `Name Input Processing...` (`nameInput`): Membuka dialog input nama kustom untuk aktor dengan batasan digit karakter.
