@@ -312,6 +312,7 @@ export function EditorModals({
           quickTargetMap={mapOps.quickTargetMap}
           quickTargetX={mapOps.quickTargetX}
           quickTargetY={mapOps.quickTargetY}
+          assetUrls={assetUrls}
           onTargetMapChange={mapOps.setQuickTargetMap}
           onTargetXChange={mapOps.setQuickTargetX}
           onTargetYChange={mapOps.setQuickTargetY}
@@ -326,6 +327,7 @@ export function EditorModals({
           quickTargetMap={mapOps.quickTargetMap}
           quickTargetX={mapOps.quickTargetX}
           quickTargetY={mapOps.quickTargetY}
+          assetUrls={assetUrls}
           onTargetMapChange={mapOps.setQuickTargetMap}
           onTargetXChange={mapOps.setQuickTargetX}
           onTargetYChange={mapOps.setQuickTargetY}

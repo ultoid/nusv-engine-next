@@ -386,3 +386,72 @@ test('RPG Maker MZ Picture, Audio & Video Commands: rotatePicture, tintPicture, 
   assert.equal(bgmReplayed, true);
   assert.equal(moviePlayed, 'assets/movies/opening.webm');
 });
+
+test('RPG Maker MZ Transfer Player: direct designation, designation with variables, direction update, and validation', async () => {
+  const { executeCommands, initialProgress } = await import('../.electron-dist/src/core/world.js');
+  const bundle = loadProject(fixture);
+  const state = initialProgress(bundle);
+
+  const io = {
+    showText: async () => {},
+    choose: async () => 0,
+    battle: async () => ({ victory: true, actorResources: {}, actorProgress: {}, inventory: {}, gold: 0 })
+  };
+
+  // 1. Direct transfer with direction
+  const cmdDirect = {
+    type: 'transfer',
+    designation: 'direct',
+    mapId: bundle.project.maps[0],
+    x: 2,
+    y: 3,
+    direction: 'left',
+    fade: 'black'
+  };
+  const next1 = await executeCommands(bundle, state, [cmdDirect], io);
+  assert.equal(next1.mapId, bundle.project.maps[0]);
+  assert.equal(next1.x, 2);
+  assert.equal(next1.y, 3);
+  assert.equal(next1.facing, 'left');
+
+  // 2. Transfer with variables
+  const varMap = 'var.target-map';
+  const varX = 'var.target-x';
+  const varY = 'var.target-y';
+  const stateWithVars = {
+    ...state,
+    variables: {
+      ...state.variables,
+      [varMap]: bundle.project.maps[0],
+      [varX]: 4,
+      [varY]: 3
+    }
+  };
+
+  const cmdVars = {
+    type: 'transfer',
+    designation: 'variables',
+    mapId: 'placeholder',
+    x: 0,
+    y: 0,
+    mapVariableId: varMap,
+    xVariableId: varX,
+    yVariableId: varY,
+    direction: 'up',
+    fade: 'white'
+  };
+  const next2 = await executeCommands(bundle, stateWithVars, [cmdVars], io);
+  assert.equal(next2.mapId, bundle.project.maps[0]);
+  assert.equal(next2.x, 4);
+  assert.equal(next2.y, 3);
+  assert.equal(next2.facing, 'up');
+
+  // 3. Validation test
+  const validInitial = validateBundle(bundle);
+  assert.ok(validInitial);
+
+  const testBundle = JSON.parse(JSON.stringify(bundle));
+  testBundle.maps[testBundle.project.maps[0]].events[0].pages[0].commands.push(cmdDirect, cmdVars);
+  const valResult = validateBundle(testBundle);
+  assert.ok(valResult);
+});

@@ -6,7 +6,23 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Refactor UI & UX: Perbaikan Tampilan Responsif dan Bebas Terpotong di Seluruh Bagian Editor
+### 1. Paritas Penuh Transfer Player RPG Maker MZ & Visual Map Location Picker Modal
+- **Visual Map Location Picker Modal (`MapLocationPickerModal`)**:
+  - Modal visual pemilihan lokasi peta interaktif setara RPG Maker MZ untuk menentukan peta tujuan dan koordinat target `(X, Y)` tanpa perlu menghafal angka koordinat.
+  - Panel kiri: Daftar peta proyek (`Search Filter` + Map List) yang mendukung filter pencarian nama atau ID peta.
+  - Panel kanan: Kanvas 2D interaktif yang merender seluruh layer tile peta, autotile quadrant, marker event yang sudah ada (`EV`), grid 48x48 pixel, serta kursor seleksi berkilau presisi tinggi.
+  - Dilengkapi informasi passability (`Passable` vs `⚠️ Solid / Terhalang`) dan navigasi hover koordinat real-time.
+  - Mendukung seleksi satu-klik dan konfirmasi instan klik-ganda (*double click*).
+  - Terintegrasi penuh pada perintah **Transfer Player**, **Set Event Location**, **Set Vehicle Location**, serta modal **Quick Event Transfer** dan **Quick Event Door**.
+- **Paritas Lengkap Perintah Transfer Player**:
+  - **Location Mode**:
+    - *Direct designation*: Memilih peta dan koordinat `(X, Y)` secara visual dengan tombol picker `[...]`.
+    - *Designation with variables*: Menentukan peta target (`mapVariableId`), target X (`xVariableId`), dan target Y (`yVariableId`) dari variabel game.
+  - **Direction (Arah Hadap Pasca Transfer)**: `Retain`, `Down`, `Left`, `Right`, `Up` dengan sinkronisasi arah karakter saat masuk peta baru.
+  - **Fade (Efek Transisi Layar)**: `Black`, `White`, `None`.
+  - Integrasi penuh dengan sistem validasi bundel (`validateBundle`), eksekusi deterministik di `world.ts`, dan pratinjau perintah di pohon event.
+
+### 2. Refactor UI & UX: Perbaikan Tampilan Responsif dan Bebas Terpotong di Seluruh Bagian Editor
 - **Pemberantasan Pemotongan Elemen (Clipping & Truncation) pada Seluruh Modal Editor**:
   - **Event Editor Modal**:
     - Memperbesar ukuran default modal menjadi `1060px` x `720px` (`max-width: 98vw`, `max-height: 96vh`) untuk mengakomodasi tata letak penuh tanpa sesak.

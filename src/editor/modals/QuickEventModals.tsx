@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { ProjectBundle } from '../../core/types.js';
+import { MapLocationPickerModal } from './MapLocationPickerModal.js';
 
 export interface QuickTransferModalProps {
   bundle?: ProjectBundle;
   quickTargetMap: string;
   quickTargetX: number;
   quickTargetY: number;
+  assetUrls?: Record<string, string>;
   onTargetMapChange: (mapId: string) => void;
   onTargetXChange: (x: number) => void;
   onTargetYChange: (y: number) => void;
@@ -18,12 +20,16 @@ export function QuickTransferModal({
   quickTargetMap,
   quickTargetX,
   quickTargetY,
+  assetUrls,
   onTargetMapChange,
   onTargetXChange,
   onTargetYChange,
   onCreate,
   onClose
 }: QuickTransferModalProps) {
+  const [pickingLocation, setPickingLocation] = useState(false);
+  const targetMapName = bundle?.maps[quickTargetMap]?.name || quickTargetMap;
+
   return (
     <div className="mv-modal-backdrop" onClick={onClose}>
       <div className="mv-modal" style={{ width: '420px' }} onClick={e => e.stopPropagation()}>
@@ -33,19 +39,41 @@ export function QuickTransferModal({
         </div>
         <div className="mv-modal-body">
           <div className="mv-field-group">
-            <label>Peta Tujuan (Destination Map)</label>
-            <select
-              value={quickTargetMap}
-              onChange={e => onTargetMapChange(e.target.value)}
-            >
-              {bundle?.project.maps.map(id => (
-                <option key={id} value={id}>
-                  {id}: {bundle.maps[id]?.name || id}
-                </option>
-              ))}
-            </select>
+            <label>Peta Tujuan & Koordinat (Destination)</label>
+            <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+              <button
+                type="button"
+                className="mz-btn"
+                style={{ flex: 1, textAlign: 'left', background: '#fff', fontSize: '13px' }}
+                onClick={() => setPickingLocation(true)}
+              >
+                🗺️ {targetMapName} ({quickTargetX}, {quickTargetY})
+              </button>
+              <button
+                type="button"
+                className="mz-btn mz-btn-primary"
+                style={{ width: '38px', fontWeight: 'bold' }}
+                onClick={() => setPickingLocation(true)}
+                title="Pilih lokasi di peta secara visual..."
+              >
+                ...
+              </button>
+            </div>
           </div>
           <div className="mv-form-row" style={{ marginTop: '10px' }}>
+            <div className="mv-field-group">
+              <label>Peta (ID)</label>
+              <select
+                value={quickTargetMap}
+                onChange={e => onTargetMapChange(e.target.value)}
+              >
+                {bundle?.project.maps.map(id => (
+                  <option key={id} value={id}>
+                    {id}: {bundle.maps[id]?.name || id}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="mv-field-group">
               <label>Target X</label>
               <input
@@ -65,6 +93,23 @@ export function QuickTransferModal({
               />
             </div>
           </div>
+
+          {pickingLocation && bundle && (
+            <MapLocationPickerModal
+              bundle={bundle}
+              initialMapId={quickTargetMap}
+              initialX={quickTargetX}
+              initialY={quickTargetY}
+              assetUrls={assetUrls}
+              title="Select Location (Quick Transfer)"
+              onSelect={(mapId, x, y) => {
+                onTargetMapChange(mapId);
+                onTargetXChange(x);
+                onTargetYChange(y);
+              }}
+              onClose={() => setPickingLocation(false)}
+            />
+          )}
         </div>
         <div className="mv-modal-footer">
           <button onClick={onClose}>Batal</button>
@@ -80,6 +125,7 @@ export interface QuickDoorModalProps {
   quickTargetMap: string;
   quickTargetX: number;
   quickTargetY: number;
+  assetUrls?: Record<string, string>;
   onTargetMapChange: (mapId: string) => void;
   onTargetXChange: (x: number) => void;
   onTargetYChange: (y: number) => void;
@@ -92,12 +138,16 @@ export function QuickDoorModal({
   quickTargetMap,
   quickTargetX,
   quickTargetY,
+  assetUrls,
   onTargetMapChange,
   onTargetXChange,
   onTargetYChange,
   onCreate,
   onClose
 }: QuickDoorModalProps) {
+  const [pickingLocation, setPickingLocation] = useState(false);
+  const targetMapName = bundle?.maps[quickTargetMap]?.name || quickTargetMap;
+
   return (
     <div className="mv-modal-backdrop" onClick={onClose}>
       <div className="mv-modal" style={{ width: '420px' }} onClick={e => e.stopPropagation()}>
@@ -107,19 +157,41 @@ export function QuickDoorModal({
         </div>
         <div className="mv-modal-body">
           <div className="mv-field-group">
-            <label>Peta Tujuan (Destination Map)</label>
-            <select
-              value={quickTargetMap}
-              onChange={e => onTargetMapChange(e.target.value)}
-            >
-              {bundle?.project.maps.map(id => (
-                <option key={id} value={id}>
-                  {id}: {bundle.maps[id]?.name || id}
-                </option>
-              ))}
-            </select>
+            <label>Peta Tujuan & Koordinat (Destination)</label>
+            <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+              <button
+                type="button"
+                className="mz-btn"
+                style={{ flex: 1, textAlign: 'left', background: '#fff', fontSize: '13px' }}
+                onClick={() => setPickingLocation(true)}
+              >
+                🗺️ {targetMapName} ({quickTargetX}, {quickTargetY})
+              </button>
+              <button
+                type="button"
+                className="mz-btn mz-btn-primary"
+                style={{ width: '38px', fontWeight: 'bold' }}
+                onClick={() => setPickingLocation(true)}
+                title="Pilih lokasi di peta secara visual..."
+              >
+                ...
+              </button>
+            </div>
           </div>
           <div className="mv-form-row" style={{ marginTop: '10px' }}>
+            <div className="mv-field-group">
+              <label>Peta (ID)</label>
+              <select
+                value={quickTargetMap}
+                onChange={e => onTargetMapChange(e.target.value)}
+              >
+                {bundle?.project.maps.map(id => (
+                  <option key={id} value={id}>
+                    {id}: {bundle.maps[id]?.name || id}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="mv-field-group">
               <label>Target X</label>
               <input
@@ -139,6 +211,23 @@ export function QuickDoorModal({
               />
             </div>
           </div>
+
+          {pickingLocation && bundle && (
+            <MapLocationPickerModal
+              bundle={bundle}
+              initialMapId={quickTargetMap}
+              initialX={quickTargetX}
+              initialY={quickTargetY}
+              assetUrls={assetUrls}
+              title="Select Location (Quick Door)"
+              onSelect={(mapId, x, y) => {
+                onTargetMapChange(mapId);
+                onTargetXChange(x);
+                onTargetYChange(y);
+              }}
+              onClose={() => setPickingLocation(false)}
+            />
+          )}
         </div>
         <div className="mv-modal-footer">
           <button onClick={onClose}>Batal</button>

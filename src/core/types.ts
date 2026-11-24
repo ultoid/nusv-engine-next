@@ -94,7 +94,7 @@ export type EventCommand =
   | { type: 'wait'; frames: number }
   | { type: 'changeGold'; amount: number; operation?: 'add' | 'sub' }
   | { type: 'giveItem'; itemId: string; amount: number } 
-  | { type: 'transfer'; mapId: string; x: number; y: number } 
+  | { type: 'transfer'; designation?: 'direct' | 'variables'; mapId: string; x: number; y: number; mapVariableId?: string; xVariableId?: string; yVariableId?: string; direction?: 'retain' | 'down' | 'left' | 'right' | 'up'; fade?: 'black' | 'white' | 'none' } 
   | { type: 'battle'; troopId: string; victorySwitchId?: string } 
   | { type: 'questStart'; questId: string }
   | { type: 'questAdvance'; questId: string; objectiveId: string; amount: number }

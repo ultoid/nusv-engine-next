@@ -1846,6 +1846,117 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
   display: block;
 }
 
+/* Authentic RPG Maker MZ Map Location Picker Modal */
+.mz-location-picker-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+}
+
+.mz-location-picker-dialog {
+  color-scheme: light;
+  width: 900px;
+  max-width: 96vw;
+  height: 620px;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  background: #e8ecf2;
+  border: 1px solid #7c8e9f;
+  border-radius: 5px;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  color: #1e293b;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.mz-location-picker-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
+  background: #e8ecf2;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.mz-location-map-panel {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #9eb0c4;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mz-location-map-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 2px;
+}
+
+.mz-location-viewport-panel {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #9eb0c4;
+  border-radius: 4px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.mz-location-viewport-header {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.mz-location-canvas-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+  background: #94a3b8;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.mz-location-canvas-wrapper {
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid #475569;
+  background: #ffffff;
+  margin: auto;
+  cursor: crosshair;
+}
+
+.mz-location-cursor {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #000000, inset 0 0 0 1px #000000, 0 0 8px rgba(37, 99, 235, 0.9);
+  pointer-events: none;
+  z-index: 10;
+  transition: left 0.05s ease-out, top 0.05s ease-out;
+}
+
 .mv-map-viewport.full-canvas {
   width: 100%;
   height: 100%;

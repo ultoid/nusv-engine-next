@@ -74,7 +74,13 @@ export const commandPreview = (command: EventCommand): string => {
   if(command.type==='playBgs')return `BGS: ${command.path}`;
   if(command.type==='fadeoutBgs')return `Fadeout BGS (${command.seconds}s)`;
   if(command.type==='giveItem')return `${command.amount}× ${command.itemId}`;
-  if(command.type==='transfer')return `${command.mapId} (${command.x}, ${command.y})`;
+  if(command.type==='transfer') {
+    const dirStr = command.direction && command.direction !== 'retain' ? ` · ${command.direction}` : '';
+    if (command.designation === 'variables') {
+      return `Variable [${command.mapVariableId || '0'}] (${command.xVariableId || '0'}, ${command.yVariableId || '0'})${dirStr}`;
+    }
+    return `${command.mapId} (${command.x}, ${command.y})${dirStr}`;
+  }
   if(command.type==='battle')return command.troopId;
   if(command.type==='questStart')return command.questId;
   if(command.type==='questAdvance')return `${command.questId} · ${command.objectiveId} +${command.amount}`;
@@ -189,7 +195,7 @@ export function createCommand(type: EventCommand['type'], bundle: ProjectBundle)
   if(type==='playBgs')return{type,path:'assets/audio/bgs/Rain.ogg'};
   if(type==='fadeoutBgs')return{type,seconds:2};
   if(type==='giveItem')return{type,itemId:bundle.game.items[0]?.id??'item.missing',amount:1};
-  if(type==='transfer')return{type,mapId:bundle.project.start.mapId,x:bundle.project.start.x,y:bundle.project.start.y};
+  if(type==='transfer')return{type,designation:'direct',mapId:bundle.project.start.mapId,x:bundle.project.start.x,y:bundle.project.start.y,direction:'retain',fade:'black'};
   if(type==='battle')return{type,troopId:bundle.game.troops[0]?.id??'troop.missing'};
   if(type==='questStart')return{type,questId:bundle.game.quests?.[0]?.id??'quest.missing'};
   if(type==='questAdvance')return{type,questId:bundle.game.quests?.[0]?.id??'quest.missing',objectiveId:bundle.game.quests?.[0]?.objectives[0]?.id??'objective.missing',amount:1};

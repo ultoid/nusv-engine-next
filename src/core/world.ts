@@ -549,11 +549,30 @@ async function runCommandList(
     } else if (command.type === 'giveItem') {
       next.inventory[command.itemId] = Math.max(0, (next.inventory[command.itemId] ?? 0) + command.amount);
     } else if (command.type === 'transfer') {
-      const map = bundle.maps[command.mapId];
-      if (!map || command.x < 0 || command.y < 0 || command.x >= map.width || command.y >= map.height || map.collision[command.y * map.width + command.x] === 1) {
-        throw new Error(`transfer ${command.mapId}: tujuan tidak valid`);
+      let targetMapId = command.mapId;
+      let targetX = command.x;
+      let targetY = command.y;
+
+      if (command.designation === 'variables') {
+        if (command.mapVariableId && next.variables[command.mapVariableId] !== undefined) {
+          targetMapId = String(next.variables[command.mapVariableId]);
+        }
+        if (command.xVariableId && next.variables[command.xVariableId] !== undefined) {
+          targetX = Number(next.variables[command.xVariableId]);
+        }
+        if (command.yVariableId && next.variables[command.yVariableId] !== undefined) {
+          targetY = Number(next.variables[command.yVariableId]);
+        }
       }
-      next = { ...next, mapId: command.mapId, x: command.x, y: command.y };
+
+      const map = bundle.maps[targetMapId];
+      if (!map || targetX < 0 || targetY < 0 || targetX >= map.width || targetY >= map.height || map.collision[targetY * map.width + targetX] === 1) {
+        throw new Error(`transfer ${targetMapId}: tujuan tidak valid`);
+      }
+      next = { ...next, mapId: targetMapId, x: targetX, y: targetY };
+      if (command.direction && command.direction !== 'retain') {
+        next = { ...next, facing: command.direction };
+      }
     } else if (command.type === 'battle') {
       const result = await io.battle(command.troopId, next);
       next = {

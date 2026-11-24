@@ -3,6 +3,7 @@ import type { EventCommand, ProjectBundle } from '../../core/types.js';
 import { commandName, commandPreview, createCommand } from './eventCommands.js';
 import { MoveRouteModal } from '../modals/MoveRouteModal.js';
 import { FacePickerModal } from '../modals/FacePickerModal.js';
+import { MapLocationPickerModal } from '../modals/MapLocationPickerModal.js';
 
 export function CommandFields({
   command,
@@ -19,6 +20,7 @@ export function CommandFields({
 }) {
   const [editingRoute, setEditingRoute] = useState(false);
   const [pickingFace, setPickingFace] = useState(false);
+  const [pickingLocation, setPickingLocation] = useState(false);
 
   // Helper for face url resolution
   let resolvedFaceUrl: string | undefined = undefined;
@@ -149,7 +151,151 @@ export function CommandFields({
     if(command.type==='setSwitch')return <><label>Switch ID<input value={command.id} onChange={event=>onChange({...command,id:event.target.value})}/></label><label>Value<select value={String(command.value)} onChange={event=>onChange({...command,value:event.target.value==='true'})}><option value="true">ON</option><option value="false">OFF</option></select></label></>;
     if(command.type==='setVariable')return <><label>Variable ID<input value={command.id} onChange={event=>onChange({...command,id:event.target.value})}/></label><label>Value<input type="number" value={command.value} onChange={event=>onChange({...command,value:Number(event.target.value)})}/></label></>;
     if(command.type==='giveItem')return <><label>Item<select value={command.itemId} onChange={event=>onChange({...command,itemId:event.target.value})}>{bundle.game.items.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><label>Amount<input type="number" min="1" value={command.amount} onChange={event=>onChange({...command,amount:Number(event.target.value)})}/></label></>;
-    if(command.type==='transfer')return <><label>Map<select value={command.mapId} onChange={event=>onChange({...command,mapId:event.target.value})}>{bundle.project.maps.map(id=><option key={id} value={id}>{bundle.maps[id].name}</option>)}</select></label><label>X<input type="number" min="0" value={command.x} onChange={event=>onChange({...command,x:Number(event.target.value)})}/></label><label>Y<input type="number" min="0" value={command.y} onChange={event=>onChange({...command,y:Number(event.target.value)})}/></label></>;
+    if (command.type === 'transfer') {
+      const designation = command.designation ?? 'direct';
+      const mapName = bundle.maps[command.mapId]?.name || command.mapId;
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Location Group */}
+          <div className="mz-group-box">
+            <div className="mz-group-title">Location</div>
+            <div className="mz-group-content" style={{ gap: '12px', padding: '10px 12px' }}>
+              {/* Direct designation */}
+              <div>
+                <label style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px', cursor: 'pointer', fontWeight: 600, color: '#1e3a5f' }}>
+                  <input
+                    type="radio"
+                    name="transferDesignation"
+                    checked={designation === 'direct'}
+                    onChange={() => onChange({ ...command, designation: 'direct' })}
+                  />
+                  Direct designation
+                </label>
+                <div style={{ display: 'flex', gap: '6px', marginLeft: '22px', marginTop: '6px' }}>
+                  <button
+                    type="button"
+                    className="mz-btn"
+                    style={{
+                      flex: 1,
+                      textAlign: 'left',
+                      padding: '0 10px',
+                      height: '28px',
+                      background: '#ffffff',
+                      opacity: designation === 'direct' ? 1 : 0.6,
+                      cursor: designation === 'direct' ? 'pointer' : 'default'
+                    }}
+                    disabled={designation !== 'direct'}
+                    onClick={() => setPickingLocation(true)}
+                    title="Klik untuk memilih lokasi tujuan secara visual pada peta"
+                  >
+                    {mapName} ({command.x}, {command.y})
+                  </button>
+                  <button
+                    type="button"
+                    className="mz-btn mz-btn-primary"
+                    style={{ width: '38px', height: '28px', fontWeight: 'bold' }}
+                    disabled={designation !== 'direct'}
+                    onClick={() => setPickingLocation(true)}
+                    title="Pilih lokasi di peta secara visual..."
+                  >
+                    ...
+                  </button>
+                </div>
+              </div>
+
+              {/* Designation with variables */}
+              <div>
+                <label style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px', cursor: 'pointer', fontWeight: 600, color: '#1e3a5f' }}>
+                  <input
+                    type="radio"
+                    name="transferDesignation"
+                    checked={designation === 'variables'}
+                    onChange={() => onChange({ ...command, designation: 'variables' })}
+                  />
+                  Designation with variables
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: '32px 1fr', gap: '6px', marginLeft: '22px', marginTop: '6px', alignItems: 'center' }}>
+                  <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>ID:</span>
+                  <input
+                    type="text"
+                    className="mz-input"
+                    disabled={designation !== 'variables'}
+                    placeholder="Map ID Variable (misal: 0001)"
+                    value={command.mapVariableId ?? ''}
+                    onChange={e => onChange({ ...command, mapVariableId: e.target.value })}
+                  />
+                  <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>X:</span>
+                  <input
+                    type="text"
+                    className="mz-input"
+                    disabled={designation !== 'variables'}
+                    placeholder="X Variable (misal: 0002)"
+                    value={command.xVariableId ?? ''}
+                    onChange={e => onChange({ ...command, xVariableId: e.target.value })}
+                  />
+                  <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>Y:</span>
+                  <input
+                    type="text"
+                    className="mz-input"
+                    disabled={designation !== 'variables'}
+                    placeholder="Y Variable (misal: 0003)"
+                    value={command.yVariableId ?? ''}
+                    onChange={e => onChange({ ...command, yVariableId: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Direction and Fade options */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <label>
+              Direction:
+              <select
+                className="mz-select"
+                value={command.direction ?? 'retain'}
+                onChange={e => onChange({ ...command, direction: e.target.value as any })}
+              >
+                <option value="retain">Retain</option>
+                <option value="down">Down</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+                <option value="up">Up</option>
+              </select>
+            </label>
+
+            <label>
+              Fade:
+              <select
+                className="mz-select"
+                value={command.fade ?? 'black'}
+                onChange={e => onChange({ ...command, fade: e.target.value as any })}
+              >
+                <option value="black">Black</option>
+                <option value="white">White</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+          </div>
+
+          {/* Visual Location Picker Modal */}
+          {pickingLocation && (
+            <MapLocationPickerModal
+              bundle={bundle}
+              initialMapId={command.mapId}
+              initialX={command.x}
+              initialY={command.y}
+              assetUrls={assetUrls}
+              title="Select Location (Transfer Player)"
+              onSelect={(mapId, x, y) => {
+                onChange({ ...command, mapId, x, y });
+              }}
+              onClose={() => setPickingLocation(false)}
+            />
+          )}
+        </div>
+      );
+    }
     if(command.type==='battle')return <><label>Troop<select value={command.troopId} onChange={event=>onChange({...command,troopId:event.target.value})}>{bundle.game.troops.map(troop=><option key={troop.id} value={troop.id}>{troop.name}</option>)}</select></label><label>Victory switch<input value={command.victorySwitchId??''} placeholder="Optional" onChange={event=>onChange({...command,victorySwitchId:event.target.value||undefined})}/></label></>;
     if(command.type==='questStart'||command.type==='questComplete')return <label>Quest<select value={command.questId} onChange={event=>onChange({...command,questId:event.target.value})}>{(bundle.game.quests??[]).map(quest=><option key={quest.id} value={quest.id}>{quest.name}</option>)}</select></label>;
     if(command.type==='questAdvance')return <><label>Quest<select value={command.questId} onChange={event=>{const quest=bundle.game.quests?.find(item=>item.id===event.target.value);onChange({...command,questId:event.target.value,objectiveId:quest?.objectives[0]?.id??command.objectiveId});}}>{(bundle.game.quests??[]).map(quest=><option key={quest.id} value={quest.id}>{quest.name}</option>)}</select></label><label>Objective<select value={command.objectiveId} onChange={event=>onChange({...command,objectiveId:event.target.value})}>{(bundle.game.quests?.find(quest=>quest.id===command.questId)?.objectives??[]).map(objective=><option key={objective.id} value={objective.id}>{objective.text}</option>)}</select></label><label>Amount<input type="number" min="1" value={command.amount} onChange={event=>onChange({...command,amount:Number(event.target.value)})}/></label></>;
@@ -370,12 +516,30 @@ export function CommandFields({
       <label>Event ID
         <input type="text" value={command.eventId} onChange={e=>onChange({...command,eventId:e.target.value})}/>
       </label>
-      <label>Target X
-        <input type="number" min="0" value={command.x} onChange={e=>onChange({...command,x:Number(e.target.value)})}/>
-      </label>
-      <label>Target Y
-        <input type="number" min="0" value={command.y} onChange={e=>onChange({...command,y:Number(e.target.value)})}/>
-      </label>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
+        <label>Target X
+          <input type="number" min="0" value={command.x} onChange={e=>onChange({...command,x:Number(e.target.value)})}/>
+        </label>
+        <label>Target Y
+          <input type="number" min="0" value={command.y} onChange={e=>onChange({...command,y:Number(e.target.value)})}/>
+        </label>
+      </div>
+      <div style={{marginTop:'4px'}}>
+        <button type="button" className="mz-btn" style={{width:'100%',height:'28px'}} onClick={()=>setPickingLocation(true)}>
+          🗺️ Pilih Koordinat di Peta... ({command.x}, {command.y})
+        </button>
+      </div>
+      {pickingLocation && (
+        <MapLocationPickerModal
+          bundle={bundle}
+          initialX={command.x}
+          initialY={command.y}
+          assetUrls={assetUrls}
+          title="Select Location (Set Event Location)"
+          onSelect={(_mapId, x, y) => onChange({ ...command, x, y })}
+          onClose={() => setPickingLocation(false)}
+        />
+      )}
     </>;
     if(command.type==='scrollMap')return <>
       <label>Direction
@@ -644,17 +808,26 @@ export function CommandFields({
           <option value="airship">Airship</option>
         </select>
       </label>
-      <label>Map
-        <select value={command.mapId} onChange={e=>onChange({...command,mapId:e.target.value})}>
-          {bundle.project.maps.map(m=><option key={m} value={m}>{m}</option>)}
-        </select>
+      <label>Location
+        <div style={{display:'flex',gap:'6px',marginTop:'4px'}}>
+          <button type="button" className="mz-btn" style={{flex:1,textAlign:'left',background:'#fff'}} onClick={()=>setPickingLocation(true)}>
+            {bundle.maps[command.mapId]?.name || command.mapId} ({command.x}, {command.y})
+          </button>
+          <button type="button" className="mz-btn mz-btn-primary" style={{width:'38px'}} onClick={()=>setPickingLocation(true)} title="Pilih lokasi di peta secara visual...">...</button>
+        </div>
       </label>
-      <label>X
-        <input type="number" min="0" value={command.x} onChange={e=>onChange({...command,x:Number(e.target.value)})}/>
-      </label>
-      <label>Y
-        <input type="number" min="0" value={command.y} onChange={e=>onChange({...command,y:Number(e.target.value)})}/>
-      </label>
+      {pickingLocation && (
+        <MapLocationPickerModal
+          bundle={bundle}
+          initialMapId={command.mapId}
+          initialX={command.x}
+          initialY={command.y}
+          assetUrls={assetUrls}
+          title="Select Location (Set Vehicle Location)"
+          onSelect={(mapId, x, y) => onChange({ ...command, mapId, x, y })}
+          onClose={() => setPickingLocation(false)}
+        />
+      )}
     </>;
 
     if (command.type === 'getOnOffVehicle') return <div style={{padding:'8px',color:'#888',fontSize:'13px'}}>Get on or off the vehicle on the current player tile. (No parameters)</div>;
