@@ -37,6 +37,7 @@ export function useEventEditor({
   const [selectedCommandIndex, setSelectedCommandIndex] = useState<number | null>(null);
   const [newCommandType, setNewCommandType] = useState<EventCommand['type']>('text');
   const [clipboard, setClipboard] = useState<MapEvent | null>(null);
+  const [isCreatingNewEvent, setIsCreatingNewEvent] = useState(false);
 
   const map = bundle?.maps[selectedMap];
 
@@ -77,21 +78,56 @@ export function useEventEditor({
 
   const createEventAt = (x: number, y: number) => {
     if (!bundle || !map) return;
-    let n = 1;
-    while (map.events.some(event => event.id === `event.new-${n}`)) n++;
+    let nextIdNum = 1;
+    const usedNums = new Set<number>();
+    for (const ev of map.events) {
+      const match = ev.id.match(/\d+/);
+      if (match) usedNums.add(parseInt(match[0], 10));
+      const nameMatch = ev.name.match(/EV(\d+)/i);
+      if (nameMatch) usedNums.add(parseInt(nameMatch[1], 10));
+    }
+    while (usedNums.has(nextIdNum)) nextIdNum++;
+    const formattedNum = String(nextIdNum).padStart(3, '0');
+    const newId = `event.${nextIdNum}`;
+    const newName = `EV${formattedNum}`;
+
     const value: MapEvent = {
-      id: `event.new-${n}`,
-      name: `EV${String(n).padStart(3, '0')}`,
+      id: newId,
+      name: newName,
       x,
       y,
       trigger: 'interact',
-      pages: [{ solid: true, commands: [{ type: 'text', text: 'Halo! Ini event baru.' }] }]
+      pages: [
+        {
+          solid: true,
+          walkAnime: true,
+          priorityType: 'same',
+          trigger: 'interact',
+          conditions: {},
+          commands: []
+        }
+      ]
     };
-    const next = { ...bundle, maps: { ...bundle.maps, [map.id]: { ...map, events: [...map.events, value] } } };
-    commit(next, `${value.name} dibuat di (${x}, ${y}).`);
-    selectEvent(value.id, next);
+
+    setSelectedEvent(newId);
+    setEventDraft(eventJson(value));
+    setEventPage(0);
+    setSelectedCommandIndex(null);
     setSelectedCell({ x, y });
+    setIsCreatingNewEvent(true);
     setModal('eventEditor');
+  };
+
+  const cancelEvent = () => {
+    if (isCreatingNewEvent) {
+      setIsCreatingNewEvent(false);
+      setSelectedEvent('');
+      setEventDraft('{}');
+    } else {
+      const orig = map?.events.find(e => e.id === selectedEvent);
+      if (orig) setEventDraft(eventJson(orig));
+    }
+    setModal('none');
   };
 
   const addEvent = () => {
@@ -106,15 +142,16 @@ export function useEventEditor({
     try {
       const parsed = JSON.parse(eventDraft) as MapEvent;
       if (!parsed.id || !Array.isArray(parsed.pages)) throw new Error('Event wajib memiliki id dan pages.');
-      if (map.events.some(event => event.id === parsed.id && event.id !== selectedEvent)) {
-        throw new Error(`ID ${parsed.id} sudah dipakai.`);
+      const exists = map.events.some(event => event.id === selectedEvent || event.id === parsed.id);
+      let events: MapEvent[];
+      if (exists) {
+        events = map.events.map(event => ((event.id === selectedEvent || event.id === parsed.id) ? parsed : event));
+      } else {
+        events = [...map.events, parsed];
       }
-      const exists = map.events.some(event => event.id === selectedEvent);
-      const events = exists
-        ? map.events.map(event => (event.id === selectedEvent ? parsed : event))
-        : [...map.events, parsed];
       commit({ ...bundle, maps: { ...bundle.maps, [map.id]: { ...map, events } } }, `Event ${parsed.name} disimpan.`);
       setSelectedEvent(parsed.id);
+      setIsCreatingNewEvent(false);
     } catch (error) {
       setMessage(`Event rusak: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -333,6 +370,8 @@ export function useEventEditor({
     parsedEvent,
     selectEvent,
     createEventAt,
+    cancelEvent,
+    isCreatingNewEvent,
     addEvent,
     applyEvent,
     updateEventVisual,

@@ -25,7 +25,13 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 - **Validasi Skema Lengkap**:
   - Skema validasi di `src/core/validation.ts` diperluas untuk memvalidasi struktur `MoveRoute` dan seluruh 48 tipe perintah event secara deterministik.
 
-### 2. Frontend UI Event Editor & Modals (100% RPG Maker MZ Style)
+### 2. Frontend UI Event Editor & Alur Kerja Penambahan Event (100% RPG Maker MZ Style)
+- **Alur Kerja Pembuatan Event Baru (Pure MZ Lifecycle)**:
+  - **Draft Terisolasi Tanpa Premature Commit**: Event baru tidak lagi langsung di-commit ke data peta saat dialog dibuka. Jika pengguna menekan tombol *Cancel* atau menutup dialog `[X]`, draft dibuang bersih dan peta tidak mengalami perubahan.
+  - **Penomoran ID & Nama Otomatis**: Menghitung ID numerik terkecil yang belum terpakai pada peta (`ID:001 - Event Editor`, nama otomatis `EV001`, `EV002`, dst).
+  - **State Awal Bersih**: Event baru dimulai dengan halaman kosong bersih (`commands: []`), tanpa teks dummy, dengan konfigurasi default RPG Maker MZ (`priorityType: 'same'`, `walkAnime: true`, `trigger: 'interact'`).
+  - **Tampilan Spreadsheet Contents Murni**: Menghapus toolbar tombol berlebih di atas kotak Contents agar tampilan identik dengan RPG Maker MZ; penambahan perintah dilakukan secara natural via klik ganda baris `◆`, tombol `Enter`, atau menu klik kanan.
+  - **Penyelarasan Shortcut Global**: `F5` untuk Map Mode, `F6` untuk Event Mode, dan `Ctrl+R` untuk Playtest.
 - **Autonomous Movement Route Modal (`MoveRouteModal`)**:
   - Menambahkan tombol `Route...` di seksi *Autonomous Movement* pada `EventEditorModal` (aktif saat `Type: Custom`).
   - Modal dialog 2-kolom khas RPG Maker MZ: daftar urutan langkah di kiri dengan tombol hapus/bersihkan, dan tombol palet perintah gerakan, hadap, sakelar, dan skrip di kanan.

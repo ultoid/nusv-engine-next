@@ -132,10 +132,10 @@ export function EditorModals({
         />
       )}
 
-      {modal === 'eventEditor' && bundle && currentEvent && (
+      {modal === 'eventEditor' && bundle && (currentEvent || eventEditor.parsedEvent) && (
         <EventEditorModal
           bundle={bundle}
-          currentEvent={currentEvent}
+          currentEvent={(currentEvent || eventEditor.parsedEvent)!}
           eventPage={eventEditor.eventPage}
           setEventPage={eventEditor.setEventPage}
           eventView={eventEditor.eventView}
@@ -162,7 +162,7 @@ export function EditorModals({
           updateCommand={eventEditor.updateCommand}
           applyEvent={eventEditor.applyEvent}
           assetUrls={assetUrls}
-          onClose={() => setModal('none')}
+          onClose={eventEditor.cancelEvent}
         />
       )}
 

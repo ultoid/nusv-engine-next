@@ -120,7 +120,7 @@ export function EditorTopBar({
         </div></details>
         <details className="mv-menu"><summary>Mode</summary><div>
           <button onClick={() => setMode('map')}>Map <kbd>F5</kbd></button>
-          <button onClick={() => setMode('event')}>Events</button>
+          <button onClick={() => setMode('event')}>Events <kbd>F6</kbd></button>
           <button onClick={() => setModal('database')}>Database <kbd>F9</kbd></button>
           <button onClick={() => setMode('search')}>Search</button>
         </div></details>
@@ -157,7 +157,7 @@ export function EditorTopBar({
         </div></details>
         <details className="mv-menu"><summary>Game</summary><div>
           <button disabled={!canPlay} onClick={onPlaytest}>
-            Playtest <kbd>F6</kbd>
+            Playtest <kbd>Ctrl+R</kbd>
           </button>
         </div></details>
         <details className="mv-menu"><summary>Help</summary><div>

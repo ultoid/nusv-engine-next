@@ -130,7 +130,10 @@ export function useEditorShortcuts({
       } else if (!editing && event.key === 'F10' && bundle) {
         event.preventDefault();
         setModal('resourceManager');
-      } else if (!editing && event.key === 'F6' && canPlay) {
+      } else if (!editing && event.key === 'F6' && bundle) {
+        event.preventDefault();
+        setMode('event');
+      } else if (!editing && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'r' && canPlay) {
         event.preventDefault();
         void api!.playtest({ mapId: selectedMap, debug: true });
       } else if (!editing && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 't') {
@@ -185,7 +188,10 @@ export function useEditorShortcuts({
           if (selectedEvent) {
             setModal('eventEditor');
           } else if (selectedCell) {
-            createEventAt(selectedCell.x, selectedCell.y);
+            const hasEv = map?.events.some(e => e.x === selectedCell.x && e.y === selectedCell.y);
+            if (!hasEv) {
+              createEventAt(selectedCell.x, selectedCell.y);
+            }
           }
         } else if (event.key === 'Delete' || event.key === 'Del') {
           if (selectedEvent) {

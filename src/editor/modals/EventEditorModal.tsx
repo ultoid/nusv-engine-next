@@ -182,8 +182,9 @@ export function EventEditorModal({
         {/* Title bar */}
         <div className="mz-dialog-titlebar">
           <span>{(() => {
-            const numStr = activeEv.id.replace('event.', '').replace('new-', '');
-            const displayId = /^\d+$/.test(numStr) ? String(numStr).padStart(3, '0') : activeEv.id.replace('event.', '');
+            const numMatch = activeEv.id.match(/\d+/);
+            const num = numMatch ? parseInt(numMatch[0], 10) : 1;
+            const displayId = String(num).padStart(3, '0');
             return `ID:${displayId} - Event Editor`;
           })()}</span>
           <button className="mz-close-btn" onClick={onClose} title="Tutup">×</button>
@@ -803,76 +804,6 @@ export function EventEditorModal({
               <div className="mz-group-box mz-contents-box">
                 <div className="mz-contents-header">
                   <span className="mz-group-title-label">Contents</span>
-                  <div className="mz-command-toolbar">
-                    <button
-                      type="button"
-                      className="mz-btn mz-btn-primary"
-                      onClick={() => setIsCommandPickerOpen(true)}
-                      title="Buka dialog perintah event RPG Maker MZ (3 Tab)"
-                    >
-                      + Add Command...
-                    </button>
-                    <select
-                      className="mz-select mz-add-select"
-                      value={newCommandType}
-                      onChange={event => setNewCommandType(event.target.value as EventCommand['type'])}
-                    >
-                      {commandTypes.map(type => (
-                        <option key={type} value={type}>{commandName[type]}</option>
-                      ))}
-                    </select>
-                    <button type="button" className="mz-btn" onClick={addCommand}>+ Quick</button>
-                    <button
-                      type="button"
-                      className="mz-btn"
-                      disabled={selectedCommandIndex === null}
-                      onClick={() => setEditingCommandIndex(selectedCommandIndex)}
-                    >
-                      Edit...
-                    </button>
-                    <button
-                      type="button"
-                      className="mz-btn"
-                      disabled={selectedCommandIndex === null}
-                      onClick={() => {
-                        if (selectedCommandIndex !== null) {
-                          removeCommand(selectedCommandIndex);
-                          setSelectedCommandIndex(null);
-                          setEditingCommandIndex(null);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
-                    <button
-                      type="button"
-                      className="mz-btn mz-btn-sm"
-                      disabled={selectedCommandIndex === null || selectedCommandIndex === 0}
-                      onClick={() => {
-                        if (selectedCommandIndex !== null) {
-                          moveCommand(selectedCommandIndex, -1);
-                          setSelectedCommandIndex(selectedCommandIndex - 1);
-                        }
-                      }}
-                      title="Move Up"
-                    >
-                      ▲
-                    </button>
-                    <button
-                      type="button"
-                      className="mz-btn mz-btn-sm"
-                      disabled={selectedCommandIndex === null || selectedCommandIndex >= curPage.commands.length - 1}
-                      onClick={() => {
-                        if (selectedCommandIndex !== null) {
-                          moveCommand(selectedCommandIndex, 1);
-                          setSelectedCommandIndex(selectedCommandIndex + 1);
-                        }
-                      }}
-                      title="Move Down"
-                    >
-                      ▼
-                    </button>
-                  </div>
                 </div>
 
                 <div
@@ -1035,10 +966,14 @@ export function EventEditorModal({
                     <div
                       key={`empty-${i}`}
                       className="mz-command-row mz-empty-row"
-                      title="Klik dua kali untuk menambah perintah (Event Commands)"
-                      onDoubleClick={() => setIsCommandPickerOpen(true)}
+                      title="Klik dua kali atau tekan Enter untuk menambah perintah (Event Commands)"
+                      onClick={() => setSelectedCommandIndex(curPage.commands.length)}
+                      onDoubleClick={() => {
+                        setSelectedCommandIndex(curPage.commands.length);
+                        setIsCommandPickerOpen(true);
+                      }}
                     >
-                      {i === 0 && curPage.commands.length === 0 && <span className="mz-bullet">◆</span>}
+                      {i === 0 && <span className="mz-bullet">◆</span>}
                     </div>
                   ))}
                 </div>
@@ -1081,8 +1016,12 @@ export function EventEditorModal({
         {/* Bottom Dialog Action Bar */}
         <div className="mz-dialog-footer">
           <div className="mz-footer-left">
-            <button type="button" className="mz-btn" onClick={() => void copyEvent()}>Salin Event</button>
-            <button type="button" className="mz-btn" onClick={() => setEventView(eventView === 'visual' ? 'json' : 'visual')}>
+            <button
+              type="button"
+              className="mz-btn mz-btn-sm"
+              onClick={() => setEventView(eventView === 'visual' ? 'json' : 'visual')}
+              title="Alihkan ke penyuntingan JSON"
+            >
               {eventView === 'visual' ? 'Mode JSON' : 'Mode Visual'}
             </button>
           </div>

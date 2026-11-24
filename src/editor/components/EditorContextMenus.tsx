@@ -203,6 +203,7 @@ export function EditorContextMenus({
           onClick={e => e.stopPropagation()}
         >
           <button
+            disabled={Boolean(cellContextMenu.marker)}
             onClick={() => {
               eventEditor.createEventAt(cellContextMenu.cellX, cellContextMenu.cellY);
               setCellContextMenu(null);
