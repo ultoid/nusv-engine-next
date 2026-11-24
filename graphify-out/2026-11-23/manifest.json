@@ -210,10 +210,10 @@
     "semantic_hash": "e072f5c588c8f937e850718b81201d87"
   },
   "src/core/map-layers.ts": {
-    "mtime": 1795338796.9365177,
-    "seen": 1795343691.4664104,
-    "ast_hash": "822fab74951fa6fce0fbafe739fa08d6",
-    "semantic_hash": "822fab74951fa6fce0fbafe739fa08d6"
+    "mtime": 1795367480.085775,
+    "seen": 1795368167.0067048,
+    "ast_hash": "d20fbf002195e9cd26ba1d7f0013aa2e",
+    "semantic_hash": ""
   },
   "src/core/progression.ts": {
     "mtime": 1795338796.9367528,
@@ -246,9 +246,9 @@
     "semantic_hash": "1b4aca7921d77263412903c593f62ad5"
   },
   "src/editor/App.tsx": {
-    "mtime": 1795366824.2609622,
-    "seen": 1795366929.1599019,
-    "ast_hash": "cf1687731aed121054b61cc3fbc61ae5",
+    "mtime": 1795368147.7369287,
+    "seen": 1795368167.0067132,
+    "ast_hash": "224dd3593c010dfd56287883269ebc6b",
     "semantic_hash": ""
   },
   "src/editor/main.tsx": {
@@ -576,9 +576,9 @@
     "semantic_hash": ""
   },
   "src/editor/MZIcons.tsx": {
-    "mtime": 1795366574.7279825,
-    "seen": 1795366929.159904,
-    "ast_hash": "90bb1872dd93c56de01fe2721743484a",
+    "mtime": 1795366949.0019836,
+    "seen": 1795368167.0067148,
+    "ast_hash": "875be1f07d054bc1127a312423c34408",
     "semantic_hash": ""
   },
   "package-lock.json": {

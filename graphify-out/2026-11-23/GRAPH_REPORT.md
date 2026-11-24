@@ -1,13 +1,13 @@
 # Graph Report - NUSV Engine Next  (2026-11-23)
 
 ## Corpus Check
-- 93 files · ~30,417 words
+- 93 files · ~33,750 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 16 file(s) not represented in the graph (top: .bak 3, .dat 3, (none) 2)
 
 ## Summary
-- 621 nodes · 1251 edges · 23 communities (21 shown, 2 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.86)
+- 624 nodes · 1260 edges · 22 communities (20 shown, 2 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 69 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
@@ -16,13 +16,12 @@
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- PartyController.ts
 - ref_node_path
 - PixiJS Audio & Player Runtime
 - NUSV Engine - Technical Architecture & Clean-Room Specification
 - IPC Preload & Package Security
 - Adventure Mode Controller
-- Turn-Based Battle System
+- battle.ts
 - Extension Security & Host API Docs
 - Diagnostics & Bundle Analysis
 - Audit Risk & Stage Roadmaps
@@ -44,8 +43,8 @@
 1. `ProgressState` - 26 edges
 2. `derivedStats()` - 25 edges
 3. `ProjectBundle` - 22 edges
-4. `WorldScene` - 19 edges
-5. `App()` - 17 edges
+4. `App()` - 20 edges
+5. `WorldScene` - 19 edges
 6. `resolveRound()` - 17 edges
 7. `executeCommands()` - 16 edges
 8. `InputManager` - 15 edges
@@ -57,12 +56,12 @@
   electron/project-service.ts → src/core/validation.ts
 - `saveProject()` --calls--> `validateBundle()`  [EXTRACTED]
   electron/project-service.ts → src/core/validation.ts
-- `validateProgress()` --calls--> `derivedStats()`  [EXTRACTED]
-  electron/progress-service.ts → src/core/battle.ts
-- `validateProgress()` --calls--> `effectiveActor()`  [EXTRACTED]
-  electron/progress-service.ts → src/core/equipment.ts
-- `validateProgress()` --calls--> `initialProgress()`  [EXTRACTED]
-  electron/progress-service.ts → src/core/world.ts
+- `Editor HTML Host Entrypoint` --conceptually_related_to--> `RPG Maker-Style Visual Workspace UI`  [INFERRED]
+  index.html → audit/TAHAP_8.md
+- `README Overview` --references--> `Engine Upgrade & Migration Guide`  [EXTRACTED]
+  README.md → audit/UPGRADE_GUIDE.md
+- `Player HTML Host Entrypoint` --conceptually_related_to--> `TypeScript & PixiJS/WebGL Runtime Boot`  [INFERRED]
+  player.html → audit/TAHAP_1.md
 
 ## Import Cycles
 - 2-file cycle: `src/core/battle.ts -> src/core/ctb.ts -> src/core/battle.ts`
@@ -73,11 +72,7 @@
 - **Security & Trust Architecture** — audit_extension_security_trust_zones, audit_extension_security_declarative_content, audit_tahap_7_hardening, index_csp_meta, player_csp_meta [EXTRACTED 0.75]
 - **NUSV Engine Development Evolution (Stages 0-8)** — audit_tahap_0_overview, audit_tahap_1_overview, audit_tahap_2_overview, audit_tahap_3_overview, audit_tahap_4_overview, audit_tahap_5_overview, audit_tahap_6_overview, audit_tahap_7_overview, audit_tahap_8_overview [EXTRACTED 0.75]
 
-## Communities (23 total, 2 thin omitted)
-
-### Community 0 - "PartyController.ts"
-Cohesion: 0.24
-Nodes (14): changeClass(), reorderFormation(), allocateStat(), baseExpForLevel(), classExpForLevel(), classLevelCap(), emptyStats(), equip() (+6 more)
+## Communities (22 total, 2 thin omitted)
 
 ### Community 1 - "ref_node_path"
 Cohesion: 0.06
@@ -97,19 +92,19 @@ Nodes (41): { contextBridge, ipcRenderer }, { contextBridge, ipcRenderer }, allo
 
 ### Community 5 - "Adventure Mode Controller"
 Cohesion: 0.07
-Nodes (26): advanceQuest(), buyItem(), completeQuest(), defaultSettings(), restAtInn(), startQuest(), effectiveActor(), ProgressState (+18 more)
+Nodes (17): TileDefinition, activePage(), Direction, directionDelta, eventAt(), EventIO, eventPosition(), executeCommands() (+9 more)
 
-### Community 6 - "Turn-Based Battle System"
-Cohesion: 0.13
-Nodes (31): actionSpeed(), activateBossPhases(), clamp(), clone(), createBattle(), currentTarget(), damage(), definition() (+23 more)
+### Community 6 - "battle.ts"
+Cohesion: 0.06
+Nodes (70): loadProgress(), saveProgress(), validateProgress(), advanceQuest(), buyItem(), changeClass(), completeQuest(), defaultSettings() (+62 more)
 
 ### Community 7 - "Extension Security & Host API Docs"
 Cohesion: 0.06
 Nodes (40): Extension & Modding Security Policy, Security Trust Zones, Declarative Event Commands Specification, Host IPC Preload API Contract, NUSV Format & API Specification v1, NUSV Project File Structure, Player Save Architecture v2, Four Tile Layers Schema (+32 more)
 
 ### Community 8 - "Diagnostics & Bundle Analysis"
-Cohesion: 0.08
-Nodes (36): react, analyzeBundle(), Diagnostic, findReferences(), ReferenceHit, walkCommands(), autotileMask(), floodFillLayer() (+28 more)
+Cohesion: 0.09
+Nodes (35): react, analyzeBundle(), Diagnostic, findReferences(), ReferenceHit, walkCommands(), autotileMask(), floodFillLayer() (+27 more)
 
 ### Community 9 - "Audit Risk & Stage Roadmaps"
 Cohesion: 0.07
@@ -120,12 +115,12 @@ Cohesion: 0.08
 Nodes (23): child, electron, env, finish(), { join, resolve }, { mkdtempSync, rmSync }, smokeRoot, { spawn, spawnSync } (+15 more)
 
 ### Community 11 - "Electron Main Process Lifecycle"
-Cohesion: 0.13
-Nodes (29): appRoot, createEditor(), createPlaytest(), finishSmoke(), harden(), here, page(), playtestRoots (+21 more)
+Cohesion: 0.14
+Nodes (26): appRoot, createEditor(), createPlaytest(), finishSmoke(), harden(), here, page(), playtestRoots (+18 more)
 
 ### Community 12 - "Global Types & Project Bundle"
-Cohesion: 0.10
-Nodes (4): ProjectBundle, ImportReport, RecentProject, Window
+Cohesion: 0.11
+Nodes (3): ImportReport, RecentProject, Window
 
 ### Community 13 - "Windows Packaging Scripts"
 Cohesion: 0.12
@@ -144,8 +139,8 @@ Cohesion: 0.18
 Nodes (10): compilerOptions, module, moduleResolution, outDir, rootDir, skipLibCheck, strict, target (+2 more)
 
 ### Community 17 - "types.ts"
-Cohesion: 0.09
-Nodes (41): baseStats(), id(), importMvSubset(), ImportReport, mergeById(), noteStat(), number(), param() (+33 more)
+Cohesion: 0.11
+Nodes (33): baseStats(), id(), importMvSubset(), ImportReport, mergeById(), noteStat(), number(), param() (+25 more)
 
 ### Community 23 - "Karpathy Guidelines"
 Cohesion: 0.33
@@ -167,17 +162,17 @@ Nodes (4): 1. Think Before Coding, 2. Simplicity First, 3. Surgical Changes, 4. 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ProjectBundle` connect `Global Types & Project Bundle` to `PartyController.ts`, `PixiJS Audio & Player Runtime`, `Adventure Mode Controller`, `Turn-Based Battle System`, `Diagnostics & Bundle Analysis`, `Electron Main Process Lifecycle`, `types.ts`?**
+- **Why does `ProjectBundle` connect `battle.ts` to `PixiJS Audio & Player Runtime`, `Adventure Mode Controller`, `Diagnostics & Bundle Analysis`, `Electron Main Process Lifecycle`, `Global Types & Project Bundle`, `types.ts`?**
   _High betweenness centrality (0.078) - this node is a cross-community bridge._
 - **What connects `Sample Marker Asset`, `Host IPC Preload API Contract`, `NUSV Project File Structure` to the rest of the system?**
   _35 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `ref_node_path` be split into smaller, more focused modules?**
   _Cohesion score 0.055288461538461536 - nodes in this community are weakly interconnected._
 - **Why does `pixi.js` connect `PixiJS Audio & Player Runtime` to `IPC Preload & Package Security`, `Adventure Mode Controller`?**
-  _High betweenness centrality (0.046) - this node is a cross-community bridge._
+  _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Should `PixiJS Audio & Player Runtime` be split into smaller, more focused modules?**
   _Cohesion score 0.06636500754147813 - nodes in this community are weakly interconnected._
-- **Why does `ProgressState` connect `Adventure Mode Controller` to `PartyController.ts`, `types.ts`, `Electron Main Process Lifecycle`, `Turn-Based Battle System`?**
+- **Why does `ProgressState` connect `battle.ts` to `types.ts`, `Adventure Mode Controller`?**
   _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Should `IPC Preload & Package Security` be split into smaller, more focused modules?**
   _Cohesion score 0.052854122621564484 - nodes in this community are weakly interconnected._

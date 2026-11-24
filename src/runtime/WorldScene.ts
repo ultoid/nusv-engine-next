@@ -91,7 +91,7 @@ export class WorldScene {
       const x = index % map.width, y = Math.floor(index / map.width), definition = tileDefinition(tileId, currentTileset);
 
       if (definition.autotile && definition.autotileBaseX !== undefined && definition.autotileBaseY !== undefined && definition.tileset) {
-        const quads = getAutotileQuadrants(definition, layer.data, index, map.width, map.height);
+        const quads = getAutotileQuadrants(definition, layer.data, index, map.width, map.height, layer.autotileShapes?.[index]);
         const placeholder = new Graphics().rect(x * tile, y * tile, tile, tile).fill({ color: definition.color, alpha: layerIndex === 0 ? 1 : 0.85 });
         this.world.addChild(placeholder);
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { analyzeBundle, findReferences } from '../core/diagnostics.js';
-import { autotileMask, floodFillLayer, generateDungeonData, getAutotileQuadrants, getTileCoordinates, layerForTile, paintLayerCell, paintLayerCircle, paintLayerRectangle, shiftMapData, TILE_CATALOG, TILE_MAP, DEFAULT_TILESETS, getPaletteTiles, resolveSheetPath, tileDefinition, type LayerSelection, type TileDefinition } from '../core/map-layers.js';
+import { autotileMask, floodFillLayer, generateDungeonData, getAutotileQuadrants, getDefaultAutotileQuadrants, getTileCoordinates, layerForTile, paintLayerBlock, paintLayerBlockRectangle, paintLayerCell, paintLayerCircle, paintLayerRectangle, shiftMapData, TILE_CATALOG, TILE_MAP, DEFAULT_TILESETS, getPaletteTiles, resolveSheetPath, tileDefinition, type LayerSelection, type TileBlock, type TileDefinition, type TileQuadrant } from '../core/map-layers.js';
 import type { EventCommand, MapData, MapEvent, ProjectBundle, TilesetData } from '../core/types.js';
 import type { ImportReport, RecentProject } from '../global.js';
 import { MZIcons } from './MZIcons.js';
@@ -93,11 +93,22 @@ function CommandFields({command,bundle,onChange}:{command:EventCommand;bundle:Pr
   return <label>Music mood<select value={command.mood} onChange={event=>onChange({...command,mood:event.target.value as typeof command.mood})}><option value="calm">Calm</option><option value="danger">Danger</option><option value="boss">Boss</option><option value="silence">Silence</option></select></label>;
 }
 
+export interface PaletteBlockSelection {
+  minCol: number;
+  minRow: number;
+  maxCol: number;
+  maxRow: number;
+  width: number;
+  height: number;
+  tiles: number[][]; // [row][col]
+}
+
 interface MapPaletteCanvasProps {
   paletteGroup: 'A' | 'B' | 'C' | 'D' | 'E' | 'R';
   paletteTiles: TileDefinition[];
   selectedTile: number;
-  onSelectTile: (tileId: number) => void;
+  selectedBlock?: PaletteBlockSelection;
+  onSelectBlock: (block: PaletteBlockSelection) => void;
   activeSheetUrl?: string;
   assetUrls: Record<string, string>;
 }
@@ -106,17 +117,84 @@ function MapPaletteCanvas({
   paletteGroup,
   paletteTiles,
   selectedTile,
-  onSelectTile,
+  selectedBlock,
+  onSelectBlock,
   activeSheetUrl,
   assetUrls
 }: MapPaletteCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const [renderTick, setRenderTick] = useState(0);
+  const isMouseDownRef = useRef(false);
+  const dragStartRef = useRef<{ col: number; row: number } | null>(null);
 
   const rowCount = Math.max(8, Math.ceil(paletteTiles.length / 8));
   const canvasWidth = 256;
   const canvasHeight = rowCount * 32;
+
+  const getColRow = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { col: 0, row: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const col = Math.max(0, Math.min(7, Math.floor(x / 32)));
+    const row = Math.max(0, Math.min(rowCount - 1, Math.floor(y / 32)));
+    return { col, row };
+  };
+
+  const updateBlockSelection = (start: { col: number; row: number }, current: { col: number; row: number }) => {
+    const minCol = Math.min(start.col, current.col);
+    const maxCol = Math.max(start.col, current.col);
+    const minRow = Math.min(start.row, current.row);
+    const maxRow = Math.max(start.row, current.row);
+    const width = maxCol - minCol + 1;
+    const height = maxRow - minRow + 1;
+
+    const tiles: number[][] = [];
+    for (let r = minRow; r <= maxRow; r++) {
+      const rowTiles: number[] = [];
+      for (let c = minCol; c <= maxCol; c++) {
+        const idx = r * 8 + c;
+        rowTiles.push(paletteTiles[idx]?.id ?? 0);
+      }
+      tiles.push(rowTiles);
+    }
+
+    onSelectBlock({ minCol, minRow, maxCol, maxRow, width, height, tiles });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (e.button === 0) {
+      const pos = getColRow(e);
+      isMouseDownRef.current = true;
+      dragStartRef.current = pos;
+      updateBlockSelection(pos, pos);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const pos = getColRow(e);
+    const idx = pos.row * 8 + pos.col;
+    if (idx < paletteTiles.length) {
+      if (hoverIdx !== idx) setHoverIdx(idx);
+    } else if (hoverIdx !== null) {
+      setHoverIdx(null);
+    }
+
+    if (isMouseDownRef.current && dragStartRef.current) {
+      updateBlockSelection(dragStartRef.current, pos);
+    }
+  };
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      isMouseDownRef.current = false;
+      dragStartRef.current = null;
+    };
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -219,54 +297,41 @@ function MapPaletteCanvas({
       ctx.strokeRect(hCol * 32 + 0.5, hRow * 32 + 0.5, 31, 31);
     }
 
-    // 5. Selected tile outline
-    const selIdx = paletteTiles.findIndex(t => t.id === selectedTile);
-    if (selIdx !== -1) {
-      const sCol = selIdx % 8;
-      const sRow = Math.floor(selIdx / 8);
-      ctx.strokeStyle = '#00d2ff';
+    // 5. Selected tile / block outline (Authentic RPG Maker MZ double border)
+    if (selectedBlock) {
+      const sx = selectedBlock.minCol * 32;
+      const sy = selectedBlock.minRow * 32;
+      const sw = selectedBlock.width * 32;
+      const sh = selectedBlock.height * 32;
+
+      // Outer black border
+      ctx.strokeStyle = '#000000';
       ctx.lineWidth = 2;
-      ctx.strokeRect(sCol * 32 + 1, sRow * 32 + 1, 30, 30);
+      ctx.strokeRect(sx + 1, sy + 1, sw - 2, sh - 2);
+
+      // Inner white border
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(sCol * 32 + 3, sRow * 32 + 3, 26, 26);
-    }
-  }, [paletteGroup, paletteTiles, selectedTile, activeSheetUrl, assetUrls, hoverIdx, renderTick, rowCount, canvasHeight]);
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(sx + 2.5, sy + 2.5, sw - 5, sh - 5);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const col = Math.floor(x / 32);
-    const row = Math.floor(y / 32);
-    if (col >= 0 && col < 8 && row >= 0 && row < rowCount) {
-      const idx = row * 8 + col;
-      if (idx < paletteTiles.length) {
-        if (hoverIdx !== idx) setHoverIdx(idx);
-        return;
+      if (selectedBlock.width > 1 || selectedBlock.height > 1) {
+        ctx.fillStyle = 'rgba(0, 210, 255, 0.16)';
+        ctx.fillRect(sx + 3, sy + 3, sw - 6, sh - 6);
+      }
+    } else {
+      const selIdx = paletteTiles.findIndex(t => t.id === selectedTile);
+      if (selIdx !== -1) {
+        const sCol = selIdx % 8;
+        const sRow = Math.floor(selIdx / 8);
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(sCol * 32 + 1, sRow * 32 + 1, 30, 30);
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(sCol * 32 + 2.5, sRow * 32 + 2.5, 27, 27);
       }
     }
-    if (hoverIdx !== null) setHoverIdx(null);
-  };
-
-  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const col = Math.floor(x / 32);
-    const row = Math.floor(y / 32);
-    if (col >= 0 && col < 8 && row >= 0 && row < rowCount) {
-      const idx = row * 8 + col;
-      const tile = paletteTiles[idx];
-      if (tile) {
-        onSelectTile(tile.id);
-      }
-    }
-  };
+  }, [paletteGroup, paletteTiles, selectedTile, selectedBlock, activeSheetUrl, assetUrls, hoverIdx, renderTick, rowCount, canvasHeight]);
 
   const hoverTile = hoverIdx !== null ? paletteTiles[hoverIdx] : null;
 
@@ -277,9 +342,9 @@ function MapPaletteCanvas({
       height={canvasHeight}
       className="mv-palette-canvas"
       style={{ display: 'block', margin: '0 auto', imageRendering: 'pixelated', cursor: 'pointer' }}
+      onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setHoverIdx(null)}
-      onClick={handleClick}
       title={hoverTile ? `${hoverTile.name} · Auto Layer ${hoverTile.defaultLayer + 1}` : undefined}
     />
   );
@@ -297,6 +362,17 @@ export function App() {
   const [mapTool, setMapTool] = useState<MapTool>('pencil');
   const [activeLayer, setActiveLayer] = useState<LayerSelection>('auto');
   const [selectedTile, setSelectedTile] = useState(1);
+  const [selectedBlock, setSelectedBlock] = useState<PaletteBlockSelection>({
+    minCol: 0,
+    minRow: 0,
+    maxCol: 0,
+    maxRow: 0,
+    width: 1,
+    height: 1,
+    tiles: [[1]],
+  });
+  const [hoverMapCell, setHoverMapCell] = useState<{ x: number; y: number } | null>(null);
+  const rightClickStartRef = useRef<{ x: number; y: number } | null>(null);
   const [visibleLayers, setVisibleLayers] = useState([true, true, true, true]);
   const [lockedLayers, setLockedLayers] = useState([false, false, false, false]);
   const [paletteGroup, setPaletteGroup] = useState<'A'|'B'|'C'|'D'|'E'|'R'>('A');
@@ -328,6 +404,9 @@ export function App() {
   const [copiedMap, setCopiedMap] = useState<MapData | null>(null);
   const [placeholderTitle, setPlaceholderTitle] = useState('');
   const [placeholderDesc, setPlaceholderDesc] = useState('');
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
+  const isShiftHeldRef = useRef(false);
+  const shiftStampQuadsRef = useRef<TileQuadrant[] | null>(null);
   const [assetUrls, setAssetUrls] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -1320,7 +1399,7 @@ export function App() {
 
         if (img && img.complete && img.naturalWidth > 0) {
           if (tile.autotile && tile.autotileBaseX !== undefined && tile.autotileBaseY !== undefined) {
-            const quads = getAutotileQuadrants(tile, layer.data, index, map.width, map.height);
+            const quads = getAutotileQuadrants(tile, layer.data, index, map.width, map.height, layer.autotileShapes?.[index]);
             for (let q = 0; q < 4; q++) {
               const quad = quads[q];
               ctx.drawImage(
@@ -1362,7 +1441,7 @@ export function App() {
     commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, collision } } }, `Collision (${x}, ${y}) diubah.`);
   };
 
-  const applyPaint = (x: number, y: number, isBatch = false) => {
+  const applyPaint = (x: number, y: number, isBatch = false, isShift = false) => {
     const targetBundle = isBatch ? (activeStrokeBundleRef.current ?? bundleRef.current ?? bundle) : (bundleRef.current ?? bundle);
     if (!targetBundle) return;
     const currentMap = targetBundle.maps[selectedMap];
@@ -1371,6 +1450,7 @@ export function App() {
     const cellIndex = y * currentMap.width + x;
     const isEraser = mapTool === 'eraser';
     const tileId = isEraser ? 0 : selectedTile;
+    const currentTileDef = tileDefinition(tileId, currentTileset);
 
     let layerIndex: number;
     if (isEraser && activeLayer === 'auto') {
@@ -1381,6 +1461,35 @@ export function App() {
 
     if (lockedLayers[layerIndex]) {
       if (!isBatch) setMessage(`Layer ${layerIndex + 1} terkunci.`);
+      return;
+    }
+
+    let overrideShape: TileQuadrant[] | undefined;
+    if (isShift && !isEraser && currentTileDef.autotile) {
+      overrideShape = shiftStampQuadsRef.current ?? getDefaultAutotileQuadrants(currentTileDef, 'isolated');
+    }
+
+    if (!isEraser && mapTool === 'pencil' && (selectedBlock.width > 1 || selectedBlock.height > 1)) {
+      const layers = paintLayerBlock(
+        currentMap.layers,
+        activeLayer,
+        x,
+        y,
+        selectedBlock,
+        currentMap.width,
+        currentMap.height,
+        currentTileset,
+        lockedLayers
+      );
+      const next = { ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } };
+      if (isBatch) {
+        activeStrokeBundleRef.current = next;
+        bundleRef.current = next;
+        strokeModifiedRef.current = true;
+        setBundle(next);
+      } else {
+        commit(next, `Blok ${selectedBlock.width}x${selectedBlock.height} ditempatkan pada (${x}, ${y}).`);
+      }
       return;
     }
 
@@ -1401,9 +1510,9 @@ export function App() {
     }
 
     if (mapTool === 'fill') {
-      const layers = floodFillLayer(currentMap.layers, layerIndex, cellIndex, tileId, currentMap.width, currentMap.height);
+      const layers = floodFillLayer(currentMap.layers, layerIndex, cellIndex, tileId, currentMap.width, currentMap.height, overrideShape);
       if (layers === currentMap.layers) return;
-      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Fill diterapkan pada Layer ${layerIndex + 1}.`);
+      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Fill${isShift ? ' (Shift)' : ''} diterapkan pada Layer ${layerIndex + 1}.`);
       return;
     }
 
@@ -1413,9 +1522,27 @@ export function App() {
         setMessage(`Awal rectangle: (${x}, ${y}). Pilih sudut akhir.`);
         return;
       }
-      const layers = paintLayerRectangle(currentMap.layers, layerIndex, rectangleStart.x, rectangleStart.y, x, y, tileId, currentMap.width);
+      if (!isEraser && (selectedBlock.width > 1 || selectedBlock.height > 1)) {
+        const layers = paintLayerBlockRectangle(
+          currentMap.layers,
+          activeLayer,
+          rectangleStart.x,
+          rectangleStart.y,
+          x,
+          y,
+          selectedBlock,
+          currentMap.width,
+          currentMap.height,
+          currentTileset,
+          lockedLayers
+        );
+        setRectangleStart(null);
+        commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Rectangle blok ${selectedBlock.width}x${selectedBlock.height} diterapkan.`);
+        return;
+      }
+      const layers = paintLayerRectangle(currentMap.layers, layerIndex, rectangleStart.x, rectangleStart.y, x, y, tileId, currentMap.width, overrideShape);
       setRectangleStart(null);
-      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Rectangle diterapkan pada Layer ${layerIndex + 1}.`);
+      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Rectangle${isShift ? ' (Shift)' : ''} diterapkan pada Layer ${layerIndex + 1}.`);
       return;
     }
 
@@ -1425,16 +1552,27 @@ export function App() {
         setMessage(`Awal Circle: (${x}, ${y}). Pilih sudut akhir.`);
         return;
       }
-      const layers = paintLayerCircle(currentMap.layers, layerIndex, rectangleStart.x, rectangleStart.y, x, y, tileId, currentMap.width);
+      const layers = paintLayerCircle(currentMap.layers, layerIndex, rectangleStart.x, rectangleStart.y, x, y, tileId, currentMap.width, overrideShape);
       setRectangleStart(null);
-      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Circle diterapkan pada Layer ${layerIndex + 1}.`);
+      commit({ ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } }, `Circle${isShift ? ' (Shift)' : ''} diterapkan pada Layer ${layerIndex + 1}.`);
       return;
     }
 
     const currentTile = currentMap.layers[layerIndex].data[cellIndex];
-    if (currentTile === tileId) return;
+    const currentShape = currentMap.layers[layerIndex].autotileShapes?.[cellIndex];
+    if (currentTile === tileId && (!isShift || currentShape === overrideShape)) return;
 
-    const layers = paintLayerCell(currentMap.layers, layerIndex, cellIndex, tileId);
+    const layers = paintLayerCell(
+      currentMap.layers,
+      layerIndex,
+      cellIndex,
+      tileId,
+      overrideShape,
+      isShift,
+      currentMap.width,
+      currentMap.height,
+      currentTileDef
+    );
     const next = { ...targetBundle, maps: { ...targetBundle.maps, [currentMap.id]: { ...currentMap, layers } } };
     if (isBatch) {
       activeStrokeBundleRef.current = next;
@@ -1442,12 +1580,12 @@ export function App() {
       strokeModifiedRef.current = true;
       setBundle(next);
     } else {
-      commit(next, `Tile diterapkan pada Layer ${layerIndex + 1}.`);
+      commit(next, `Tile${isShift ? ' (Shift Mapping)' : ''} diterapkan pada Layer ${layerIndex + 1}.`);
     }
   };
 
-  const drawTile = (x: number, y: number) => {
-    applyPaint(x, y, false);
+  const drawTile = (x: number, y: number, isShift = false) => {
+    applyPaint(x, y, false, isShift);
   };
 
   const createEventAt = (x: number, y: number) => {
@@ -1469,7 +1607,7 @@ export function App() {
     setModal('eventEditor');
   };
 
-  const handleMapCell = (x: number, y: number, marker?: MapEvent) => {
+  const handleMapCell = (x: number, y: number, marker?: MapEvent, isShift = false) => {
     if (mode === 'event') {
       setSelectedCell({ x, y });
       if (marker) {
@@ -1482,7 +1620,7 @@ export function App() {
       return;
     }
     if (mapTool === 'collision') return toggleTile(x, y);
-    drawTile(x, y);
+    drawTile(x, y, isShift);
   };
 
   const handleCellDoubleClick = (x: number, y: number, marker?: MapEvent) => {
@@ -1497,16 +1635,33 @@ export function App() {
     }
   };
 
-  const pickTile = (x: number, y: number) => {
+  const pickTile = (x: number, y: number, isShift = false) => {
     if (!map) return;
     const cell = y * map.width + x;
     const layerIndex = activeLayer === 'auto' ? [3, 2, 1, 0].find(index => visibleLayers[index] && map.layers[index].data[cell] !== 0) ?? 0 : activeLayer;
     const tileId = map.layers[layerIndex].data[cell];
     const def = tileDefinition(tileId, currentTileset);
     setSelectedTile(tileId);
+    setSelectedBlock({
+      minCol: 0,
+      minRow: 0,
+      maxCol: 0,
+      maxRow: 0,
+      width: 1,
+      height: 1,
+      tiles: [[tileId]],
+    });
     setPaletteGroup(def.group === 'D' && tileId <= 116 ? 'R' : (def.group ?? 'A') as any);
     setMapTool(tileId === 0 ? 'eraser' : 'pencil');
-    setMessage(`${def.name || `Tile ${tileId}`} diambil dari Layer ${layerIndex + 1}.`);
+
+    if (isShift && def.autotile && def.autotileBaseX !== undefined && def.autotileBaseY !== undefined) {
+      const quads = getAutotileQuadrants(def, map.layers[layerIndex].data, cell, map.width, map.height, map.layers[layerIndex].autotileShapes?.[cell]);
+      shiftStampQuadsRef.current = quads;
+      setMessage(`${def.name || `Tile ${tileId}`} (Shift-Copy): bentuk autotile disalin. Tekan Shift+Klik untuk menempel.`);
+    } else {
+      shiftStampQuadsRef.current = def.autotile ? getDefaultAutotileQuadrants(def, 'isolated') : null;
+      setMessage(`${def.name || `Tile ${tileId}`} diambil dari Layer ${layerIndex + 1}.`);
+    }
   };
 
   const clearLayer = (layerIndex:number) => {
@@ -1659,6 +1814,10 @@ export function App() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        setIsShiftPressed(true);
+        isShiftHeldRef.current = true;
+      }
       const editing = event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || event.target instanceof HTMLSelectElement;
       if (!editing && mode==='map' && event.ctrlKey && event.key === 'Tab') {
         event.preventDefault();
@@ -1760,8 +1919,18 @@ export function App() {
         }
       }
     };
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        setIsShiftPressed(false);
+        isShiftHeldRef.current = false;
+      }
+    };
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+    };
   });
 
   if (!api) return <main className="editor-shell"><section className="error-card">NUSV Engine harus dijalankan sebagai aplikasi desktop.</section></main>;
@@ -3040,9 +3209,14 @@ export function App() {
                 paletteGroup={paletteGroup}
                 paletteTiles={paletteTiles}
                 selectedTile={selectedTile}
-                onSelectTile={(tileId) => {
-                  setSelectedTile(tileId);
-                  setMapTool(tileId === 0 ? 'eraser' : 'pencil');
+                selectedBlock={selectedBlock}
+                onSelectBlock={(block) => {
+                  setSelectedBlock(block);
+                  const firstTile = block.tiles[0]?.[0] ?? 0;
+                  setSelectedTile(firstTile);
+                  const def = tileDefinition(firstTile, currentTileset);
+                  shiftStampQuadsRef.current = def.autotile ? getDefaultAutotileQuadrants(def, 'isolated') : null;
+                  setMapTool(firstTile === 0 && block.width === 1 && block.height === 1 ? 'eraser' : 'pencil');
                 }}
                 activeSheetUrl={
                   paletteGroup === 'B' ? (assetUrls[resolveSheetPath(currentTileset?.tilesetNames?.[5] || 'Outside_B')] || '') :
@@ -3063,7 +3237,21 @@ export function App() {
                   <button
                     className={isActive ? 'active' : ''}
                     key={group}
-                    onClick={() => setPaletteGroup(targetGroup)}
+                    onClick={() => {
+                      setPaletteGroup(targetGroup);
+                      const targetTiles = getPaletteTiles(targetGroup, currentTileset);
+                      const firstTile = targetTiles[0]?.id ?? 1;
+                      setSelectedTile(firstTile);
+                      setSelectedBlock({
+                        minCol: 0,
+                        minRow: 0,
+                        maxCol: 0,
+                        maxRow: 0,
+                        width: 1,
+                        height: 1,
+                        tiles: [[firstTile]],
+                      });
+                    }}
                   >
                     {group}
                   </button>
@@ -3158,6 +3346,7 @@ export function App() {
               onMouseLeave={() => {
                 const coordEl = document.getElementById('mz-status-coord-display');
                 if (coordEl) coordEl.textContent = '';
+                setHoverMapCell(null);
               }}
             >
               <div
@@ -3189,12 +3378,21 @@ export function App() {
                         const x = index % map.width, y = Math.floor(index / map.width);
                         const marker = map.events.find(event => event.x === x && event.y === y);
                         const isSelected = selectedCell?.x === x && selectedCell?.y === y;
+                        const isBlockHover =
+                          mode === 'map' &&
+                          mapTool === 'pencil' &&
+                          hoverMapCell !== null &&
+                          (selectedBlock.width > 1 || selectedBlock.height > 1) &&
+                          x >= hoverMapCell.x &&
+                          x < hoverMapCell.x + selectedBlock.width &&
+                          y >= hoverMapCell.y &&
+                          y < hoverMapCell.y + selectedBlock.height;
                         return (
                           <button
                             title={mode === 'event'
                               ? `${x}, ${y}${marker ? ` — ${marker.name}` : ' (Kosong)'} · Double click untuk ${marker ? 'edit' : 'buat'} event`
-                              : `${x}, ${y}${marker ? ` — ${marker.name}` : ''} · Right-click to pick tile`}
-                            className={`${cell ? 'blocked' : ''} ${marker ? 'has-event' : ''} ${marker?.id === selectedEvent || isSelected ? 'selected' : ''} ${isSelected && mode === 'event' ? 'cell-selected' : ''} ${rectangleStart?.x === x && rectangleStart.y === y ? 'rectangle-origin' : ''}`}
+                              : `${x}, ${y}${marker ? ` — ${marker.name}` : ''} · Right-click to pick tile/block`}
+                            className={`${cell ? 'blocked' : ''} ${marker ? 'has-event' : ''} ${marker?.id === selectedEvent || isSelected ? 'selected' : ''} ${isSelected && mode === 'event' ? 'cell-selected' : ''} ${rectangleStart?.x === x && rectangleStart.y === y ? 'rectangle-origin' : ''} ${isBlockHover ? 'block-hover' : ''}`}
                             key={index}
                             onDragStart={e => e.preventDefault()}
                             onMouseDown={(e) => {
@@ -3204,27 +3402,31 @@ export function App() {
                                     const curr = bundleRef.current || bundle;
                                     if (curr) {
                                       isMouseDownRef.current = true;
+                                      isShiftHeldRef.current = e.shiftKey;
                                       strokeInitialBundleRef.current = clone(curr);
                                       activeStrokeBundleRef.current = clone(curr);
                                       strokeModifiedRef.current = false;
-                                      applyPaint(x, y, true);
+                                      applyPaint(x, y, true, e.shiftKey);
                                     }
                                   }
                                 }
+                              } else if (e.button === 2 && mode === 'map') {
+                                rightClickStartRef.current = { x, y };
                               }
                             }}
                             onMouseEnter={() => {
                               const coordEl = document.getElementById('mz-status-coord-display');
                               if (coordEl) coordEl.textContent = `(X: ${x}, Y: ${y})`;
+                              setHoverMapCell({ x, y });
                               if (isMouseDownRef.current && mode === 'map') {
                                 if (mapTool === 'pencil' || mapTool === 'eraser' || mapTool === 'shadow') {
-                                  applyPaint(x, y, true);
+                                  applyPaint(x, y, true, isShiftHeldRef.current);
                                 }
                               }
                             }}
-                            onClick={() => {
+                            onClick={(e) => {
                               if (mode === 'event' || mapTool === 'collision' || mapTool === 'fill' || mapTool === 'rectangle' || mapTool === 'circle') {
-                                handleMapCell(x, y, marker);
+                                handleMapCell(x, y, marker, e.shiftKey);
                               }
                             }}
                             onDoubleClick={() => handleCellDoubleClick(x, y, marker)}
@@ -3232,7 +3434,44 @@ export function App() {
                               event.preventDefault();
                               event.stopPropagation();
                               if (mode === 'map') {
-                                pickTile(x, y);
+                                const start = rightClickStartRef.current;
+                                if (start && (start.x !== x || start.y !== y)) {
+                                  const minX = Math.min(start.x, x);
+                                  const maxX = Math.max(start.x, x);
+                                  const minY = Math.min(start.y, y);
+                                  const maxY = Math.max(start.y, y);
+                                  const bWidth = maxX - minX + 1;
+                                  const bHeight = maxY - minY + 1;
+
+                                  const blockTiles: number[][] = [];
+                                  for (let r = minY; r <= maxY; r++) {
+                                    const rowTiles: number[] = [];
+                                    for (let c = minX; c <= maxX; c++) {
+                                      const cellIdx = r * map.width + c;
+                                      const lIdx = activeLayer === 'auto'
+                                        ? [3, 2, 1, 0].find(l => visibleLayers[l] && map.layers[l].data[cellIdx] !== 0) ?? 0
+                                        : activeLayer;
+                                      rowTiles.push(map.layers[lIdx].data[cellIdx]);
+                                    }
+                                    blockTiles.push(rowTiles);
+                                  }
+
+                                  setSelectedBlock({
+                                    minCol: 0,
+                                    minRow: 0,
+                                    maxCol: bWidth - 1,
+                                    maxRow: bHeight - 1,
+                                    width: bWidth,
+                                    height: bHeight,
+                                    tiles: blockTiles,
+                                  });
+                                  setSelectedTile(blockTiles[0][0]);
+                                  setMapTool('pencil');
+                                  setMessage(`Blok ${bWidth}x${bHeight} disalin dari map.`);
+                                } else {
+                                  pickTile(x, y, event.shiftKey);
+                                }
+                                rightClickStartRef.current = null;
                               } else {
                                 setSelectedCell({ x, y });
                                 if (marker) {
@@ -3327,6 +3566,12 @@ export function App() {
       </div>
       <div className="mz-status-cell mz-status-layer">
         {activeLayer === 'auto' ? 'Automatic' : `Layer ${activeLayer + 1}`}
+        {isShiftPressed && <span className="mz-shift-indicator" title="Shift Mapping: Autotile dikunci tanpa mengubah tile sekitar"> [SHIFT]</span>}
+        {(selectedBlock.width > 1 || selectedBlock.height > 1) && (
+          <span className="mz-status-block-badge" title={`Blok seleksi: ${selectedBlock.width} x ${selectedBlock.height} tiles`}>
+            {` [BLOK ${selectedBlock.width}x${selectedBlock.height}]`}
+          </span>
+        )}
       </div>
       <div id="mz-status-coord-display" className="mz-status-cell mz-status-coord" />
       <div className="mz-status-cell mz-status-msg">

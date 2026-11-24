@@ -1,9 +1,25 @@
 {
+  "0": "import-mz-database.mjs",
   "1": "ref_node_path",
   "3": "NUSV Engine - Technical Architecture & Clean-Room Specification",
   "6": "battle.ts",
-  "17": "types.ts",
+  "11": "electron/main.ts",
+  "17": "DatabaseView.tsx",
+  "20": "PartyController.ts",
+  "21": "stage10-actor-traits.test.js",
+  "22": "paint-initial-maps.mjs",
   "23": "Karpathy Guidelines",
   "24": "Karpathy Guidelines",
-  "25": "CLAUDE.md"
+  "25": "CLAUDE.md",
+  "26": "stage11-tileset-flags.test.js",
+  "27": "ref_node_path",
+  "28": "2. Fitur & Perbaikan Utama",
+  "29": "stage1-project-service.test.js",
+  "30": "stage13-shift-mapping.test.js",
+  "31": "license-report.cjs",
+  "32": "[Unreleased] — 2026-11-23",
+  "33": "stage5-tools.test.js",
+  "34": "my-rpg-game2/assets/manifest.json",
+  "35": "my-rpg-game/assets/manifest.json",
+  "36": "my-rpg-game3/assets/manifest.json"
 }

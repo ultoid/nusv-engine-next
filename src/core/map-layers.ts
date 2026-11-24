@@ -27,6 +27,28 @@ export interface TileQuadrant {
   top: number;  // 0 or 24
 }
 
+export function getDefaultAutotileQuadrants(
+  tile: TileDefinition,
+  mode: 'isolated' | 'center' = 'isolated'
+): TileQuadrant[] {
+  const bx = tile.autotileBaseX ?? 0;
+  const by = tile.autotileBaseY ?? 0;
+  if (mode === 'center') {
+    return [
+      { srcX: bx + 48, srcY: by + 96, left: 0, top: 0 },
+      { srcX: bx + 72, srcY: by + 96, left: 24, top: 0 },
+      { srcX: bx + 48, srcY: by + 120, left: 0, top: 24 },
+      { srcX: bx + 72, srcY: by + 120, left: 24, top: 24 }
+    ];
+  }
+  return [
+    { srcX: bx + 0, srcY: by + 0, left: 0, top: 0 },
+    { srcX: bx + 24, srcY: by + 0, left: 24, top: 0 },
+    { srcX: bx + 0, srcY: by + 24, left: 0, top: 24 },
+    { srcX: bx + 24, srcY: by + 24, left: 24, top: 24 }
+  ];
+}
+
 /**
  * Computes the 4 sub-tile quadrants (24x24 px each) for an autotile matching the authentic RPG Maker MZ
  * 47-blob quadrant assembly specification.
@@ -40,8 +62,12 @@ export function getAutotileQuadrants(
   data: number[],
   cellIndex: number,
   width: number,
-  height: number
+  height: number,
+  overrideQuads?: TileQuadrant[]
 ): TileQuadrant[] {
+  if (overrideQuads && overrideQuads.length === 4) {
+    return overrideQuads;
+  }
   const bx = tile.autotileBaseX ?? 0;
   const by = tile.autotileBaseY ?? 0;
   const tileId = data[cellIndex];
@@ -49,7 +75,11 @@ export function getAutotileQuadrants(
   const y = Math.floor(cellIndex / width);
 
   const isSame = (cx: number, cy: number): boolean => {
-    if (cx < 0 || cx >= width || cy < 0 || cy >= height) return false;
+    if (cx < 0 || cx >= width || cy < 0 || cy >= height) {
+      // RPG Maker MZ standard: treat out-of-bounds map edges as matching the current tile
+      // so autotiles seamlessly extend to map edges without creating artificial coastlines or borders
+      return true;
+    }
     return data[cy * width + cx] === tileId;
   };
 
@@ -545,62 +575,296 @@ export function normalizeTileLayers(rawLayers:unknown[],cells:number):TileLayer[
     const raw=rawLayers[index];
     if(raw&&typeof raw==='object'&&!Array.isArray(raw)){
       const layer=raw as Record<string,unknown>;
-      return {...layer,id:String(layer.id),type:'tile' as const,name:typeof layer.name==='string'&&layer.name.trim()?layer.name:`Layer ${index+1}`,data:[...(layer.data as number[])]};
+      return {
+        ...layer,
+        id:String(layer.id),
+        type:'tile' as const,
+        name:typeof layer.name==='string'&&layer.name.trim()?layer.name:`Layer ${index+1}`,
+        data:[...(layer.data as number[])],
+        autotileShapes: layer.autotileShapes && typeof layer.autotileShapes === 'object'
+          ? (layer.autotileShapes as Record<number, TileQuadrant[]>)
+          : undefined
+      };
     }
     return {id:`layer.${index+1}`,type:'tile',name:`Layer ${index+1}`,data:Array(cells).fill(0)};
   });
 }
 
-export function paintLayerCell(layers:TileLayer[],layerIndex:number,cellIndex:number,tileId:number):TileLayer[]{
-  return layers.map((layer,index)=>index===layerIndex?{...layer,data:layer.data.map((value,cell)=>cell===cellIndex?tileId:value)}:layer);
+export function paintLayerCell(
+  layers: TileLayer[],
+  layerIndex: number,
+  cellIndex: number,
+  tileId: number,
+  overrideShape?: TileQuadrant[],
+  preserveNeighbors = false,
+  mapWidth?: number,
+  mapHeight?: number,
+  tileDef?: TileDefinition
+): TileLayer[] {
+  const currentLayer = layers[layerIndex];
+  const nextData = currentLayer.data.map((value, cell) => (cell === cellIndex ? tileId : value));
+  const nextShapes: Record<number, TileQuadrant[]> = currentLayer.autotileShapes
+    ? { ...currentLayer.autotileShapes }
+    : {};
+
+  if (overrideShape) {
+    nextShapes[cellIndex] = overrideShape;
+
+    // Shift Mapping: preserve neighbor shapes so placing this tile does not alter adjacent autotiles
+    if (preserveNeighbors && mapWidth && mapHeight) {
+      const x = cellIndex % mapWidth;
+      const y = Math.floor(cellIndex / mapWidth);
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx >= 0 && nx < mapWidth && ny >= 0 && ny < mapHeight) {
+            const nIndex = ny * mapWidth + nx;
+            const nTileId = currentLayer.data[nIndex];
+            if (nTileId > 0 && !nextShapes[nIndex]) {
+              const nDef = tileDefinition(nTileId);
+              if (nDef.autotile && nDef.autotileBaseX !== undefined && nDef.autotileBaseY !== undefined) {
+                nextShapes[nIndex] = getAutotileQuadrants(nDef, currentLayer.data, nIndex, mapWidth, mapHeight);
+              }
+            }
+          }
+        }
+      }
+    }
+  } else {
+    if (nextShapes[cellIndex]) {
+      delete nextShapes[cellIndex];
+    }
+  }
+
+  return layers.map((layer, index) =>
+    index === layerIndex
+      ? { ...layer, data: nextData, autotileShapes: Object.keys(nextShapes).length > 0 ? nextShapes : undefined }
+      : layer
+  );
 }
 
-export function paintLayerRectangle(layers:TileLayer[],layerIndex:number,startX:number,startY:number,endX:number,endY:number,tileId:number,width:number):TileLayer[]{
-  const left=Math.min(startX,endX),right=Math.max(startX,endX),top=Math.min(startY,endY),bottom=Math.max(startY,endY);
-  const data=[...layers[layerIndex].data];
-  for(let y=top;y<=bottom;y++)for(let x=left;x<=right;x++)data[y*width+x]=tileId;
-  return layers.map((layer,index)=>index===layerIndex?{...layer,data}:layer);
+export function paintLayerRectangle(
+  layers: TileLayer[],
+  layerIndex: number,
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  tileId: number,
+  width: number,
+  overrideShape?: TileQuadrant[]
+): TileLayer[] {
+  const left = Math.min(startX, endX), right = Math.max(startX, endX), top = Math.min(startY, endY), bottom = Math.max(startY, endY);
+  const data = [...layers[layerIndex].data];
+  const nextShapes: Record<number, TileQuadrant[]> = layers[layerIndex].autotileShapes
+    ? { ...layers[layerIndex].autotileShapes }
+    : {};
+
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= right; x++) {
+      const cell = y * width + x;
+      data[cell] = tileId;
+      if (overrideShape) {
+        nextShapes[cell] = overrideShape;
+      } else if (nextShapes[cell]) {
+        delete nextShapes[cell];
+      }
+    }
+  }
+
+  return layers.map((layer, index) =>
+    index === layerIndex
+      ? { ...layer, data, autotileShapes: Object.keys(nextShapes).length > 0 ? nextShapes : undefined }
+      : layer
+  );
 }
 
 export function autotileMask(data:number[],cellIndex:number,width:number,height:number):number{
   const tileId=data[cellIndex];if(tileId===0)return 0;
   const x=cellIndex%width,y=Math.floor(cellIndex/width);let mask=0;
-  if(y>0&&data[cellIndex-width]===tileId)mask|=1;
-  if(x<width-1&&data[cellIndex+1]===tileId)mask|=2;
-  if(y<height-1&&data[cellIndex+width]===tileId)mask|=4;
-  if(x>0&&data[cellIndex-1]===tileId)mask|=8;
+  if(y===0||data[cellIndex-width]===tileId)mask|=1;
+  if(x===width-1||data[cellIndex+1]===tileId)mask|=2;
+  if(y===height-1||data[cellIndex+width]===tileId)mask|=4;
+  if(x===0||data[cellIndex-1]===tileId)mask|=8;
   return mask;
 }
 
-export function floodFillLayer(layers:TileLayer[],layerIndex:number,start:number,tileId:number,width:number,height:number):TileLayer[]{
-  const source=layers[layerIndex].data;
-  const target=source[start];
-  if(target===tileId)return layers;
-  const data=[...source],queue=[start],visited=new Uint8Array(width*height);
-  while(queue.length){
-    const cell=queue.pop()!;
-    if(visited[cell]||data[cell]!==target)continue;
-    visited[cell]=1;data[cell]=tileId;
-    const x=cell%width,y=Math.floor(cell/width);
-    if(x>0)queue.push(cell-1);if(x<width-1)queue.push(cell+1);if(y>0)queue.push(cell-width);if(y<height-1)queue.push(cell+width);
+export function floodFillLayer(
+  layers: TileLayer[],
+  layerIndex: number,
+  start: number,
+  tileId: number,
+  width: number,
+  height: number,
+  overrideShape?: TileQuadrant[]
+): TileLayer[] {
+  const source = layers[layerIndex].data;
+  const target = source[start];
+  if (target === tileId && !overrideShape) return layers;
+  const data = [...source], queue = [start], visited = new Uint8Array(width * height);
+  const nextShapes: Record<number, TileQuadrant[]> = layers[layerIndex].autotileShapes
+    ? { ...layers[layerIndex].autotileShapes }
+    : {};
+
+  while (queue.length) {
+    const cell = queue.pop()!;
+    if (visited[cell] || data[cell] !== target) continue;
+    visited[cell] = 1;
+    data[cell] = tileId;
+    if (overrideShape) {
+      nextShapes[cell] = overrideShape;
+    } else if (nextShapes[cell]) {
+      delete nextShapes[cell];
+    }
+    const x = cell % width, y = Math.floor(cell / width);
+    if (x > 0) queue.push(cell - 1);
+    if (x < width - 1) queue.push(cell + 1);
+    if (y > 0) queue.push(cell - width);
+    if (y < height - 1) queue.push(cell + width);
   }
-  return layers.map((layer,index)=>index===layerIndex?{...layer,data}:layer);
+
+  return layers.map((layer, index) =>
+    index === layerIndex
+      ? { ...layer, data, autotileShapes: Object.keys(nextShapes).length > 0 ? nextShapes : undefined }
+      : layer
+  );
 }
 
-export function paintLayerCircle(layers:TileLayer[],layerIndex:number,startX:number,startY:number,endX:number,endY:number,tileId:number,width:number):TileLayer[]{
-  const left=Math.min(startX,endX),right=Math.max(startX,endX),top=Math.min(startY,endY),bottom=Math.max(startY,endY);
-  const rx=(right-left)/2, ry=(bottom-top)/2;
-  const cx=left+rx, cy=top+ry;
-  const data=[...layers[layerIndex].data];
-  for(let y=top;y<=bottom;y++){
-    for(let x=left;x<=right;x++){
-      const dx=rx>0?(x-cx)/rx:0, dy=ry>0?(y-cy)/ry:0;
-      if(dx*dx+dy*dy<=1.08){
-        data[y*width+x]=tileId;
+export function paintLayerCircle(
+  layers: TileLayer[],
+  layerIndex: number,
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  tileId: number,
+  width: number,
+  overrideShape?: TileQuadrant[]
+): TileLayer[] {
+  const left = Math.min(startX, endX), right = Math.max(startX, endX), top = Math.min(startY, endY), bottom = Math.max(startY, endY);
+  const rx = (right - left) / 2, ry = (bottom - top) / 2;
+  const cx = left + rx, cy = top + ry;
+  const data = [...layers[layerIndex].data];
+  const nextShapes: Record<number, TileQuadrant[]> = layers[layerIndex].autotileShapes
+    ? { ...layers[layerIndex].autotileShapes }
+    : {};
+
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= right; x++) {
+      const dx = rx > 0 ? (x - cx) / rx : 0, dy = ry > 0 ? (y - cy) / ry : 0;
+      if (dx * dx + dy * dy <= 1.08) {
+        const cell = y * width + x;
+        data[cell] = tileId;
+        if (overrideShape) {
+          nextShapes[cell] = overrideShape;
+        } else if (nextShapes[cell]) {
+          delete nextShapes[cell];
+        }
       }
     }
   }
-  return layers.map((layer,index)=>index===layerIndex?{...layer,data}:layer);
+
+  return layers.map((layer, index) =>
+    index === layerIndex
+      ? { ...layer, data, autotileShapes: Object.keys(nextShapes).length > 0 ? nextShapes : undefined }
+      : layer
+  );
+}
+
+export interface TileBlock {
+  width: number;
+  height: number;
+  tiles: number[][]; // [row][col]
+}
+
+export function paintLayerBlock(
+  layers: TileLayer[],
+  layerSelection: LayerSelection,
+  startX: number,
+  startY: number,
+  block: TileBlock | number[][],
+  mapWidth: number,
+  mapHeight: number,
+  tileset?: TilesetData,
+  lockedLayers?: boolean[]
+): TileLayer[] {
+  const grid: number[][] = Array.isArray(block) ? block : block.tiles;
+  const blockH = grid.length;
+  if (blockH === 0) return layers;
+  const blockW = grid[0].length;
+  if (blockW === 0) return layers;
+
+  const nextLayers = layers.map(l => ({
+    ...l,
+    data: [...l.data],
+    autotileShapes: l.autotileShapes ? { ...l.autotileShapes } : undefined
+  }));
+
+  for (let dy = 0; dy < blockH; dy++) {
+    const y = startY + dy;
+    if (y < 0 || y >= mapHeight) continue;
+    for (let dx = 0; dx < blockW; dx++) {
+      const x = startX + dx;
+      if (x < 0 || x >= mapWidth) continue;
+
+      const tileId = grid[dy][dx];
+      const targetLayer = layerForTile(tileId, layerSelection, tileset);
+      if (lockedLayers?.[targetLayer]) continue;
+
+      const cell = y * mapWidth + x;
+      nextLayers[targetLayer].data[cell] = tileId;
+      if (nextLayers[targetLayer].autotileShapes?.[cell]) {
+        delete nextLayers[targetLayer].autotileShapes[cell];
+      }
+    }
+  }
+
+  return nextLayers;
+}
+
+export function paintLayerBlockRectangle(
+  layers: TileLayer[],
+  layerSelection: LayerSelection,
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  block: TileBlock | number[][],
+  mapWidth: number,
+  mapHeight: number,
+  tileset?: TilesetData,
+  lockedLayers?: boolean[]
+): TileLayer[] {
+  const grid: number[][] = Array.isArray(block) ? block : block.tiles;
+  const blockH = grid.length;
+  if (blockH === 0) return layers;
+  const blockW = grid[0].length;
+  if (blockW === 0) return layers;
+
+  const left = Math.min(startX, endX), right = Math.max(startX, endX), top = Math.min(startY, endY), bottom = Math.max(startY, endY);
+  const nextLayers = layers.map(l => ({
+    ...l,
+    data: [...l.data],
+    autotileShapes: l.autotileShapes ? { ...l.autotileShapes } : undefined
+  }));
+
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= right; x++) {
+      const tileId = grid[(y - top) % blockH][(x - left) % blockW];
+      const targetLayer = layerForTile(tileId, layerSelection, tileset);
+      if (lockedLayers?.[targetLayer]) continue;
+
+      const cell = y * mapWidth + x;
+      nextLayers[targetLayer].data[cell] = tileId;
+      if (nextLayers[targetLayer].autotileShapes?.[cell]) {
+        delete nextLayers[targetLayer].autotileShapes[cell];
+      }
+    }
+  }
+
+  return nextLayers;
 }
 
 export function shiftMapData(

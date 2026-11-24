@@ -1,0 +1,530 @@
+{
+  "schemaVersion": 1,
+  "actors": [
+    {
+      "id": "actor.arka",
+      "name": "Arka",
+      "classId": "class.squire",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.squire",
+        "class.warden"
+      ],
+      "targetRate": 1.5,
+      "classGrowth": {
+        "str": 1,
+        "vit": 1
+      },
+      "classLearnings": [
+        {
+          "classId": "class.squire",
+          "level": 2,
+          "skillId": "skill.guard-break"
+        }
+      ],
+      "defaultEquipment": {
+        "weapon": "equip.iron-sword",
+        "body": "equip.leather-vest"
+      },
+      "stats": {
+        "str": 12,
+        "int": 6,
+        "dex": 10,
+        "luk": 8,
+        "agi": 9,
+        "vit": 10
+      },
+      "base": {
+        "hp": 50,
+        "mp": 15,
+        "atk": 8,
+        "def": 6,
+        "mat": 4,
+        "mdf": 5,
+        "agi": 5
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.power-strike"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 0,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 0
+    },
+    {
+      "id": "actor.sena",
+      "name": "Sena",
+      "classId": "class.acolyte",
+      "classTier": 1,
+      "availableClassIds": [
+        "class.acolyte",
+        "class.magus"
+      ],
+      "targetRate": 0.8,
+      "classGrowth": {
+        "int": 1,
+        "agi": 1
+      },
+      "defaultEquipment": {
+        "weapon": "equip.ritual-dagger"
+      },
+      "stats": {
+        "str": 6,
+        "int": 13,
+        "dex": 9,
+        "luk": 10,
+        "agi": 11,
+        "vit": 7
+      },
+      "base": {
+        "hp": 40,
+        "mp": 25,
+        "atk": 5,
+        "def": 4,
+        "mat": 8,
+        "mdf": 7,
+        "agi": 6
+      },
+      "weaponType": "finesse",
+      "skillIds": [
+        "skill.ember",
+        "skill.mend",
+        "skill.rekindle"
+      ],
+      "characterImage": "assets/characters/Actor1.png",
+      "characterIndex": 1,
+      "faceImage": "assets/faces/Actor1.png",
+      "faceIndex": 1
+    },
+    {
+      "id": "actor.mwt9lrd2",
+      "name": "Cassian",
+      "classId": "class.squire",
+      "classTier": 1,
+      "stats": {
+        "str": 10,
+        "int": 10,
+        "dex": 10,
+        "luk": 10,
+        "agi": 10,
+        "vit": 10
+      },
+      "base": {
+        "hp": 50,
+        "mp": 20,
+        "atk": 8,
+        "def": 6,
+        "mat": 5,
+        "mdf": 5,
+        "agi": 6
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.power-strike"
+      ]
+    }
+  ],
+  "enemies": [
+    {
+      "id": "enemy.moss",
+      "name": "Mossling",
+      "elementRates": {
+        "fire": 2
+      },
+      "stats": {
+        "str": 3,
+        "int": 2,
+        "dex": 4,
+        "luk": 2,
+        "agi": 3,
+        "vit": 2
+      },
+      "base": {
+        "hp": 10,
+        "mp": 0,
+        "atk": 2,
+        "def": 2,
+        "mat": 1,
+        "mdf": 1,
+        "agi": 2
+      },
+      "weaponType": "melee",
+      "skillIds": [],
+      "reward": {
+        "gold": 7,
+        "baseExp": 20,
+        "classExp": 16,
+        "items": {
+          "item.potion": 1
+        }
+      },
+      "battlerImage": "assets/enemies/Bat.png"
+    },
+    {
+      "id": "enemy.wisp",
+      "name": "Ash Wisp",
+      "elementRates": {
+        "fire": 0.5
+      },
+      "stats": {
+        "str": 2,
+        "int": 5,
+        "dex": 5,
+        "luk": 3,
+        "agi": 6,
+        "vit": 2
+      },
+      "base": {
+        "hp": 8,
+        "mp": 10,
+        "atk": 2,
+        "def": 1,
+        "mat": 3,
+        "mdf": 3,
+        "agi": 3
+      },
+      "weaponType": "ranged",
+      "skillIds": [],
+      "reward": {
+        "gold": 9,
+        "baseExp": 25,
+        "classExp": 20
+      },
+      "battlerImage": "assets/enemies/Gargoyle.png"
+    },
+    {
+      "id": "enemy.ash-warden",
+      "name": "Ash Warden",
+      "ai": "caster",
+      "elementRates": {
+        "fire": 0.5
+      },
+      "stats": {
+        "str": 11,
+        "int": 12,
+        "dex": 8,
+        "luk": 7,
+        "agi": 8,
+        "vit": 12
+      },
+      "base": {
+        "hp": 120,
+        "mp": 40,
+        "atk": 8,
+        "def": 8,
+        "mat": 9,
+        "mdf": 8,
+        "agi": 5
+      },
+      "weaponType": "melee",
+      "skillIds": [
+        "skill.ember"
+      ],
+      "bossPhases": [
+        {
+          "id": "phase.ember",
+          "name": "Ember Veil",
+          "hpRatio": 0.65,
+          "bonuses": {
+            "def": 3,
+            "mdf": 3
+          },
+          "skillIds": [
+            "skill.ash-burst"
+          ]
+        },
+        {
+          "id": "phase.inferno",
+          "name": "Inferno Crown",
+          "hpRatio": 0.3,
+          "bonuses": {
+            "mat": 6,
+            "agi": 4
+          },
+          "skillIds": [
+            "skill.ash-burst"
+          ]
+        }
+      ],
+      "reward": {
+        "gold": 45,
+        "baseExp": 120,
+        "classExp": 90,
+        "items": {
+          "item.phoenix-leaf": 1
+        }
+      },
+      "battlerImage": "assets/enemies/Dragon.png"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equip.iron-sword",
+      "name": "Iron Sword",
+      "slot": "weapon",
+      "weaponType": "melee",
+      "stats": {
+        "str": 1
+      },
+      "bonuses": {
+        "atk": 8
+      }
+    },
+    {
+      "id": "equip.ritual-dagger",
+      "name": "Ritual Dagger",
+      "slot": "weapon",
+      "weaponType": "finesse",
+      "stats": {
+        "dex": 2
+      },
+      "bonuses": {
+        "mat": 4
+      }
+    },
+    {
+      "id": "equip.leather-vest",
+      "name": "Leather Vest",
+      "slot": "body",
+      "stats": {
+        "vit": 1
+      },
+      "bonuses": {
+        "def": 5,
+        "hp": 20
+      }
+    },
+    {
+      "id": "equip.wind-charm",
+      "name": "Wind Charm",
+      "slot": "accessory",
+      "stats": {
+        "agi": 3
+      },
+      "bonuses": {
+        "eva": 0.02,
+        "sp": 10
+      }
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill.power-strike",
+      "name": "Power Strike",
+      "kind": "physical",
+      "power": 1.35,
+      "spCost": 10,
+      "speed": -200,
+      "target": "enemy",
+      "sequence": [
+        "approach",
+        "cast",
+        "impact",
+        "return"
+      ]
+    },
+    {
+      "id": "skill.guard-break",
+      "name": "Guard Break",
+      "kind": "physical",
+      "power": 1.1,
+      "spCost": 8,
+      "speed": 500,
+      "target": "enemy",
+      "armorPiercing": true
+    },
+    {
+      "id": "skill.ember",
+      "name": "Ember",
+      "kind": "magical",
+      "element": "fire",
+      "power": 1.2,
+      "mpCost": 5,
+      "speed": -200,
+      "target": "enemy",
+      "stateId": "state.burn",
+      "stateChance": 1
+    },
+    {
+      "id": "skill.mend",
+      "name": "Mend",
+      "kind": "heal",
+      "power": 1.4,
+      "mpCost": 6,
+      "target": "ally"
+    },
+    {
+      "id": "skill.rekindle",
+      "name": "Rekindle",
+      "kind": "revive",
+      "power": 1.2,
+      "mpCost": 12,
+      "speed": -600,
+      "target": "ally"
+    },
+    {
+      "id": "skill.ash-burst",
+      "name": "Ash Burst",
+      "kind": "magical",
+      "element": "fire",
+      "power": 1.15,
+      "mpCost": 4,
+      "speed": -200,
+      "target": "enemy",
+      "stateId": "state.burn",
+      "stateChance": 0.45,
+      "sequence": [
+        "cast",
+        "impact"
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "state.burn",
+      "name": "Burn",
+      "duration": 2,
+      "mdr": 1.1,
+      "damagePerTurn": 5
+    },
+    {
+      "id": "state.stun",
+      "name": "Stun",
+      "duration": 1,
+      "preventsAction": true
+    }
+  ],
+  "troops": [
+    {
+      "id": "troop.training",
+      "name": "Makhluk Padang",
+      "enemyIds": [
+        "enemy.moss",
+        "enemy.wisp"
+      ]
+    },
+    {
+      "id": "troop.ash-warden",
+      "name": "Ash Warden",
+      "enemyIds": [
+        "enemy.ash-warden"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "item.token",
+      "name": "Token Uji",
+      "kind": "key"
+    },
+    {
+      "id": "item.potion",
+      "name": "Potion",
+      "kind": "heal",
+      "healHp": 80
+    },
+    {
+      "id": "item.phoenix-leaf",
+      "name": "Phoenix Leaf",
+      "kind": "revive",
+      "reviveHpRatio": 0.3
+    },
+    {
+      "id": "item.respec-seal",
+      "name": "Respec Seal",
+      "kind": "stat-reset"
+    }
+  ],
+  "classes": [
+    {
+      "id": "class.squire",
+      "name": "Squire",
+      "tier": 1,
+      "growth": {
+        "str": 1,
+        "vit": 1
+      }
+    },
+    {
+      "id": "class.warden",
+      "name": "Warden",
+      "tier": 2,
+      "growth": {
+        "vit": 2,
+        "str": 1
+      }
+    },
+    {
+      "id": "class.acolyte",
+      "name": "Acolyte",
+      "tier": 1,
+      "growth": {
+        "int": 1,
+        "agi": 1
+      }
+    },
+    {
+      "id": "class.magus",
+      "name": "Magus",
+      "tier": 2,
+      "growth": {
+        "int": 2,
+        "dex": 1
+      }
+    }
+  ],
+  "quests": [
+    {
+      "id": "quest.ash-warden",
+      "name": "Abu di Timur",
+      "description": "Selidiki makhluk padang lalu kalahkan Ash Warden di reruntuhan.",
+      "objectives": [
+        {
+          "id": "objective.scout",
+          "text": "Taklukkan patroli padang",
+          "target": 1
+        },
+        {
+          "id": "objective.boss",
+          "text": "Kalahkan Ash Warden",
+          "target": 1
+        }
+      ],
+      "rewards": {
+        "gold": 60,
+        "items": {
+          "item.potion": 2
+        }
+      }
+    }
+  ],
+  "shops": [
+    {
+      "id": "shop.village",
+      "name": "Kios Gerbang",
+      "items": [
+        {
+          "itemId": "item.potion",
+          "price": 8
+        },
+        {
+          "itemId": "item.phoenix-leaf",
+          "price": 25
+        },
+        {
+          "itemId": "item.respec-seal",
+          "price": 40
+        }
+      ]
+    }
+  ],
+  "translations": {
+    "id": {
+      "menu.journal": "Jurnal Quest"
+    },
+    "en": {
+      "menu.journal": "Quest Journal"
+    }
+  }
+}
