@@ -4604,8 +4604,8 @@
     {
       "id": "event.gate",
       "name": "Gerbang",
-      "x": 5,
-      "y": 2,
+      "x": 15,
+      "y": 9,
       "trigger": "interact",
       "pages": [
         {
@@ -4630,8 +4630,8 @@
     {
       "id": "event.to-field",
       "name": "Jalan Keluar",
-      "x": 7,
-      "y": 2,
+      "x": 19,
+      "y": 10,
       "trigger": "touch",
       "pages": [
         {
@@ -4650,8 +4650,8 @@
     {
       "id": "event.new-1",
       "name": "EV001",
-      "x": 6,
-      "y": 5,
+      "x": 16,
+      "y": 6,
       "trigger": "interact",
       "pages": [
         {
