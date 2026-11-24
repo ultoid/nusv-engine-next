@@ -1,6 +1,5 @@
-import type { ProjectBundle } from './core/types.js';
-export interface ImportReport { source:string;converted:string[];warnings:string[];unsupported:string[];errors:string[];idMap:Record<string,string> }
-export interface RecentProject { path: string; title: string; lastOpened: number; }
+import type { ProjectBundle, ImportReport, RecentProject } from './core/types.js';
+export type { ImportReport, RecentProject };
 declare global {
   interface Window {
     nusvEditor?: {

@@ -50,7 +50,9 @@
       "characterImage": "assets/characters/Actor1.png",
       "characterIndex": 0,
       "faceImage": "assets/faces/Actor1.png",
-      "faceIndex": 0
+      "faceIndex": 0,
+      "battlerName": "Actor1_1",
+      "battlerImage": "assets/sv_actors/Actor1_1.png"
     },
     {
       "id": "actor.sena",
@@ -95,7 +97,9 @@
       "characterImage": "assets/characters/Actor1.png",
       "characterIndex": 1,
       "faceImage": "assets/faces/Actor1.png",
-      "faceIndex": 1
+      "faceIndex": 1,
+      "battlerName": "Actor1_2",
+      "battlerImage": "assets/sv_actors/Actor1_2.png"
     },
     {
       "id": "actor.mwt9lrd2",
@@ -122,7 +126,9 @@
       "weaponType": "melee",
       "skillIds": [
         "skill.power-strike"
-      ]
+      ],
+      "battlerName": "Actor1_3",
+      "battlerImage": "assets/sv_actors/Actor1_3.png"
     }
   ],
   "enemies": [

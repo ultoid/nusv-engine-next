@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { ProjectBundle } from '../../core/types.js';
-import type { ImportReport, RecentProject } from '../../global.js';
+import type { ProjectBundle, ImportReport, RecentProject } from '../../core/types.js';
 
 export interface UseProjectIOParams {
   api: typeof window.nusvEditor;

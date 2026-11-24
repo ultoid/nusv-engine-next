@@ -48,14 +48,15 @@ export class BattleController {
         const states = battler.states.map(active => this.bundle.game.states.find(entry => entry.id === active.id)?.name).filter(Boolean);
         const card = document.createElement('article');
         card.dataset.battler = battler.instanceId;
-        card.className = `battle-card ${battler.hp <= 0 ? 'down' : ''}`;
+        card.dataset.side = side;
+        card.className = `battle-card ${side}-card ${battler.hp <= 0 ? 'down' : ''}`;
 
         if (side === 'enemy') {
           const enemyDef = this.bundle.game.enemies.find(entry => entry.id === battler.definitionId);
           const battlerImg = (enemyDef as Record<string, unknown> | undefined)?.battlerImage as string | undefined;
           if (battlerImg) {
             const img = document.createElement('img');
-            img.className = 'battler-sprite';
+            img.className = 'battler-sprite enemy-battler-sprite';
             img.alt = this.def(battler).name;
             void this.textures.loadDataUrl(battlerImg).then(url => {
               if (url) img.src = url;
@@ -64,17 +65,28 @@ export class BattleController {
           }
         } else {
           const actorDef = this.bundle.game.actors.find(entry => entry.id === battler.definitionId);
-          const faceImg = (actorDef as Record<string, unknown> | undefined)?.faceImage as string | undefined;
-          const faceIdx = (actorDef as Record<string, unknown> | undefined)?.faceIndex as number | undefined ?? 0;
-          if (faceImg) {
-            const face = document.createElement('img');
-            face.className = 'face-thumbnail';
-            face.alt = this.def(battler).name;
-            void this.textures.getFaceDataUrl(faceImg, faceIdx).then(url => {
-              if (url) face.src = url;
-            });
-            card.append(face);
-          }
+          const rawBattler = (actorDef as Record<string, unknown> | undefined)?.battlerImage as string | undefined
+            || ((actorDef as Record<string, unknown> | undefined)?.battlerName ? `assets/sv_actors/${(actorDef as Record<string, unknown>).battlerName}.png` : undefined);
+          const charIdx = ((actorDef as Record<string, unknown> | undefined)?.characterIndex as number | undefined) ?? 0;
+          const battlerImg = rawBattler || `assets/sv_actors/Actor1_${charIdx + 1}.png`;
+
+          const img = document.createElement('img');
+          img.className = 'battler-sprite sv-actor-sprite';
+          img.alt = this.def(battler).name;
+          void this.textures.getSvBattlerDataUrl(battlerImg, 0, 0).then(url => {
+            if (url) {
+              img.src = url;
+            } else {
+              const faceImg = (actorDef as Record<string, unknown> | undefined)?.faceImage as string | undefined;
+              const faceIdx = (actorDef as Record<string, unknown> | undefined)?.faceIndex as number | undefined ?? 0;
+              if (faceImg) {
+                void this.textures.getFaceDataUrl(faceImg, faceIdx).then(faceUrl => {
+                  if (faceUrl) img.src = faceUrl;
+                });
+              }
+            }
+          });
+          card.append(img);
         }
 
         const info = document.createElement('div');

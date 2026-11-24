@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type {
   ActorData,
   BaseStats,
@@ -354,7 +354,19 @@ export function ActorImagePickerModal({
   const [search, setSearch] = useState('');
 
   const fullPath = `${prefix}${selectedFile}`;
-  const dataUrl = assetUrlMap[fullPath] || assetUrlMap[currentImage];
+  const [dynamicUrl, setDynamicUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (assetUrlMap[fullPath]) {
+      setDynamicUrl(assetUrlMap[fullPath]);
+    } else if (typeof window !== 'undefined' && (window as unknown as { nusvEditor?: { readAssetData: (p: string) => Promise<{ dataUrl?: string } | null> } }).nusvEditor?.readAssetData) {
+      void (window as unknown as { nusvEditor: { readAssetData: (p: string) => Promise<{ dataUrl?: string } | null> } }).nusvEditor.readAssetData(fullPath).then((res) => {
+        if (res?.dataUrl) setDynamicUrl(res.dataUrl);
+      });
+    }
+  }, [fullPath, assetUrlMap]);
+
+  const dataUrl = dynamicUrl || assetUrlMap[fullPath] || assetUrlMap[currentImage];
 
   const filteredFiles = defaultList.filter((f) => f.toLowerCase().includes(search.toLowerCase()));
 
@@ -1608,8 +1620,21 @@ export function ActorDetailForm({
   const charIdx = Number(actor.characterIndex ?? 0);
   const faceDataUrl = assetUrlMap[faceImg] || assetUrlMap['assets/faces/Actor1.png'];
   const charDataUrl = assetUrlMap[charImg] || assetUrlMap['assets/characters/Actor1.png'];
-  const svImg = actor.battlerImage || `assets/sv_actors/Actor1_${charIdx + 1}.png`;
-  const svDataUrl = assetUrlMap[svImg] || assetUrlMap['assets/sv_actors/Actor1_1.png'];
+  const rawBattler = actor.battlerImage || (actor.battlerName ? `assets/sv_actors/${actor.battlerName}.png` : undefined);
+  const svImg = rawBattler || `assets/sv_actors/Actor1_${charIdx + 1}.png`;
+  const [dynSvUrl, setDynSvUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (assetUrlMap[svImg]) {
+      setDynSvUrl(assetUrlMap[svImg]);
+    } else if (typeof window !== 'undefined' && (window as unknown as { nusvEditor?: { readAssetData: (p: string) => Promise<{ dataUrl?: string } | null> } }).nusvEditor?.readAssetData) {
+      void (window as unknown as { nusvEditor: { readAssetData: (p: string) => Promise<{ dataUrl?: string } | null> } }).nusvEditor.readAssetData(svImg).then((res) => {
+        if (res?.dataUrl) setDynSvUrl(res.dataUrl);
+      });
+    }
+  }, [svImg, assetUrlMap]);
+
+  const svDataUrl = dynSvUrl || assetUrlMap[svImg] || (rawBattler ? assetUrlMap[rawBattler] : undefined) || assetUrlMap['assets/sv_actors/Actor1_1.png'];
 
   const updateEquip = (slot: string, equipId: string) => {
     const nextEquip = {

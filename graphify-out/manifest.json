@@ -18,9 +18,9 @@
     "semantic_hash": "88f172b475b62cb2b775235bbf06a4b3"
   },
   "electron/editor-preload.cts": {
-    "mtime": 1795437722.9430816,
-    "seen": 1795437743.011727,
-    "ast_hash": "c08803c04377e9e0077dacd4e0e4e593",
+    "mtime": 1795519000.2824385,
+    "seen": 1795519016.7163448,
+    "ast_hash": "80ebdbc77771f35863aea9eb962148de",
     "semantic_hash": ""
   },
   "electron/import-service.ts": {
@@ -30,9 +30,9 @@
     "semantic_hash": "288c9f3aa107785c7f5933a1d2730f97"
   },
   "electron/main.ts": {
-    "mtime": 1795437722.9434924,
-    "seen": 1795437743.0117302,
-    "ast_hash": "5fd3398f2c5af666bd5dd180d5822b5d",
+    "mtime": 1795519000.2829077,
+    "seen": 1795519016.716349,
+    "ast_hash": "4c8d12bc0e70c5eb3619b4bc85c2141c",
     "semantic_hash": ""
   },
   "electron/player-preload.cts": {
@@ -42,10 +42,10 @@
     "semantic_hash": ""
   },
   "electron/progress-service.ts": {
-    "mtime": 1795338796.9227788,
-    "seen": 1795343691.4663827,
-    "ast_hash": "dd39830cba70bcb088187771094efc48",
-    "semantic_hash": "dd39830cba70bcb088187771094efc48"
+    "mtime": 1795519000.2834039,
+    "seen": 1795519016.7163522,
+    "ast_hash": "a9a0bf8d78f5388d118452ea5b1fc4a9",
+    "semantic_hash": ""
   },
   "electron/project-service.ts": {
     "mtime": 1795363864.0583713,
@@ -102,9 +102,9 @@
     "semantic_hash": ""
   },
   "fixtures/stage0-safe-project/data/game.json": {
-    "mtime": 1795437723.0646894,
-    "seen": 1795437743.011747,
-    "ast_hash": "0fa9074eb851222bac577901a956010d",
+    "mtime": 1795531349.10851,
+    "seen": 1795531458.5192502,
+    "ast_hash": "ab96547767642334a1481c80ccfec62c",
     "semantic_hash": ""
   },
   "fixtures/stage0-safe-project/maps/map.field.json": {
@@ -186,9 +186,9 @@
     "semantic_hash": "a6006951f2a209e3175cb73ab9211800"
   },
   "src/core/combat-types.ts": {
-    "mtime": 1795437724.5467057,
-    "seen": 1795437743.0117862,
-    "ast_hash": "afd5027dabeb073ca574e40eee03b4c4",
+    "mtime": 1795530276.3534563,
+    "seen": 1795530293.9938755,
+    "ast_hash": "87fb3ad8ddb45db246af135b9c601fb1",
     "semantic_hash": ""
   },
   "src/core/ctb.ts": {
@@ -198,10 +198,10 @@
     "semantic_hash": "76bec541bfca0b719b3307dd4b747a92"
   },
   "src/core/diagnostics.ts": {
-    "mtime": 1795338796.9359827,
-    "seen": 1795343691.4664085,
-    "ast_hash": "fa3b6bdd788e9d8aa902cb8d1303e9e8",
-    "semantic_hash": "fa3b6bdd788e9d8aa902cb8d1303e9e8"
+    "mtime": 1795519000.2867663,
+    "seen": 1795519016.7164323,
+    "ast_hash": "749c1ba25eb725df4628dee761ca9d1b",
+    "semantic_hash": ""
   },
   "src/core/equipment.ts": {
     "mtime": 1795437724.547212,
@@ -210,9 +210,9 @@
     "semantic_hash": ""
   },
   "src/core/map-layers.ts": {
-    "mtime": 1795478654.3193767,
-    "seen": 1795479211.548148,
-    "ast_hash": "67003b7c0d13222d14b665682deeb2e6",
+    "mtime": 1795519000.2878428,
+    "seen": 1795519016.7164352,
+    "ast_hash": "0078d35b851218df0f79ddd38a544c83",
     "semantic_hash": ""
   },
   "src/core/progression.ts": {
@@ -228,27 +228,27 @@
     "semantic_hash": "4c9cc5fb1b22d0754370e12f5740e212"
   },
   "src/core/types.ts": {
-    "mtime": 1795478153.1373458,
-    "seen": 1795478456.7615454,
-    "ast_hash": "4eec1e0656ca83ac206ca040c70b0da8",
+    "mtime": 1795534219.4229326,
+    "seen": 1795534304.7764041,
+    "ast_hash": "47db6f11f07490c223f4e1cb8dae6b79",
     "semantic_hash": ""
   },
   "src/core/validation.ts": {
-    "mtime": 1795437724.550063,
-    "seen": 1795437743.0117974,
-    "ast_hash": "05f5fb8184115095f9a41951cbf53703",
+    "mtime": 1795533499.3130262,
+    "seen": 1795533509.0614123,
+    "ast_hash": "758b1ec231ef8b7919db026543583ad6",
     "semantic_hash": ""
   },
   "src/core/world.ts": {
-    "mtime": 1795437724.550525,
-    "seen": 1795437743.0117989,
-    "ast_hash": "7dc30a8dfae72387666a40f5adb728ba",
+    "mtime": 1795519000.2902763,
+    "seen": 1795519016.7164435,
+    "ast_hash": "07f03782e8ac6788792434d677dea81b",
     "semantic_hash": ""
   },
   "src/editor/App.tsx": {
-    "mtime": 1795479184.7180207,
-    "seen": 1795479211.5481615,
-    "ast_hash": "be96d74a02330cb4dde59379a2174b10",
+    "mtime": 1795519000.291028,
+    "seen": 1795519016.7164464,
+    "ast_hash": "656e909d4bcc906667382aca0d39fb41",
     "semantic_hash": ""
   },
   "src/editor/main.tsx": {
@@ -258,9 +258,9 @@
     "semantic_hash": "e27eb4bbad79093a9a9a58f2eeda8c43"
   },
   "src/global.d.ts": {
-    "mtime": 1795437724.5557353,
-    "seen": 1795437743.0118089,
-    "ast_hash": "1683eed4699e43267b913f4ab7ea045e",
+    "mtime": 1795534226.766163,
+    "seen": 1795534304.776531,
+    "ast_hash": "f49228085b42fd4f8e23b1d02300b8f8",
     "semantic_hash": ""
   },
   "src/player/main.ts": {
@@ -282,15 +282,15 @@
     "semantic_hash": "7858d734682cfb98d7d453dd752f60c6"
   },
   "src/runtime/AudioManager.ts": {
-    "mtime": 1795437724.5564713,
-    "seen": 1795437743.0118244,
-    "ast_hash": "06834a1c02470e3a0ef399ac7ce29102",
+    "mtime": 1795519000.3205683,
+    "seen": 1795519016.7165082,
+    "ast_hash": "6f07f7847f7a4806e817d82f0c7ab69d",
     "semantic_hash": ""
   },
   "src/runtime/BattleController.ts": {
-    "mtime": 1795437724.556868,
-    "seen": 1795437743.011826,
-    "ast_hash": "99cd3957bff2af89913f2301972db948",
+    "mtime": 1795526997.4505177,
+    "seen": 1795527083.9226015,
+    "ast_hash": "b1c3e81af835a2bdcb0a73963f57d0ce",
     "semantic_hash": ""
   },
   "src/runtime/DebugOverlay.ts": {
@@ -300,10 +300,10 @@
     "semantic_hash": "af14eb11941270c6cbc05f02f9ebf90a"
   },
   "src/runtime/DialogueController.ts": {
-    "mtime": 1795338796.9415803,
-    "seen": 1795343691.4664261,
-    "ast_hash": "f9ddfdba01cfe2d2f235249fd22bfd0c",
-    "semantic_hash": "f9ddfdba01cfe2d2f235249fd22bfd0c"
+    "mtime": 1795519000.3211868,
+    "seen": 1795519016.7165127,
+    "ast_hash": "27674c90a490c6c4c2bc4873ed0cd207",
+    "semantic_hash": ""
   },
   "src/runtime/GameLoop.ts": {
     "mtime": 1795338796.9418187,
@@ -342,15 +342,15 @@
     "semantic_hash": ""
   },
   "src/runtime/WorldScene.ts": {
-    "mtime": 1795478233.0029597,
-    "seen": 1795478456.7615921,
-    "ast_hash": "a801963e0903b9b77bc303e0c3de1e8b",
+    "mtime": 1795519000.321823,
+    "seen": 1795519016.7165248,
+    "ast_hash": "85e43a1b3243e471f5c23d80c41d4d81",
     "semantic_hash": ""
   },
   "tests/stage1-project-service.test.js": {
-    "mtime": 1795363866.3169844,
-    "seen": 1795363987.396839,
-    "ast_hash": "6c3f9ec412bbac7841ed446658367463",
+    "mtime": 1795519000.3245063,
+    "seen": 1795519016.7165258,
+    "ast_hash": "0bd25330d9d60805599b4000b87a9eba",
     "semantic_hash": ""
   },
   "tests/stage2-world.test.js": {
@@ -708,15 +708,15 @@
     "semantic_hash": ""
   },
   "src/editor/ActorEditorComponents.tsx": {
-    "mtime": 1795437724.5514624,
-    "seen": 1795437743.0118,
-    "ast_hash": "fc8ba46dda6ea804cb0bafa493b204c2",
+    "mtime": 1795527046.5727403,
+    "seen": 1795527083.92245,
+    "ast_hash": "4cd6356a64ee134d3dc79b49295cd472",
     "semantic_hash": ""
   },
   "src/editor/DatabaseView.tsx": {
-    "mtime": 1795437724.554272,
-    "seen": 1795437743.011803,
-    "ast_hash": "ac8cb2dfc2df307eba249188c212f05a",
+    "mtime": 1795533872.6722767,
+    "seen": 1795533960.202319,
+    "ast_hash": "ed36c7e9ef06beebd29beca778a6745d",
     "semantic_hash": ""
   },
   "src/editor/ResourceManagerModal.tsx": {
@@ -732,9 +732,9 @@
     "semantic_hash": ""
   },
   "src/runtime/TextureManager.ts": {
-    "mtime": 1795437724.5576434,
-    "seen": 1795437743.0118392,
-    "ast_hash": "3beeeefb0c993398d22fa70c8d32b7a3",
+    "mtime": 1795526977.053864,
+    "seen": 1795527083.9226336,
+    "ast_hash": "82121e9fe3beb98803688bd1132f3714",
     "semantic_hash": ""
   },
   "src/runtime/TitleScene.ts": {
@@ -762,15 +762,15 @@
     "semantic_hash": ""
   },
   "tests/stage9-database-and-resources.test.js": {
-    "mtime": 1795437724.5603862,
-    "seen": 1795437743.0118585,
-    "ast_hash": "77dd530217f0eb08e24953787863e690",
+    "mtime": 1795533912.6265326,
+    "seen": 1795533960.2024724,
+    "ast_hash": "7641001ecdccfe819d6cbafd0882c19e",
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1795437722.9420297,
-    "seen": 1795437743.011867,
-    "ast_hash": "a01a7c79ca18ba4569d42158355bcaff",
+    "mtime": 1795519000.281851,
+    "seen": 1795519016.7165635,
+    "ast_hash": "4d761d22beb005849683bcb58ffb9584",
     "semantic_hash": ""
   },
   "audit/TAHAP_12.md": {
@@ -8448,44 +8448,44 @@
     "semantic_hash": ""
   },
   "project/my-rpg-game3/assets/manifest.json": {
-    "mtime": 1795477101.8913455,
-    "seen": 1795478456.7614992,
+    "mtime": 1795519344.312052,
+    "seen": 1795524166.2627485,
     "ast_hash": "4e3fb3248d7d03f0b78ff43a38ae996d",
     "semantic_hash": ""
   },
   "project/my-rpg-game3/data/game.json": {
-    "mtime": 1795477101.8901942,
-    "seen": 1795478456.761502,
-    "ast_hash": "c784307086b26f625890b33399bd6392",
+    "mtime": 1795526860.824943,
+    "seen": 1795527083.9223642,
+    "ast_hash": "e208eb218ef361a410563e96fbf75650",
     "semantic_hash": ""
   },
   "project/my-rpg-game3/maps/map.field.json": {
-    "mtime": 1795477101.8938403,
-    "seen": 1795478456.7615035,
-    "ast_hash": "65a39f8019afce40b7dc75a7b7da5808",
+    "mtime": 1795519344.3150897,
+    "seen": 1795524166.2627523,
+    "ast_hash": "b9ed090453b634c74873d4b368a17101",
     "semantic_hash": ""
   },
   "project/my-rpg-game3/maps/map.intro.json": {
-    "mtime": 1795477101.892645,
-    "seen": 1795478456.7615054,
-    "ast_hash": "aae01acd23c3bc9b1a1b0f163840dc29",
+    "mtime": 1795519344.3138144,
+    "seen": 1795524166.262754,
+    "ast_hash": "7a9e90de7ad1e815c961886d4cfcbb2e",
     "semantic_hash": ""
   },
   "project/my-rpg-game3/maps/map.ruins.json": {
-    "mtime": 1795477101.895327,
-    "seen": 1795478456.7615073,
-    "ast_hash": "56aaa738faa981058a6bde2f6d4d2d04",
+    "mtime": 1795519344.3169365,
+    "seen": 1795524166.2627556,
+    "ast_hash": "5f9480df37a714bd70e15bea6bf63c71",
     "semantic_hash": ""
   },
   "project/my-rpg-game3/maps/map.village.json": {
-    "mtime": 1795477101.8945694,
-    "seen": 1795478456.7615087,
-    "ast_hash": "93fc1798b5fc7e1c8633e6468aa5feaf",
+    "mtime": 1795519344.3161044,
+    "seen": 1795524166.2627568,
+    "ast_hash": "22f3353176f04015379e34c5ffb1501d",
     "semantic_hash": ""
   },
   "project/my-rpg-game3/nusv.project.json": {
-    "mtime": 1795477101.889186,
-    "seen": 1795478456.76151,
+    "mtime": 1795519344.3098722,
+    "seen": 1795524166.2627585,
     "ast_hash": "22212b993fb60c4e43e07b7f10beaace",
     "semantic_hash": ""
   },
@@ -8877,6 +8877,2958 @@
     "mtime": 1795479170.3397682,
     "seen": 1795479211.5482051,
     "ast_hash": "deb86eab3ff4143e7822ab44853c8dbb",
+    "semantic_hash": ""
+  },
+  "src/editor/components/EditorContextMenus.tsx": {
+    "mtime": 1795519000.292942,
+    "seen": 1795519016.716453,
+    "ast_hash": "df96d4f37fe2d8b8590e7e0fe6deccf0",
+    "semantic_hash": ""
+  },
+  "src/editor/components/EditorStatusBar.tsx": {
+    "mtime": 1795519000.2933886,
+    "seen": 1795519016.716455,
+    "ast_hash": "fc2aa3010063e2b896c36de145a49c84",
+    "semantic_hash": ""
+  },
+  "src/editor/components/EditorToolbar.tsx": {
+    "mtime": 1795519000.2937677,
+    "seen": 1795519016.7164567,
+    "ast_hash": "8b3a4f9cdeb66cbc0466ff1f3bc25b4c",
+    "semantic_hash": ""
+  },
+  "src/editor/components/EditorTopBar.tsx": {
+    "mtime": 1795534233.0619717,
+    "seen": 1795534304.776461,
+    "ast_hash": "079d693ade4a746d07eb5277ea41410c",
+    "semantic_hash": ""
+  },
+  "src/editor/components/InspectorPanel.tsx": {
+    "mtime": 1795519000.2951183,
+    "seen": 1795519016.7164593,
+    "ast_hash": "eb7cbfcdf7add949e7a4115151158271",
+    "semantic_hash": ""
+  },
+  "src/editor/components/MapPaletteCanvas.tsx": {
+    "mtime": 1795519000.2954261,
+    "seen": 1795519016.7164607,
+    "ast_hash": "3096979e5a2e79fc650b429b31bb4b75",
+    "semantic_hash": ""
+  },
+  "src/editor/components/MapTreePanel.tsx": {
+    "mtime": 1795519000.2957056,
+    "seen": 1795519016.7164621,
+    "ast_hash": "5af07e60fcc3a60c88006dd278a5b2c3",
+    "semantic_hash": ""
+  },
+  "src/editor/components/MapViewport.tsx": {
+    "mtime": 1795519000.2961545,
+    "seen": 1795519016.7164633,
+    "ast_hash": "21b7654cb940bf82c09546f413fce89e",
+    "semantic_hash": ""
+  },
+  "src/editor/components/ToolButton.tsx": {
+    "mtime": 1795519000.2964299,
+    "seen": 1795519016.716465,
+    "ast_hash": "14f6da166c678bd0973440f052e3d8f7",
+    "semantic_hash": ""
+  },
+  "src/editor/events/CommandFields.tsx": {
+    "mtime": 1795519000.297731,
+    "seen": 1795519016.7164662,
+    "ast_hash": "d8b7692b4a781acaeb4bbc7b70043e8f",
+    "semantic_hash": ""
+  },
+  "src/editor/events/eventCommands.ts": {
+    "mtime": 1795519000.2982564,
+    "seen": 1795519016.7164674,
+    "ast_hash": "108e7610d019e68e5525ee2009a69fec",
+    "semantic_hash": ""
+  },
+  "src/editor/hooks/useAssetLoader.ts": {
+    "mtime": 1795519000.298707,
+    "seen": 1795519016.7164688,
+    "ast_hash": "eaa2d89a2134575aed500d7af5707738",
+    "semantic_hash": ""
+  },
+  "src/editor/hooks/useCanvasPainter.ts": {
+    "mtime": 1795519000.2994976,
+    "seen": 1795519016.7164702,
+    "ast_hash": "ba751fb9405048a9b9c8a29bc31dbaff",
+    "semantic_hash": ""
+  },
+  "src/editor/hooks/useEditorShortcuts.ts": {
+    "mtime": 1795519000.2997859,
+    "seen": 1795519016.716472,
+    "ast_hash": "5fe15e566b260bafd698088145132f7f",
+    "semantic_hash": ""
+  },
+  "src/editor/hooks/useEventEditor.ts": {
+    "mtime": 1795519000.300132,
+    "seen": 1795519016.7164736,
+    "ast_hash": "003ea0ebda2842a7e671207ea898d323",
+    "semantic_hash": ""
+  },
+  "src/editor/hooks/useMapOperations.ts": {
+    "mtime": 1795519000.3005116,
+    "seen": 1795519016.7164745,
+    "ast_hash": "2c10bc0a412bd70b8b2caffd8121b82c",
+    "semantic_hash": ""
+  },
+  "src/editor/hooks/useProjectIO.ts": {
+    "mtime": 1795534233.2114806,
+    "seen": 1795534304.7764885,
+    "ast_hash": "aac1b3345bc51a9a9edefdb7c4de5a72",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/CharacterPickerModal.tsx": {
+    "mtime": 1795519000.3015618,
+    "seen": 1795519016.71648,
+    "ast_hash": "f88f7f2fb379c72c1d0645df4c6ee85e",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/DungeonGeneratorModal.tsx": {
+    "mtime": 1795519000.3019304,
+    "seen": 1795519016.7164814,
+    "ast_hash": "6146a682971c76a65069e5030a4d3336",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/EditorModals.tsx": {
+    "mtime": 1795519000.3025067,
+    "seen": 1795519016.7164829,
+    "ast_hash": "165db8ddec9d90d2b3dc8351d41e8fde",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/EventCommandPickerModal.tsx": {
+    "mtime": 1795519000.3030338,
+    "seen": 1795519016.7164838,
+    "ast_hash": "5e1f472d9156cf3b133b889d5a660ad4",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/EventEditorModal.tsx": {
+    "mtime": 1795519000.3072474,
+    "seen": 1795519016.7164848,
+    "ast_hash": "9e96191ac620010970685f8d73f2b72a",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/FacePickerModal.tsx": {
+    "mtime": 1795519000.3076365,
+    "seen": 1795519016.716486,
+    "ast_hash": "070e1a4ae05b660514b5b2bf6253a08e",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/MapLocationPickerModal.tsx": {
+    "mtime": 1795519000.308109,
+    "seen": 1795519016.716487,
+    "ast_hash": "74a046de4a49d25bda1a272fb57f11ff",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/MapPropertiesModal.tsx": {
+    "mtime": 1795519000.3153749,
+    "seen": 1795519016.7164884,
+    "ast_hash": "d194503c7507ea7383efca001ad23c11",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/MoveRouteModal.tsx": {
+    "mtime": 1795519000.3157654,
+    "seen": 1795519016.7164896,
+    "ast_hash": "c4377a2d8035b193667f0200f0cd7052",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/NewProjectModal.tsx": {
+    "mtime": 1795519000.3160112,
+    "seen": 1795519016.7164905,
+    "ast_hash": "45f89a83855bc39d6be196300ea13eb4",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/ProjectSettingsModal.tsx": {
+    "mtime": 1795519000.3168766,
+    "seen": 1795519016.7164917,
+    "ast_hash": "cb2018ab0525ff55e6358601a097fc62",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/QuickEventModals.tsx": {
+    "mtime": 1795519000.3172312,
+    "seen": 1795519016.7164931,
+    "ast_hash": "6ab62b86396ec470d5fbe3be30d3e0b4",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/SampleMapsModal.tsx": {
+    "mtime": 1795519000.3174644,
+    "seen": 1795519016.716494,
+    "ast_hash": "d53f62e0e1afb698cc0b581aa86a705c",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/ShiftMapModal.tsx": {
+    "mtime": 1795519000.3177102,
+    "seen": 1795519016.7164953,
+    "ast_hash": "feddd919b20089e8ce1f68444ae561b5",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/SoundTestModal.tsx": {
+    "mtime": 1795519000.318041,
+    "seen": 1795519016.7164967,
+    "ast_hash": "9cbda11b724c97bd19b71741da36efaf",
+    "semantic_hash": ""
+  },
+  "src/editor/modals/UnsavedConfirmModal.tsx": {
+    "mtime": 1795519000.3183558,
+    "seen": 1795519016.716498,
+    "ast_hash": "ce422105091c98cd715ea872861e284b",
+    "semantic_hash": ""
+  },
+  "src/editor/services/soundFx.ts": {
+    "mtime": 1795519000.3189294,
+    "seen": 1795519016.716499,
+    "ast_hash": "1fce2c0fe5aa6d432016f4db9ae1c07a",
+    "semantic_hash": ""
+  },
+  "src/editor/views/ProjectManagerView.tsx": {
+    "mtime": 1795534233.3805277,
+    "seen": 1795534304.7765288,
+    "ast_hash": "78033dbb25849db61b324295ac9ad12f",
+    "semantic_hash": ""
+  },
+  "tests/stage12-mz-events.test.js": {
+    "mtime": 1795519000.3251283,
+    "seen": 1795519016.7165298,
+    "ast_hash": "928ce65fdc5381de2e87bb9c4beac524",
+    "semantic_hash": ""
+  },
+  "tests/stage13-audiovisual-events.test.js": {
+    "mtime": 1795519000.3254216,
+    "seen": 1795519016.7165325,
+    "ast_hash": "0ed0499e06131006a45bcc73198a9fdd",
+    "semantic_hash": ""
+  },
+  "tests/stage14-concurrency-graphics.test.js": {
+    "mtime": 1795519000.3256845,
+    "seen": 1795519016.7165353,
+    "ast_hash": "8538f350510462e641329ee9044e0db6",
+    "semantic_hash": ""
+  },
+  "tests/stage15-event-editor-operations.test.js": {
+    "mtime": 1795519000.325993,
+    "seen": 1795519016.7165387,
+    "ast_hash": "465e7c5a5edeb5a7c7a562a2ff7d72ca",
+    "semantic_hash": ""
+  },
+  "tests/stage15-map-regions-and-autotiles.test.js": {
+    "mtime": 1795519000.3263133,
+    "seen": 1795519016.7165396,
+    "ast_hash": "a3ee597a8e337e7116f09f13e973e1ac",
+    "semantic_hash": ""
+  },
+  "tests/stage16-mz-movement-routes-and-commands.test.js": {
+    "mtime": 1795519000.3267207,
+    "seen": 1795519016.7165406,
+    "ast_hash": "405bd7df8fab5c4f9633c9f3d8dee47d",
+    "semantic_hash": ""
+  },
+  "tests/stage17-mz-scene-and-battle-commands.test.js": {
+    "mtime": 1795519000.327246,
+    "seen": 1795519016.7165425,
+    "ast_hash": "01404101cce8dff31cdde37a8739f4e0",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_1.png": {
+    "mtime": 1795526849.7701147,
+    "seen": 1795527083.9229686,
+    "ast_hash": "94fb5c428ea054bf3c809c95822bfbe1",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_2.png": {
+    "mtime": 1795526849.7709365,
+    "seen": 1795527083.9229715,
+    "ast_hash": "1a129a593889d640e3a88c461ecd352c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_3.png": {
+    "mtime": 1795526849.771633,
+    "seen": 1795527083.922973,
+    "ast_hash": "75c4191abba4ba7b7f67f909b5205b62",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_4.png": {
+    "mtime": 1795526849.7723157,
+    "seen": 1795527083.9229753,
+    "ast_hash": "4de2ad9720af022223bb868eb92aed4c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_5.png": {
+    "mtime": 1795526849.7730832,
+    "seen": 1795527083.9229772,
+    "ast_hash": "be1c0ff8ea4a52d416b91ddc0719acd1",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_6.png": {
+    "mtime": 1795526849.7737682,
+    "seen": 1795527083.92298,
+    "ast_hash": "3fc02a6c802f561ccf55a1988f900de1",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_7.png": {
+    "mtime": 1795526849.7750657,
+    "seen": 1795527083.922982,
+    "ast_hash": "fe290eb35adc36e590734c88779d1e46",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor1_8.png": {
+    "mtime": 1795526849.7758162,
+    "seen": 1795527083.9229841,
+    "ast_hash": "c572b9843c448a929dc40cc9c5ef6512",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_1.png": {
+    "mtime": 1795526849.7780418,
+    "seen": 1795527083.922987,
+    "ast_hash": "7bd044e3e9a3c2f1bdee9e3901d7f2b7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_2.png": {
+    "mtime": 1795526849.7811644,
+    "seen": 1795527083.922989,
+    "ast_hash": "de801fd146dc762de76cf244a922f6ce",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_3.png": {
+    "mtime": 1795526849.7823446,
+    "seen": 1795527083.9229908,
+    "ast_hash": "5e64cf35bc7a2b9be23ded30f88aa957",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_4.png": {
+    "mtime": 1795526849.7834911,
+    "seen": 1795527083.9229934,
+    "ast_hash": "19c455a00b5c452e33a0160597ac0a8e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_5.png": {
+    "mtime": 1795526849.7847238,
+    "seen": 1795527083.9229956,
+    "ast_hash": "3e6734b54ac46cca81ddc4915de952ad",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_6.png": {
+    "mtime": 1795526849.7858083,
+    "seen": 1795527083.9229972,
+    "ast_hash": "1f4b7eedb0d37e05442888f84c89e037",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_7.png": {
+    "mtime": 1795526849.7874634,
+    "seen": 1795527083.9229994,
+    "ast_hash": "295c31e87454d04a08966abf371b4ea7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor2_8.png": {
+    "mtime": 1795526849.7883742,
+    "seen": 1795527083.923002,
+    "ast_hash": "11ae797fd111e55f4bd27865a60298d3",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor3_5.png": {
+    "mtime": 1795526849.789323,
+    "seen": 1795527083.9230042,
+    "ast_hash": "4420d5b663c88f669e443ca502b1ca65",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor3_6.png": {
+    "mtime": 1795526849.790048,
+    "seen": 1795527083.923006,
+    "ast_hash": "c332ebd7a5b584cca9b75b6255a3059e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor3_7.png": {
+    "mtime": 1795526849.7907746,
+    "seen": 1795527083.9230077,
+    "ast_hash": "ede8294594d3b9b9a79ea20f07d15429",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/Actor3_8.png": {
+    "mtime": 1795526849.7914596,
+    "seen": 1795527083.9230106,
+    "ast_hash": "f0f110753c746a3c644023dd3c8513e0",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_1.png": {
+    "mtime": 1795526849.79211,
+    "seen": 1795527083.9230123,
+    "ast_hash": "8b66d668b4176c0688122538edfd2e9e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_2.png": {
+    "mtime": 1795526849.7927637,
+    "seen": 1795527083.9230149,
+    "ast_hash": "512b85b05a2dc3a7be085a239a16d1f2",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_3.png": {
+    "mtime": 1795526849.793463,
+    "seen": 1795527083.9230168,
+    "ast_hash": "a9701948dd1ec38a03eb7380b8544638",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_4.png": {
+    "mtime": 1795526849.7941482,
+    "seen": 1795527083.9230194,
+    "ast_hash": "3039f93193ac556bbba0ef5281750c21",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_5.png": {
+    "mtime": 1795526849.795065,
+    "seen": 1795527083.923021,
+    "ast_hash": "6d7fbce3fccdab0e61d4b9970d064c72",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_6.png": {
+    "mtime": 1795526849.7958045,
+    "seen": 1795527083.923023,
+    "ast_hash": "83a83a8d5a06ac7342ad8c1c7f96a84f",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_7.png": {
+    "mtime": 1795526849.7965283,
+    "seen": 1795527083.9230247,
+    "ast_hash": "ff6e02d05e9c6373be7cc5f00fd94748",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor1_8.png": {
+    "mtime": 1795526849.7972136,
+    "seen": 1795527083.9230273,
+    "ast_hash": "939259d056b7c560f9d42349ba9b28d1",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_1.png": {
+    "mtime": 1795526849.7979107,
+    "seen": 1795527083.9230285,
+    "ast_hash": "49d1455b3f26c5fe116b9ef3c561b56d",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_2.png": {
+    "mtime": 1795526849.798575,
+    "seen": 1795527083.9230304,
+    "ast_hash": "01713895b77d32dde1362f704a026cc1",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_3.png": {
+    "mtime": 1795526849.799211,
+    "seen": 1795527083.9230318,
+    "ast_hash": "23cb0a704da2d0f32b5e53ad32242a8b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_4.png": {
+    "mtime": 1795526849.7999878,
+    "seen": 1795527083.9230342,
+    "ast_hash": "d13637b41894a44fd5ce0414ead6e62c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_5.png": {
+    "mtime": 1795526849.8009326,
+    "seen": 1795527083.923036,
+    "ast_hash": "4983d7c5d260d5b1717873f4b2aa509b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_6.png": {
+    "mtime": 1795526849.8016353,
+    "seen": 1795527083.9230382,
+    "ast_hash": "5d59e9c3b0dd1b8616a04bcd72956372",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_7.png": {
+    "mtime": 1795526849.8022912,
+    "seen": 1795527083.9230409,
+    "ast_hash": "d03a5eef6b36d8a837ec72c4330a602b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor2_8.png": {
+    "mtime": 1795526849.8029723,
+    "seen": 1795527083.9230425,
+    "ast_hash": "37071412039647c96312368977374f42",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor3_5.png": {
+    "mtime": 1795526849.8037217,
+    "seen": 1795527083.9230444,
+    "ast_hash": "462c7ea8123721c84554e16771c503ce",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor3_6.png": {
+    "mtime": 1795526849.8044577,
+    "seen": 1795527083.9230459,
+    "ast_hash": "4134aabacd5a4ebd094e25b00c15a9b3",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor3_7.png": {
+    "mtime": 1795526849.8051448,
+    "seen": 1795527083.9230475,
+    "ast_hash": "89c629e8a4aca17c2d455bc6322199ff",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_actors/SF_Actor3_8.png": {
+    "mtime": 1795526849.805796,
+    "seen": 1795527083.9230494,
+    "ast_hash": "99a2e47ae0bbe1696f10f538ddf5e7b0",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor1_3.png": {
+    "mtime": 1795526849.810189,
+    "seen": 1795527083.9230514,
+    "ast_hash": "82ba170928dafb2edb7d982469d77118",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor1_4.png": {
+    "mtime": 1795526849.8107977,
+    "seen": 1795527083.923053,
+    "ast_hash": "14b4feb1d34757cfbd1d9fde6f89a855",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor1_5.png": {
+    "mtime": 1795526849.8115351,
+    "seen": 1795527083.9230552,
+    "ast_hash": "18b8a1d9e4bdbfae6f2f4307447d03a7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor1_6.png": {
+    "mtime": 1795526849.8121898,
+    "seen": 1795527083.9230576,
+    "ast_hash": "abc39970476f0a9d60df27d30eea2c68",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_1.png": {
+    "mtime": 1795526849.8130283,
+    "seen": 1795527083.9230595,
+    "ast_hash": "808b86469286171b2228b26d8bbd2869",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_2.png": {
+    "mtime": 1795526849.8137348,
+    "seen": 1795527083.923061,
+    "ast_hash": "f0cbfa839ec4cd8d9e0da452cade6a6e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_3.png": {
+    "mtime": 1795526849.8143756,
+    "seen": 1795527083.9230626,
+    "ast_hash": "30e9c771b1fcc1bf025121a391a7553d",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_4.png": {
+    "mtime": 1795526849.8153162,
+    "seen": 1795527083.9230652,
+    "ast_hash": "7cc41967b62838faee347a4db146648e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_5.png": {
+    "mtime": 1795526849.8159626,
+    "seen": 1795527083.9230666,
+    "ast_hash": "bb39aaf97e3354f98c5d8077a96fda2f",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_6.png": {
+    "mtime": 1795526849.8166187,
+    "seen": 1795527083.9230685,
+    "ast_hash": "a3343142635b6e32f72fe3cade86e772",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor2_7.png": {
+    "mtime": 1795526849.8172436,
+    "seen": 1795527083.9230702,
+    "ast_hash": "c3da36847cd9f273874cfd42dc5ec9e6",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor3_1.png": {
+    "mtime": 1795526849.8179827,
+    "seen": 1795527083.9230728,
+    "ast_hash": "1e7520772f4d59a5498a9e3134841b03",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor3_2.png": {
+    "mtime": 1795526849.8186488,
+    "seen": 1795527083.9230747,
+    "ast_hash": "cc84decbd73847302d5d363aedf68365",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor3_3.png": {
+    "mtime": 1795526849.8193264,
+    "seen": 1795527083.9230769,
+    "ast_hash": "5200722ed58f061f249119f38cdab64f",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Actor3_4.png": {
+    "mtime": 1795526849.8200302,
+    "seen": 1795527083.9230793,
+    "ast_hash": "690053cdfb3616575d8462cddce47141",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Berserker.png": {
+    "mtime": 1795526849.820719,
+    "seen": 1795527083.9230816,
+    "ast_hash": "583ebdc2e22cde789bd13717553fc289",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Birdman.png": {
+    "mtime": 1795526849.8215153,
+    "seen": 1795527083.9230833,
+    "ast_hash": "9587f5b524eac411c91a734e6c037c51",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Blackknight.png": {
+    "mtime": 1795526849.8222725,
+    "seen": 1795527083.9230852,
+    "ast_hash": "945cbda36856eef8a5d4123e55a3e85b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Caitsith.png": {
+    "mtime": 1795526849.822836,
+    "seen": 1795527083.9230888,
+    "ast_hash": "b6986c3266141bd10e2ce408d399bd80",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Captain.png": {
+    "mtime": 1795526849.8235686,
+    "seen": 1795527083.923091,
+    "ast_hash": "0490f1210860434d992369cd906e703b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Crab.png": {
+    "mtime": 1795526849.8241644,
+    "seen": 1795527083.923093,
+    "ast_hash": "b19fa55d3d6f5a7edd7bd84b4ce5375d",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Crow.png": {
+    "mtime": 1795526849.8247113,
+    "seen": 1795527083.9230945,
+    "ast_hash": "c51a7c9e575ded2b42eb3c034e2f3d3e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Darkelf.png": {
+    "mtime": 1795526849.8254461,
+    "seen": 1795527083.9230971,
+    "ast_hash": "da38fa000e26edfd86cf40ecb2e0aade",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Demon.png": {
+    "mtime": 1795526849.8267365,
+    "seen": 1795527083.9230993,
+    "ast_hash": "6265841f0ee878b97e846a7cdb28880e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Demon_metamorphosis.png": {
+    "mtime": 1795526849.8281076,
+    "seen": 1795527083.9231014,
+    "ast_hash": "7efa88a13ce99721f7b7cd2a56483cb8",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Demoncount.png": {
+    "mtime": 1795526849.8289962,
+    "seen": 1795527083.9231036,
+    "ast_hash": "f8708f2d8e6cecbc488b62a762bb4ef7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Demonpot.png": {
+    "mtime": 1795526849.8296516,
+    "seen": 1795527083.923105,
+    "ast_hash": "2a0da7bedc214766454541070aba5323",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Dragon.png": {
+    "mtime": 1795526849.8529062,
+    "seen": 1795527083.9231074,
+    "ast_hash": "23b8f51414a1b369b01c96e7e3b875a7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Evilbook.png": {
+    "mtime": 1795526849.853595,
+    "seen": 1795527083.9231088,
+    "ast_hash": "d4bb823787d07b08bc25106693d58000",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Evilgod.png": {
+    "mtime": 1795526849.8547964,
+    "seen": 1795527083.9231107,
+    "ast_hash": "cc7ab40e5cb3133e4ed5f54a6ecd01aa",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Foxman.png": {
+    "mtime": 1795526849.855488,
+    "seen": 1795527083.9231129,
+    "ast_hash": "3de11967b575f5e150642818aa39f0c6",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Frilledlizard.png": {
+    "mtime": 1795526849.8560667,
+    "seen": 1795527083.9231148,
+    "ast_hash": "9b6ca13214c5d7803214967c6db77bcd",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Gatekeeper.png": {
+    "mtime": 1795526849.8566892,
+    "seen": 1795527083.9231164,
+    "ast_hash": "04c7d5ef017d504c4cc7962a93f57a00",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Gnome.png": {
+    "mtime": 1795526849.857266,
+    "seen": 1795527083.9231188,
+    "ast_hash": "8132cf31e24e9accc23f023c64655043",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Goblin.png": {
+    "mtime": 1795526849.8591037,
+    "seen": 1795527083.9231205,
+    "ast_hash": "5cc5128738af2ca8b00bcc8f315deee9",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/God_of_light.png": {
+    "mtime": 1795526849.8609345,
+    "seen": 1795527083.9231224,
+    "ast_hash": "864f445bdb78f578a91fc3fd802f4a35",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Goddess.png": {
+    "mtime": 1795526849.861938,
+    "seen": 1795527083.9231246,
+    "ast_hash": "e017f8b19687fc211de577e15b655caa",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Goddess_of_death.png": {
+    "mtime": 1795526849.8626983,
+    "seen": 1795527083.923126,
+    "ast_hash": "e8a8d4a64bc6d807578ff06e456783e9",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Hakutaku.png": {
+    "mtime": 1795526849.8638117,
+    "seen": 1795527083.9231281,
+    "ast_hash": "43c6d7025fc5dc43a2feec61137b2d67",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Harpy.png": {
+    "mtime": 1795526849.8648229,
+    "seen": 1795527083.9231303,
+    "ast_hash": "e05217ff3fcb3d666d347162479d2808",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Hi_monster.png": {
+    "mtime": 1795526849.8658412,
+    "seen": 1795527083.9231322,
+    "ast_hash": "23d7bb3528406838aa6aa5a0a44585f1",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Highking.png": {
+    "mtime": 1795526849.8666751,
+    "seen": 1795527083.9231339,
+    "ast_hash": "86adad68d3a4ff7ad085473eaa4c4b8f",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Hydra.png": {
+    "mtime": 1795526849.867752,
+    "seen": 1795527083.923136,
+    "ast_hash": "0250e06d5ebe84be2d7d20b337524039",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Ketos.png": {
+    "mtime": 1795526849.8686123,
+    "seen": 1795527083.9231384,
+    "ast_hash": "1fd94c232771cadda7f62090bafdbe29",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Kraken.png": {
+    "mtime": 1795526849.8694415,
+    "seen": 1795527083.92314,
+    "ast_hash": "3d85e6f452ea872fc76ce59ba254b413",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Lich.png": {
+    "mtime": 1795526849.8705013,
+    "seen": 1795527083.923142,
+    "ast_hash": "6b5f7c1099514b06e2331862edb0aa1d",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Machinerybee.png": {
+    "mtime": 1795526849.8711038,
+    "seen": 1795527083.923144,
+    "ast_hash": "511957925605df438c6733cba34aa272",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Matango.png": {
+    "mtime": 1795526849.8717797,
+    "seen": 1795527083.923146,
+    "ast_hash": "df9a1579d2857f8414d5c5d039be62df",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Mechascorpion.png": {
+    "mtime": 1795526849.87243,
+    "seen": 1795527083.9231477,
+    "ast_hash": "2db37905088e1841cf2c606d57c62979",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Medusa.png": {
+    "mtime": 1795526849.8732054,
+    "seen": 1795527083.923175,
+    "ast_hash": "f8379c161335c4f1666dcde6b37480ed",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Mercenary.png": {
+    "mtime": 1795526849.8738294,
+    "seen": 1795527083.923177,
+    "ast_hash": "59615d37b01ad2871115c4526ba5ecdc",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Mimic.png": {
+    "mtime": 1795526849.8744187,
+    "seen": 1795527083.9231784,
+    "ast_hash": "209806d292171d7c5171a09ccbad8a8c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Oddegg.png": {
+    "mtime": 1795526849.8750105,
+    "seen": 1795527083.92318,
+    "ast_hash": "0db83b5be9d3a054b0e9fbc1bf3ec868",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Petitdevil.png": {
+    "mtime": 1795526849.8755767,
+    "seen": 1795527083.9231815,
+    "ast_hash": "4b4076f82c759798193f23f5f29ba4e5",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Plasma.png": {
+    "mtime": 1795526849.8761566,
+    "seen": 1795527083.9231834,
+    "ast_hash": "00aebd506e9d0267125da46bf09705d2",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Agent.png": {
+    "mtime": 1795526849.8770466,
+    "seen": 1795527083.9231849,
+    "ast_hash": "8f9794cae7bc2a968f932d44d1c3203c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Anaconda.png": {
+    "mtime": 1795526849.8777823,
+    "seen": 1795527083.923187,
+    "ast_hash": "8e23cafd7d1f78d25436ed8e987ef863",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_ArmyGorilla.png": {
+    "mtime": 1795526849.8786414,
+    "seen": 1795527083.9231884,
+    "ast_hash": "5b385d63971f99d4c8f14a5d05c7dc76",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Armymonkey.png": {
+    "mtime": 1795526849.8792567,
+    "seen": 1795527083.9231908,
+    "ast_hash": "615084db2c79805ab7d3f800cc2a9f7e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Blueogre.png": {
+    "mtime": 1795526849.880068,
+    "seen": 1795527083.9231927,
+    "ast_hash": "7f92900ca6b0a00c0cfb736cb59aec17",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Boss.png": {
+    "mtime": 1795526849.8806722,
+    "seen": 1795527083.9231944,
+    "ast_hash": "9345aa88af8a01805d4ad669b8a183e4",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Brownbear.png": {
+    "mtime": 1795526849.8814566,
+    "seen": 1795527083.923196,
+    "ast_hash": "e70d7cec2f629557cf801fb69ebe4db7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Cyborg.png": {
+    "mtime": 1795526849.8821776,
+    "seen": 1795527083.9231987,
+    "ast_hash": "3a7019007655305f054001dc82b356ca",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Demon_of_universe.png": {
+    "mtime": 1795526849.8833027,
+    "seen": 1795527083.9232004,
+    "ast_hash": "76dd57bb483755bc9b6e49241aaa67a0",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Drone.png": {
+    "mtime": 1795526849.884887,
+    "seen": 1795527083.923202,
+    "ast_hash": "6ed5e56bbba0ffdffb76cfd4fde4a04a",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Enmadaio.png": {
+    "mtime": 1795526849.8866215,
+    "seen": 1795527083.923204,
+    "ast_hash": "afd175e99d1b1f827bac786fd6a2c6c7",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Evilteddybear.png": {
+    "mtime": 1795526849.887185,
+    "seen": 1795527083.9232059,
+    "ast_hash": "04f3ff01107e198b0caee7cd70ff43ea",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Hannyamask.png": {
+    "mtime": 1795526849.887788,
+    "seen": 1795527083.923208,
+    "ast_hash": "bd1a86ce02078e55579b9a4f6a39a930",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Hermit.png": {
+    "mtime": 1795526849.8884196,
+    "seen": 1795527083.9232094,
+    "ast_hash": "cef386b8ec744e5a87631bbe637ed578",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Jiangshi.png": {
+    "mtime": 1795526849.8891003,
+    "seen": 1795527083.9232109,
+    "ast_hash": "3d68b5ba34d5d29bd430729300b449e9",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Kamaitachi.png": {
+    "mtime": 1795526849.889742,
+    "seen": 1795527083.923212,
+    "ast_hash": "7bbfcb73c6cb7feff7777491b7d5d747",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Kappa.png": {
+    "mtime": 1795526849.890591,
+    "seen": 1795527083.9232142,
+    "ast_hash": "ff97a6d7984a6d6c9e0568f887f194be",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Madclown.png": {
+    "mtime": 1795526849.8912656,
+    "seen": 1795527083.9232156,
+    "ast_hash": "d9ad40097d2b7e2e283fcdd3b47bc8bf",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Madscientist.png": {
+    "mtime": 1795526849.8919919,
+    "seen": 1795527083.9232173,
+    "ast_hash": "9e2f8b260dd956ab9a2ebf867e837f90",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Mafia.png": {
+    "mtime": 1795526849.8926878,
+    "seen": 1795527083.9232194,
+    "ast_hash": "4b5ec7e212a956cb6893047b234326fd",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Mechasphere.png": {
+    "mtime": 1795526849.8933406,
+    "seen": 1795527083.923222,
+    "ast_hash": "b2a9b8bceee2549688bbc841af59b85a",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Phoenix.png": {
+    "mtime": 1795526849.894422,
+    "seen": 1795527083.9232237,
+    "ast_hash": "6933d433ca10101b3d9dda95d1e03aff",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Redogre.png": {
+    "mtime": 1795526849.895271,
+    "seen": 1795527083.9232252,
+    "ast_hash": "06e203f4043c88448145d73e2a39227a",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Securityrobot.png": {
+    "mtime": 1795526849.8959076,
+    "seen": 1795527083.9232268,
+    "ast_hash": "36be314f93d5d25eb06fe52207cb8373",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Shadow.png": {
+    "mtime": 1795526849.8965003,
+    "seen": 1795527083.92323,
+    "ast_hash": "252459c8ac8c1faccf11f077c4f3d2ec",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Skullmask.png": {
+    "mtime": 1795526849.8971457,
+    "seen": 1795527083.9232323,
+    "ast_hash": "d608ba5490eb57a75833b290d7f35500",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Slaughterrobot.png": {
+    "mtime": 1795526849.8982306,
+    "seen": 1795527083.923234,
+    "ast_hash": "6ea6e30e37a334451e8154d77c47c429",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Specialforces.png": {
+    "mtime": 1795526849.8988798,
+    "seen": 1795527083.9232368,
+    "ast_hash": "01111ba242a23d3a331325bbeffbee0b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Talkingmuppet.png": {
+    "mtime": 1795526849.8994699,
+    "seen": 1795527083.9232392,
+    "ast_hash": "fac961bb7d4370567d88aeb36ef971c2",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Timebomb.png": {
+    "mtime": 1795526849.9000628,
+    "seen": 1795527083.923241,
+    "ast_hash": "38d57e1852027ddcde35df1058ff52bd",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Whitewolf.png": {
+    "mtime": 1795526849.900866,
+    "seen": 1795527083.9232428,
+    "ast_hash": "a6eb28454c730c4d1525052273dd9300",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Will_o_the_wisp.png": {
+    "mtime": 1795526849.90145,
+    "seen": 1795527083.9232447,
+    "ast_hash": "0ec144f5d27563da8b3254cd66f46e36",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Wolf.png": {
+    "mtime": 1795526849.902408,
+    "seen": 1795527083.9232466,
+    "ast_hash": "e3c4f52762ccfc8d41ada3634d549b99",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Workrobot.png": {
+    "mtime": 1795526849.9030604,
+    "seen": 1795527083.9232483,
+    "ast_hash": "364a6b8a891310a0abad865d498479b3",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/SF_Zombiedog.png": {
+    "mtime": 1795526849.90363,
+    "seen": 1795527083.9232497,
+    "ast_hash": "e8507b0ee35c9d06913d217520d88b41",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Sailor.png": {
+    "mtime": 1795526849.9042852,
+    "seen": 1795527083.9232512,
+    "ast_hash": "76ffbec5b29b54bfe1b177fe344be152",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Salamander.png": {
+    "mtime": 1795526849.904982,
+    "seen": 1795527083.9232535,
+    "ast_hash": "0e6ec801940ab1f80de13661562aa7b0",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Sandworm.png": {
+    "mtime": 1795526849.9058409,
+    "seen": 1795527083.9232554,
+    "ast_hash": "abc97c2843d20eb63e8396f28810ba3c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Siren.png": {
+    "mtime": 1795526849.9065707,
+    "seen": 1795527083.9232576,
+    "ast_hash": "90783a7fa6d1e781040223a17e530a3e",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Sorcerer.png": {
+    "mtime": 1795526849.9072113,
+    "seen": 1795527083.9232595,
+    "ast_hash": "8e6e9c9487fae5123058af3ac43277f6",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Stoneknight.png": {
+    "mtime": 1795526849.9079661,
+    "seen": 1795527083.9232616,
+    "ast_hash": "33329405bcba2b141ddc2615c8e7244f",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Sylph.png": {
+    "mtime": 1795526849.908569,
+    "seen": 1795527083.9232635,
+    "ast_hash": "1675c05d2044eafffb95bd2968fef3e2",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Tigerbunny.png": {
+    "mtime": 1795526849.9110036,
+    "seen": 1795527083.923265,
+    "ast_hash": "0c8174651b061277671f2756917599cc",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Treant.png": {
+    "mtime": 1795526849.9130046,
+    "seen": 1795527083.923267,
+    "ast_hash": "3bb3c6cc8a558b6d8262bee87f2d006b",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Undine.png": {
+    "mtime": 1795526849.9141335,
+    "seen": 1795527083.923269,
+    "ast_hash": "4894c744cfcbc7d2356610145e9d37e8",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Unicorn.png": {
+    "mtime": 1795526849.9152117,
+    "seen": 1795527083.9232712,
+    "ast_hash": "2149fbb27bee81c813bc6a7b2758335c",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Witch.png": {
+    "mtime": 1795526849.9166033,
+    "seen": 1795527083.9232728,
+    "ast_hash": "c0acaa9e1fbc7d28481d8a32a58206bf",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Wolfman.png": {
+    "mtime": 1795526849.9174826,
+    "seen": 1795527083.9232748,
+    "ast_hash": "49cf8d9c717f633b6ff6ce2968ec1eca",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Wraith.png": {
+    "mtime": 1795526849.918425,
+    "seen": 1795527083.9232774,
+    "ast_hash": "d900e7734253eacbf752639e7469f122",
+    "semantic_hash": ""
+  },
+  "fixtures/stage0-safe-project/assets/sv_enemies/Zombie.png": {
+    "mtime": 1795526849.9192426,
+    "seen": 1795527083.923279,
+    "ast_hash": "2258021a8a25e8346390b8931b40a229",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_1.png": {
+    "mtime": 1795526854.6884573,
+    "seen": 1795527083.925044,
+    "ast_hash": "94fb5c428ea054bf3c809c95822bfbe1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_2.png": {
+    "mtime": 1795526854.6890056,
+    "seen": 1795527083.9250457,
+    "ast_hash": "1a129a593889d640e3a88c461ecd352c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_3.png": {
+    "mtime": 1795526854.6894796,
+    "seen": 1795527083.9250476,
+    "ast_hash": "75c4191abba4ba7b7f67f909b5205b62",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_4.png": {
+    "mtime": 1795526854.6900234,
+    "seen": 1795527083.9250493,
+    "ast_hash": "4de2ad9720af022223bb868eb92aed4c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_5.png": {
+    "mtime": 1795526854.690581,
+    "seen": 1795527083.9250517,
+    "ast_hash": "be1c0ff8ea4a52d416b91ddc0719acd1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_6.png": {
+    "mtime": 1795526854.6910949,
+    "seen": 1795527083.9250534,
+    "ast_hash": "3fc02a6c802f561ccf55a1988f900de1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_7.png": {
+    "mtime": 1795526854.6915452,
+    "seen": 1795527083.925055,
+    "ast_hash": "fe290eb35adc36e590734c88779d1e46",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor1_8.png": {
+    "mtime": 1795526854.6919918,
+    "seen": 1795527083.9250565,
+    "ast_hash": "c572b9843c448a929dc40cc9c5ef6512",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_1.png": {
+    "mtime": 1795526854.6924384,
+    "seen": 1795527083.9250584,
+    "ast_hash": "7bd044e3e9a3c2f1bdee9e3901d7f2b7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_2.png": {
+    "mtime": 1795526854.6928778,
+    "seen": 1795527083.9250598,
+    "ast_hash": "de801fd146dc762de76cf244a922f6ce",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_3.png": {
+    "mtime": 1795526854.6937094,
+    "seen": 1795527083.9250615,
+    "ast_hash": "5e64cf35bc7a2b9be23ded30f88aa957",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_4.png": {
+    "mtime": 1795526854.694376,
+    "seen": 1795527083.9250627,
+    "ast_hash": "19c455a00b5c452e33a0160597ac0a8e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_5.png": {
+    "mtime": 1795526854.694844,
+    "seen": 1795527083.9250638,
+    "ast_hash": "3e6734b54ac46cca81ddc4915de952ad",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_6.png": {
+    "mtime": 1795526854.695279,
+    "seen": 1795527083.9250658,
+    "ast_hash": "1f4b7eedb0d37e05442888f84c89e037",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_7.png": {
+    "mtime": 1795526854.6957066,
+    "seen": 1795527083.9250674,
+    "ast_hash": "295c31e87454d04a08966abf371b4ea7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor2_8.png": {
+    "mtime": 1795526854.696148,
+    "seen": 1795527083.925069,
+    "ast_hash": "11ae797fd111e55f4bd27865a60298d3",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor3_5.png": {
+    "mtime": 1795526854.696557,
+    "seen": 1795527083.9250705,
+    "ast_hash": "4420d5b663c88f669e443ca502b1ca65",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor3_6.png": {
+    "mtime": 1795526854.6969993,
+    "seen": 1795527083.9250724,
+    "ast_hash": "c332ebd7a5b584cca9b75b6255a3059e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor3_7.png": {
+    "mtime": 1795526854.6974335,
+    "seen": 1795527083.9250736,
+    "ast_hash": "ede8294594d3b9b9a79ea20f07d15429",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/Actor3_8.png": {
+    "mtime": 1795526854.697876,
+    "seen": 1795527083.9250762,
+    "ast_hash": "f0f110753c746a3c644023dd3c8513e0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_1.png": {
+    "mtime": 1795526854.6983404,
+    "seen": 1795527083.9250777,
+    "ast_hash": "8b66d668b4176c0688122538edfd2e9e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_2.png": {
+    "mtime": 1795526854.698794,
+    "seen": 1795527083.9250796,
+    "ast_hash": "512b85b05a2dc3a7be085a239a16d1f2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_3.png": {
+    "mtime": 1795526854.6992767,
+    "seen": 1795527083.925081,
+    "ast_hash": "a9701948dd1ec38a03eb7380b8544638",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_4.png": {
+    "mtime": 1795526854.6998622,
+    "seen": 1795527083.9250824,
+    "ast_hash": "3039f93193ac556bbba0ef5281750c21",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_5.png": {
+    "mtime": 1795526854.7010942,
+    "seen": 1795527083.9250844,
+    "ast_hash": "6d7fbce3fccdab0e61d4b9970d064c72",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_6.png": {
+    "mtime": 1795526854.7032516,
+    "seen": 1795527083.9250863,
+    "ast_hash": "83a83a8d5a06ac7342ad8c1c7f96a84f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_7.png": {
+    "mtime": 1795526854.7044363,
+    "seen": 1795527083.9250877,
+    "ast_hash": "ff6e02d05e9c6373be7cc5f00fd94748",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor1_8.png": {
+    "mtime": 1795526854.705093,
+    "seen": 1795527083.9250896,
+    "ast_hash": "939259d056b7c560f9d42349ba9b28d1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_1.png": {
+    "mtime": 1795526854.7056284,
+    "seen": 1795527083.925091,
+    "ast_hash": "49d1455b3f26c5fe116b9ef3c561b56d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_2.png": {
+    "mtime": 1795526854.706583,
+    "seen": 1795527083.9250927,
+    "ast_hash": "01713895b77d32dde1362f704a026cc1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_3.png": {
+    "mtime": 1795526854.707353,
+    "seen": 1795527083.9250946,
+    "ast_hash": "23cb0a704da2d0f32b5e53ad32242a8b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_4.png": {
+    "mtime": 1795526854.70811,
+    "seen": 1795527083.925097,
+    "ast_hash": "d13637b41894a44fd5ce0414ead6e62c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_5.png": {
+    "mtime": 1795526854.7086246,
+    "seen": 1795527083.925099,
+    "ast_hash": "4983d7c5d260d5b1717873f4b2aa509b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_6.png": {
+    "mtime": 1795526854.7092927,
+    "seen": 1795527083.9251006,
+    "ast_hash": "5d59e9c3b0dd1b8616a04bcd72956372",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_7.png": {
+    "mtime": 1795526854.7098076,
+    "seen": 1795527083.925102,
+    "ast_hash": "d03a5eef6b36d8a837ec72c4330a602b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor2_8.png": {
+    "mtime": 1795526854.7104716,
+    "seen": 1795527083.9251037,
+    "ast_hash": "37071412039647c96312368977374f42",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor3_5.png": {
+    "mtime": 1795526854.7110891,
+    "seen": 1795527083.9251058,
+    "ast_hash": "462c7ea8123721c84554e16771c503ce",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor3_6.png": {
+    "mtime": 1795526854.7115505,
+    "seen": 1795527083.9251077,
+    "ast_hash": "4134aabacd5a4ebd094e25b00c15a9b3",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor3_7.png": {
+    "mtime": 1795526854.7120402,
+    "seen": 1795527083.9251091,
+    "ast_hash": "89c629e8a4aca17c2d455bc6322199ff",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_actors/SF_Actor3_8.png": {
+    "mtime": 1795526854.7124739,
+    "seen": 1795527083.9251108,
+    "ast_hash": "99a2e47ae0bbe1696f10f538ddf5e7b0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor1_3.png": {
+    "mtime": 1795526854.7152078,
+    "seen": 1795527083.9251125,
+    "ast_hash": "82ba170928dafb2edb7d982469d77118",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor1_4.png": {
+    "mtime": 1795526854.7159667,
+    "seen": 1795527083.9251142,
+    "ast_hash": "14b4feb1d34757cfbd1d9fde6f89a855",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor1_5.png": {
+    "mtime": 1795526854.7163742,
+    "seen": 1795527083.9251158,
+    "ast_hash": "18b8a1d9e4bdbfae6f2f4307447d03a7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor1_6.png": {
+    "mtime": 1795526854.716784,
+    "seen": 1795527083.9251177,
+    "ast_hash": "abc39970476f0a9d60df27d30eea2c68",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_1.png": {
+    "mtime": 1795526854.7172625,
+    "seen": 1795527083.925119,
+    "ast_hash": "808b86469286171b2228b26d8bbd2869",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_2.png": {
+    "mtime": 1795526854.7176337,
+    "seen": 1795527083.925121,
+    "ast_hash": "f0cbfa839ec4cd8d9e0da452cade6a6e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_3.png": {
+    "mtime": 1795526854.7180178,
+    "seen": 1795527083.9251223,
+    "ast_hash": "30e9c771b1fcc1bf025121a391a7553d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_4.png": {
+    "mtime": 1795526854.7208188,
+    "seen": 1795527083.9251242,
+    "ast_hash": "7cc41967b62838faee347a4db146648e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_5.png": {
+    "mtime": 1795526854.7212565,
+    "seen": 1795527083.9251256,
+    "ast_hash": "bb39aaf97e3354f98c5d8077a96fda2f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_6.png": {
+    "mtime": 1795526854.7216644,
+    "seen": 1795527083.9251273,
+    "ast_hash": "a3343142635b6e32f72fe3cade86e772",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor2_7.png": {
+    "mtime": 1795526854.722105,
+    "seen": 1795527083.925129,
+    "ast_hash": "c3da36847cd9f273874cfd42dc5ec9e6",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor3_1.png": {
+    "mtime": 1795526854.7225347,
+    "seen": 1795527083.9251301,
+    "ast_hash": "1e7520772f4d59a5498a9e3134841b03",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor3_2.png": {
+    "mtime": 1795526854.723001,
+    "seen": 1795527083.9251318,
+    "ast_hash": "cc84decbd73847302d5d363aedf68365",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor3_3.png": {
+    "mtime": 1795526854.7234292,
+    "seen": 1795527083.9251335,
+    "ast_hash": "5200722ed58f061f249119f38cdab64f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Actor3_4.png": {
+    "mtime": 1795526854.723836,
+    "seen": 1795527083.9251354,
+    "ast_hash": "690053cdfb3616575d8462cddce47141",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Berserker.png": {
+    "mtime": 1795526854.7242482,
+    "seen": 1795527083.9251368,
+    "ast_hash": "583ebdc2e22cde789bd13717553fc289",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Birdman.png": {
+    "mtime": 1795526854.7247624,
+    "seen": 1795527083.9251385,
+    "ast_hash": "9587f5b524eac411c91a734e6c037c51",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Blackknight.png": {
+    "mtime": 1795526854.725649,
+    "seen": 1795527083.92514,
+    "ast_hash": "945cbda36856eef8a5d4123e55a3e85b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Caitsith.png": {
+    "mtime": 1795526854.726091,
+    "seen": 1795527083.9251416,
+    "ast_hash": "b6986c3266141bd10e2ce408d399bd80",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Captain.png": {
+    "mtime": 1795526854.7265542,
+    "seen": 1795527083.925144,
+    "ast_hash": "0490f1210860434d992369cd906e703b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Crab.png": {
+    "mtime": 1795526854.7269523,
+    "seen": 1795527083.925146,
+    "ast_hash": "b19fa55d3d6f5a7edd7bd84b4ce5375d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Crow.png": {
+    "mtime": 1795526854.7272925,
+    "seen": 1795527083.9251475,
+    "ast_hash": "c51a7c9e575ded2b42eb3c034e2f3d3e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Darkelf.png": {
+    "mtime": 1795526854.730117,
+    "seen": 1795527083.925149,
+    "ast_hash": "da38fa000e26edfd86cf40ecb2e0aade",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Demon.png": {
+    "mtime": 1795526854.7313297,
+    "seen": 1795527083.9251504,
+    "ast_hash": "6265841f0ee878b97e846a7cdb28880e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Demon_metamorphosis.png": {
+    "mtime": 1795526854.7334917,
+    "seen": 1795527083.9251518,
+    "ast_hash": "7efa88a13ce99721f7b7cd2a56483cb8",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Demoncount.png": {
+    "mtime": 1795526854.7340353,
+    "seen": 1795527083.9251533,
+    "ast_hash": "f8708f2d8e6cecbc488b62a762bb4ef7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Demonpot.png": {
+    "mtime": 1795526854.7344573,
+    "seen": 1795527083.9251554,
+    "ast_hash": "2a0da7bedc214766454541070aba5323",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Dragon.png": {
+    "mtime": 1795526854.7351913,
+    "seen": 1795527083.925157,
+    "ast_hash": "23b8f51414a1b369b01c96e7e3b875a7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Evilbook.png": {
+    "mtime": 1795526854.7356322,
+    "seen": 1795527083.9251595,
+    "ast_hash": "d4bb823787d07b08bc25106693d58000",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Evilgod.png": {
+    "mtime": 1795526854.736556,
+    "seen": 1795527083.9251614,
+    "ast_hash": "cc7ab40e5cb3133e4ed5f54a6ecd01aa",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Foxman.png": {
+    "mtime": 1795526854.7371151,
+    "seen": 1795527083.9251635,
+    "ast_hash": "3de11967b575f5e150642818aa39f0c6",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Frilledlizard.png": {
+    "mtime": 1795526854.737529,
+    "seen": 1795527083.9251647,
+    "ast_hash": "9b6ca13214c5d7803214967c6db77bcd",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Gatekeeper.png": {
+    "mtime": 1795526854.7379742,
+    "seen": 1795527083.9251668,
+    "ast_hash": "04c7d5ef017d504c4cc7962a93f57a00",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Gnome.png": {
+    "mtime": 1795526854.7385855,
+    "seen": 1795527083.925169,
+    "ast_hash": "8132cf31e24e9accc23f023c64655043",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Goblin.png": {
+    "mtime": 1795526854.739004,
+    "seen": 1795527083.9251704,
+    "ast_hash": "5cc5128738af2ca8b00bcc8f315deee9",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/God_of_light.png": {
+    "mtime": 1795526854.739828,
+    "seen": 1795527083.9251719,
+    "ast_hash": "864f445bdb78f578a91fc3fd802f4a35",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Goddess.png": {
+    "mtime": 1795526854.7403164,
+    "seen": 1795527083.9251733,
+    "ast_hash": "e017f8b19687fc211de577e15b655caa",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Goddess_of_death.png": {
+    "mtime": 1795526854.7407806,
+    "seen": 1795527083.925175,
+    "ast_hash": "e8a8d4a64bc6d807578ff06e456783e9",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Hakutaku.png": {
+    "mtime": 1795526854.7415142,
+    "seen": 1795527083.9251766,
+    "ast_hash": "43c6d7025fc5dc43a2feec61137b2d67",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Harpy.png": {
+    "mtime": 1795526854.741976,
+    "seen": 1795527083.9251778,
+    "ast_hash": "e05217ff3fcb3d666d347162479d2808",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Hi_monster.png": {
+    "mtime": 1795526854.7425265,
+    "seen": 1795527083.9251795,
+    "ast_hash": "23d7bb3528406838aa6aa5a0a44585f1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Highking.png": {
+    "mtime": 1795526854.7429943,
+    "seen": 1795527083.9251814,
+    "ast_hash": "86adad68d3a4ff7ad085473eaa4c4b8f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Hydra.png": {
+    "mtime": 1795526854.7435727,
+    "seen": 1795527083.9251838,
+    "ast_hash": "0250e06d5ebe84be2d7d20b337524039",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Ketos.png": {
+    "mtime": 1795526854.7441292,
+    "seen": 1795527083.925185,
+    "ast_hash": "1fd94c232771cadda7f62090bafdbe29",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Kraken.png": {
+    "mtime": 1795526854.7446332,
+    "seen": 1795527083.9251866,
+    "ast_hash": "3d85e6f452ea872fc76ce59ba254b413",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Lich.png": {
+    "mtime": 1795526854.745254,
+    "seen": 1795527083.9251878,
+    "ast_hash": "6b5f7c1099514b06e2331862edb0aa1d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Machinerybee.png": {
+    "mtime": 1795526854.7456312,
+    "seen": 1795527083.9251897,
+    "ast_hash": "511957925605df438c6733cba34aa272",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Matango.png": {
+    "mtime": 1795526854.7460642,
+    "seen": 1795527083.9251916,
+    "ast_hash": "df9a1579d2857f8414d5c5d039be62df",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Mechascorpion.png": {
+    "mtime": 1795526854.746539,
+    "seen": 1795527083.925193,
+    "ast_hash": "2db37905088e1841cf2c606d57c62979",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Medusa.png": {
+    "mtime": 1795526854.7472737,
+    "seen": 1795527083.9251947,
+    "ast_hash": "f8379c161335c4f1666dcde6b37480ed",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Mercenary.png": {
+    "mtime": 1795526854.747661,
+    "seen": 1795527083.9251962,
+    "ast_hash": "59615d37b01ad2871115c4526ba5ecdc",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Mimic.png": {
+    "mtime": 1795526854.7480357,
+    "seen": 1795527083.9251976,
+    "ast_hash": "209806d292171d7c5171a09ccbad8a8c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Oddegg.png": {
+    "mtime": 1795526854.7484312,
+    "seen": 1795527083.9251993,
+    "ast_hash": "0db83b5be9d3a054b0e9fbc1bf3ec868",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Petitdevil.png": {
+    "mtime": 1795526854.74887,
+    "seen": 1795527083.925201,
+    "ast_hash": "4b4076f82c759798193f23f5f29ba4e5",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Plasma.png": {
+    "mtime": 1795526854.7492554,
+    "seen": 1795527083.9252024,
+    "ast_hash": "00aebd506e9d0267125da46bf09705d2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Agent.png": {
+    "mtime": 1795526854.7496593,
+    "seen": 1795527083.925204,
+    "ast_hash": "8f9794cae7bc2a968f932d44d1c3203c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Anaconda.png": {
+    "mtime": 1795526854.7500987,
+    "seen": 1795527083.9252057,
+    "ast_hash": "8e23cafd7d1f78d25436ed8e987ef863",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_ArmyGorilla.png": {
+    "mtime": 1795526854.750601,
+    "seen": 1795527083.9252076,
+    "ast_hash": "5b385d63971f99d4c8f14a5d05c7dc76",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Armymonkey.png": {
+    "mtime": 1795526854.7511084,
+    "seen": 1795527083.9252093,
+    "ast_hash": "615084db2c79805ab7d3f800cc2a9f7e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Blueogre.png": {
+    "mtime": 1795526854.7517204,
+    "seen": 1795527083.925211,
+    "ast_hash": "7f92900ca6b0a00c0cfb736cb59aec17",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Boss.png": {
+    "mtime": 1795526854.75228,
+    "seen": 1795527083.9252124,
+    "ast_hash": "9345aa88af8a01805d4ad669b8a183e4",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Brownbear.png": {
+    "mtime": 1795526854.7527847,
+    "seen": 1795527083.9252143,
+    "ast_hash": "e70d7cec2f629557cf801fb69ebe4db7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Cyborg.png": {
+    "mtime": 1795526854.7533429,
+    "seen": 1795527083.9252157,
+    "ast_hash": "3a7019007655305f054001dc82b356ca",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Demon_of_universe.png": {
+    "mtime": 1795526854.754114,
+    "seen": 1795527083.9252174,
+    "ast_hash": "76dd57bb483755bc9b6e49241aaa67a0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Drone.png": {
+    "mtime": 1795526854.7545607,
+    "seen": 1795527083.9252186,
+    "ast_hash": "6ed5e56bbba0ffdffb76cfd4fde4a04a",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Enmadaio.png": {
+    "mtime": 1795526854.755632,
+    "seen": 1795527083.9252205,
+    "ast_hash": "afd175e99d1b1f827bac786fd6a2c6c7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Evilteddybear.png": {
+    "mtime": 1795526854.7560236,
+    "seen": 1795527083.9252226,
+    "ast_hash": "04f3ff01107e198b0caee7cd70ff43ea",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Hannyamask.png": {
+    "mtime": 1795526854.7564545,
+    "seen": 1795527083.9252238,
+    "ast_hash": "bd1a86ce02078e55579b9a4f6a39a930",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Hermit.png": {
+    "mtime": 1795526854.7568455,
+    "seen": 1795527083.9252257,
+    "ast_hash": "cef386b8ec744e5a87631bbe637ed578",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Jiangshi.png": {
+    "mtime": 1795526854.757265,
+    "seen": 1795527083.9252272,
+    "ast_hash": "3d68b5ba34d5d29bd430729300b449e9",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Kamaitachi.png": {
+    "mtime": 1795526854.7577298,
+    "seen": 1795527083.9252288,
+    "ast_hash": "7bbfcb73c6cb7feff7777491b7d5d747",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Kappa.png": {
+    "mtime": 1795526854.758221,
+    "seen": 1795527083.9252307,
+    "ast_hash": "ff97a6d7984a6d6c9e0568f887f194be",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Madclown.png": {
+    "mtime": 1795526854.7586398,
+    "seen": 1795527083.9252324,
+    "ast_hash": "d9ad40097d2b7e2e283fcdd3b47bc8bf",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Madscientist.png": {
+    "mtime": 1795526854.759153,
+    "seen": 1795527083.925234,
+    "ast_hash": "9e2f8b260dd956ab9a2ebf867e837f90",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Mafia.png": {
+    "mtime": 1795526854.75958,
+    "seen": 1795527083.9252357,
+    "ast_hash": "4b5ec7e212a956cb6893047b234326fd",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Mechasphere.png": {
+    "mtime": 1795526854.7600229,
+    "seen": 1795527083.925237,
+    "ast_hash": "b2a9b8bceee2549688bbc841af59b85a",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Phoenix.png": {
+    "mtime": 1795526854.7606597,
+    "seen": 1795527083.9252386,
+    "ast_hash": "6933d433ca10101b3d9dda95d1e03aff",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Redogre.png": {
+    "mtime": 1795526854.7611823,
+    "seen": 1795527083.9252403,
+    "ast_hash": "06e203f4043c88448145d73e2a39227a",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Securityrobot.png": {
+    "mtime": 1795526854.7616801,
+    "seen": 1795527083.9252422,
+    "ast_hash": "36be314f93d5d25eb06fe52207cb8373",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Shadow.png": {
+    "mtime": 1795526854.7622511,
+    "seen": 1795527083.9252436,
+    "ast_hash": "252459c8ac8c1faccf11f077c4f3d2ec",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Skullmask.png": {
+    "mtime": 1795526854.762769,
+    "seen": 1795527083.9252458,
+    "ast_hash": "d608ba5490eb57a75833b290d7f35500",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Slaughterrobot.png": {
+    "mtime": 1795526854.7656112,
+    "seen": 1795527083.9252474,
+    "ast_hash": "6ea6e30e37a334451e8154d77c47c429",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Specialforces.png": {
+    "mtime": 1795526854.76661,
+    "seen": 1795527083.925249,
+    "ast_hash": "01111ba242a23d3a331325bbeffbee0b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Talkingmuppet.png": {
+    "mtime": 1795526854.767034,
+    "seen": 1795527083.9252503,
+    "ast_hash": "fac961bb7d4370567d88aeb36ef971c2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Timebomb.png": {
+    "mtime": 1795526854.7674053,
+    "seen": 1795527083.9252524,
+    "ast_hash": "38d57e1852027ddcde35df1058ff52bd",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Whitewolf.png": {
+    "mtime": 1795526854.7680004,
+    "seen": 1795527083.925254,
+    "ast_hash": "a6eb28454c730c4d1525052273dd9300",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Will_o_the_wisp.png": {
+    "mtime": 1795526854.7690203,
+    "seen": 1795527083.9252558,
+    "ast_hash": "0ec144f5d27563da8b3254cd66f46e36",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Wolf.png": {
+    "mtime": 1795526854.7695336,
+    "seen": 1795527083.925257,
+    "ast_hash": "e3c4f52762ccfc8d41ada3634d549b99",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Workrobot.png": {
+    "mtime": 1795526854.7700665,
+    "seen": 1795527083.9252584,
+    "ast_hash": "364a6b8a891310a0abad865d498479b3",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/SF_Zombiedog.png": {
+    "mtime": 1795526854.7705023,
+    "seen": 1795527083.92526,
+    "ast_hash": "e8507b0ee35c9d06913d217520d88b41",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Sailor.png": {
+    "mtime": 1795526854.771023,
+    "seen": 1795527083.9252617,
+    "ast_hash": "76ffbec5b29b54bfe1b177fe344be152",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Salamander.png": {
+    "mtime": 1795526854.7714448,
+    "seen": 1795527083.9252632,
+    "ast_hash": "0e6ec801940ab1f80de13661562aa7b0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Sandworm.png": {
+    "mtime": 1795526854.771904,
+    "seen": 1795527083.9252644,
+    "ast_hash": "abc97c2843d20eb63e8396f28810ba3c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Siren.png": {
+    "mtime": 1795526854.7724686,
+    "seen": 1795527083.9252663,
+    "ast_hash": "90783a7fa6d1e781040223a17e530a3e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Sorcerer.png": {
+    "mtime": 1795526854.7731142,
+    "seen": 1795527083.925268,
+    "ast_hash": "8e6e9c9487fae5123058af3ac43277f6",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Stoneknight.png": {
+    "mtime": 1795526854.7741563,
+    "seen": 1795527083.9252696,
+    "ast_hash": "33329405bcba2b141ddc2615c8e7244f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Sylph.png": {
+    "mtime": 1795526854.7747872,
+    "seen": 1795527083.925271,
+    "ast_hash": "1675c05d2044eafffb95bd2968fef3e2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Tigerbunny.png": {
+    "mtime": 1795526854.7756329,
+    "seen": 1795527083.9252725,
+    "ast_hash": "0c8174651b061277671f2756917599cc",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Treant.png": {
+    "mtime": 1795526854.7763965,
+    "seen": 1795527083.9252741,
+    "ast_hash": "3bb3c6cc8a558b6d8262bee87f2d006b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Undine.png": {
+    "mtime": 1795526854.776864,
+    "seen": 1795527083.9252756,
+    "ast_hash": "4894c744cfcbc7d2356610145e9d37e8",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Unicorn.png": {
+    "mtime": 1795526854.7772832,
+    "seen": 1795527083.9252772,
+    "ast_hash": "2149fbb27bee81c813bc6a7b2758335c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Witch.png": {
+    "mtime": 1795526854.777717,
+    "seen": 1795527083.925279,
+    "ast_hash": "c0acaa9e1fbc7d28481d8a32a58206bf",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Wolfman.png": {
+    "mtime": 1795526854.778252,
+    "seen": 1795527083.9252806,
+    "ast_hash": "49cf8d9c717f633b6ff6ce2968ec1eca",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Wraith.png": {
+    "mtime": 1795526854.7786474,
+    "seen": 1795527083.9252818,
+    "ast_hash": "d900e7734253eacbf752639e7469f122",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game2/assets/sv_enemies/Zombie.png": {
+    "mtime": 1795526854.7790892,
+    "seen": 1795527083.9252834,
+    "ast_hash": "2258021a8a25e8346390b8931b40a229",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_1.png": {
+    "mtime": 1795526849.921728,
+    "seen": 1795527083.925376,
+    "ast_hash": "94fb5c428ea054bf3c809c95822bfbe1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_2.png": {
+    "mtime": 1795526849.9221745,
+    "seen": 1795527083.9253776,
+    "ast_hash": "1a129a593889d640e3a88c461ecd352c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_3.png": {
+    "mtime": 1795526849.9226396,
+    "seen": 1795527083.925379,
+    "ast_hash": "75c4191abba4ba7b7f67f909b5205b62",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_4.png": {
+    "mtime": 1795526849.9231095,
+    "seen": 1795527083.9253807,
+    "ast_hash": "4de2ad9720af022223bb868eb92aed4c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_5.png": {
+    "mtime": 1795526849.9235861,
+    "seen": 1795527083.9253821,
+    "ast_hash": "be1c0ff8ea4a52d416b91ddc0719acd1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_6.png": {
+    "mtime": 1795526849.9240227,
+    "seen": 1795527083.9253836,
+    "ast_hash": "3fc02a6c802f561ccf55a1988f900de1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_7.png": {
+    "mtime": 1795526849.9244032,
+    "seen": 1795527083.9253857,
+    "ast_hash": "fe290eb35adc36e590734c88779d1e46",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor1_8.png": {
+    "mtime": 1795526849.924822,
+    "seen": 1795527083.9253876,
+    "ast_hash": "c572b9843c448a929dc40cc9c5ef6512",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_1.png": {
+    "mtime": 1795526849.9252398,
+    "seen": 1795527083.925389,
+    "ast_hash": "7bd044e3e9a3c2f1bdee9e3901d7f2b7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_2.png": {
+    "mtime": 1795526849.9257092,
+    "seen": 1795527083.9253912,
+    "ast_hash": "de801fd146dc762de76cf244a922f6ce",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_3.png": {
+    "mtime": 1795526849.9261708,
+    "seen": 1795527083.9253926,
+    "ast_hash": "5e64cf35bc7a2b9be23ded30f88aa957",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_4.png": {
+    "mtime": 1795526849.9267063,
+    "seen": 1795527083.9253945,
+    "ast_hash": "19c455a00b5c452e33a0160597ac0a8e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_5.png": {
+    "mtime": 1795526849.9271345,
+    "seen": 1795527083.925396,
+    "ast_hash": "3e6734b54ac46cca81ddc4915de952ad",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_6.png": {
+    "mtime": 1795526849.9278312,
+    "seen": 1795527083.9253979,
+    "ast_hash": "1f4b7eedb0d37e05442888f84c89e037",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_7.png": {
+    "mtime": 1795526849.9282565,
+    "seen": 1795527083.9253995,
+    "ast_hash": "295c31e87454d04a08966abf371b4ea7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor2_8.png": {
+    "mtime": 1795526849.9286613,
+    "seen": 1795527083.925401,
+    "ast_hash": "11ae797fd111e55f4bd27865a60298d3",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor3_5.png": {
+    "mtime": 1795526849.9291277,
+    "seen": 1795527083.9254026,
+    "ast_hash": "4420d5b663c88f669e443ca502b1ca65",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor3_6.png": {
+    "mtime": 1795526849.9295304,
+    "seen": 1795527083.9254038,
+    "ast_hash": "c332ebd7a5b584cca9b75b6255a3059e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor3_7.png": {
+    "mtime": 1795526849.9299452,
+    "seen": 1795527083.9254053,
+    "ast_hash": "ede8294594d3b9b9a79ea20f07d15429",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/Actor3_8.png": {
+    "mtime": 1795526849.930344,
+    "seen": 1795527083.9254067,
+    "ast_hash": "f0f110753c746a3c644023dd3c8513e0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_1.png": {
+    "mtime": 1795526849.9307005,
+    "seen": 1795527083.925408,
+    "ast_hash": "8b66d668b4176c0688122538edfd2e9e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_2.png": {
+    "mtime": 1795526849.9311385,
+    "seen": 1795527083.9254103,
+    "ast_hash": "512b85b05a2dc3a7be085a239a16d1f2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_3.png": {
+    "mtime": 1795526849.9315567,
+    "seen": 1795527083.925412,
+    "ast_hash": "a9701948dd1ec38a03eb7380b8544638",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_4.png": {
+    "mtime": 1795526849.9319446,
+    "seen": 1795527083.9254136,
+    "ast_hash": "3039f93193ac556bbba0ef5281750c21",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_5.png": {
+    "mtime": 1795526849.9323158,
+    "seen": 1795527083.9254155,
+    "ast_hash": "6d7fbce3fccdab0e61d4b9970d064c72",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_6.png": {
+    "mtime": 1795526849.9326973,
+    "seen": 1795527083.9254174,
+    "ast_hash": "83a83a8d5a06ac7342ad8c1c7f96a84f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_7.png": {
+    "mtime": 1795526849.933118,
+    "seen": 1795527083.9254196,
+    "ast_hash": "ff6e02d05e9c6373be7cc5f00fd94748",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor1_8.png": {
+    "mtime": 1795526849.9335186,
+    "seen": 1795527083.9254215,
+    "ast_hash": "939259d056b7c560f9d42349ba9b28d1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_1.png": {
+    "mtime": 1795526849.9340272,
+    "seen": 1795527083.925423,
+    "ast_hash": "49d1455b3f26c5fe116b9ef3c561b56d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_2.png": {
+    "mtime": 1795526849.9346652,
+    "seen": 1795527083.9254253,
+    "ast_hash": "01713895b77d32dde1362f704a026cc1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_3.png": {
+    "mtime": 1795526849.9353063,
+    "seen": 1795527083.9254274,
+    "ast_hash": "23cb0a704da2d0f32b5e53ad32242a8b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_4.png": {
+    "mtime": 1795526849.9380872,
+    "seen": 1795527083.9254293,
+    "ast_hash": "d13637b41894a44fd5ce0414ead6e62c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_5.png": {
+    "mtime": 1795526849.9389086,
+    "seen": 1795527083.9254308,
+    "ast_hash": "4983d7c5d260d5b1717873f4b2aa509b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_6.png": {
+    "mtime": 1795526849.9394836,
+    "seen": 1795527083.9254332,
+    "ast_hash": "5d59e9c3b0dd1b8616a04bcd72956372",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_7.png": {
+    "mtime": 1795526849.9399636,
+    "seen": 1795527083.9254346,
+    "ast_hash": "d03a5eef6b36d8a837ec72c4330a602b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor2_8.png": {
+    "mtime": 1795526849.9404256,
+    "seen": 1795527083.9254365,
+    "ast_hash": "37071412039647c96312368977374f42",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor3_5.png": {
+    "mtime": 1795526849.9408493,
+    "seen": 1795527083.925438,
+    "ast_hash": "462c7ea8123721c84554e16771c503ce",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor3_6.png": {
+    "mtime": 1795526849.9413145,
+    "seen": 1795527083.9254391,
+    "ast_hash": "4134aabacd5a4ebd094e25b00c15a9b3",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor3_7.png": {
+    "mtime": 1795526849.9417484,
+    "seen": 1795527083.925441,
+    "ast_hash": "89c629e8a4aca17c2d455bc6322199ff",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_actors/SF_Actor3_8.png": {
+    "mtime": 1795526849.9422941,
+    "seen": 1795527083.9254425,
+    "ast_hash": "99a2e47ae0bbe1696f10f538ddf5e7b0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor1_3.png": {
+    "mtime": 1795526849.9446485,
+    "seen": 1795527083.9254441,
+    "ast_hash": "82ba170928dafb2edb7d982469d77118",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor1_4.png": {
+    "mtime": 1795526849.945027,
+    "seen": 1795527083.9254453,
+    "ast_hash": "14b4feb1d34757cfbd1d9fde6f89a855",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor1_5.png": {
+    "mtime": 1795526849.9454317,
+    "seen": 1795527083.9254472,
+    "ast_hash": "18b8a1d9e4bdbfae6f2f4307447d03a7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor1_6.png": {
+    "mtime": 1795526849.9458141,
+    "seen": 1795527083.9254496,
+    "ast_hash": "abc39970476f0a9d60df27d30eea2c68",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_1.png": {
+    "mtime": 1795526849.946499,
+    "seen": 1795527083.925451,
+    "ast_hash": "808b86469286171b2228b26d8bbd2869",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_2.png": {
+    "mtime": 1795526849.9468668,
+    "seen": 1795527083.9254525,
+    "ast_hash": "f0cbfa839ec4cd8d9e0da452cade6a6e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_3.png": {
+    "mtime": 1795526849.947257,
+    "seen": 1795527083.9254549,
+    "ast_hash": "30e9c771b1fcc1bf025121a391a7553d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_4.png": {
+    "mtime": 1795526849.9476278,
+    "seen": 1795527083.9254572,
+    "ast_hash": "7cc41967b62838faee347a4db146648e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_5.png": {
+    "mtime": 1795526849.9480503,
+    "seen": 1795527083.9254584,
+    "ast_hash": "bb39aaf97e3354f98c5d8077a96fda2f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_6.png": {
+    "mtime": 1795526849.9485087,
+    "seen": 1795527083.9254603,
+    "ast_hash": "a3343142635b6e32f72fe3cade86e772",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor2_7.png": {
+    "mtime": 1795526849.9488974,
+    "seen": 1795527083.9254615,
+    "ast_hash": "c3da36847cd9f273874cfd42dc5ec9e6",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor3_1.png": {
+    "mtime": 1795526849.9493499,
+    "seen": 1795527083.9254632,
+    "ast_hash": "1e7520772f4d59a5498a9e3134841b03",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor3_2.png": {
+    "mtime": 1795526849.9497933,
+    "seen": 1795527083.925465,
+    "ast_hash": "cc84decbd73847302d5d363aedf68365",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor3_3.png": {
+    "mtime": 1795526849.950249,
+    "seen": 1795527083.9254668,
+    "ast_hash": "5200722ed58f061f249119f38cdab64f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Actor3_4.png": {
+    "mtime": 1795526849.9506648,
+    "seen": 1795527083.9254684,
+    "ast_hash": "690053cdfb3616575d8462cddce47141",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Berserker.png": {
+    "mtime": 1795526849.9510844,
+    "seen": 1795527083.9254704,
+    "ast_hash": "583ebdc2e22cde789bd13717553fc289",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Birdman.png": {
+    "mtime": 1795526849.9515386,
+    "seen": 1795527083.9254723,
+    "ast_hash": "9587f5b524eac411c91a734e6c037c51",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Blackknight.png": {
+    "mtime": 1795526849.951995,
+    "seen": 1795527083.9254742,
+    "ast_hash": "945cbda36856eef8a5d4123e55a3e85b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Caitsith.png": {
+    "mtime": 1795526849.9523501,
+    "seen": 1795527083.9254758,
+    "ast_hash": "b6986c3266141bd10e2ce408d399bd80",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Captain.png": {
+    "mtime": 1795526849.9527848,
+    "seen": 1795527083.925478,
+    "ast_hash": "0490f1210860434d992369cd906e703b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Crab.png": {
+    "mtime": 1795526849.9534292,
+    "seen": 1795527083.9254794,
+    "ast_hash": "b19fa55d3d6f5a7edd7bd84b4ce5375d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Crow.png": {
+    "mtime": 1795526849.9537773,
+    "seen": 1795527083.9254808,
+    "ast_hash": "c51a7c9e575ded2b42eb3c034e2f3d3e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Darkelf.png": {
+    "mtime": 1795526849.9542277,
+    "seen": 1795527083.9254825,
+    "ast_hash": "da38fa000e26edfd86cf40ecb2e0aade",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Demon.png": {
+    "mtime": 1795526849.9549334,
+    "seen": 1795527083.9254847,
+    "ast_hash": "6265841f0ee878b97e846a7cdb28880e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Demon_metamorphosis.png": {
+    "mtime": 1795526849.9558506,
+    "seen": 1795527083.925486,
+    "ast_hash": "7efa88a13ce99721f7b7cd2a56483cb8",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Demoncount.png": {
+    "mtime": 1795526849.956338,
+    "seen": 1795527083.9254882,
+    "ast_hash": "f8708f2d8e6cecbc488b62a762bb4ef7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Demonpot.png": {
+    "mtime": 1795526849.9566996,
+    "seen": 1795527083.9254901,
+    "ast_hash": "2a0da7bedc214766454541070aba5323",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Dragon.png": {
+    "mtime": 1795526849.9574137,
+    "seen": 1795527083.9254918,
+    "ast_hash": "23b8f51414a1b369b01c96e7e3b875a7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Evilbook.png": {
+    "mtime": 1795526849.9577818,
+    "seen": 1795527083.9254932,
+    "ast_hash": "d4bb823787d07b08bc25106693d58000",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Evilgod.png": {
+    "mtime": 1795526849.9586215,
+    "seen": 1795527083.9254954,
+    "ast_hash": "cc7ab40e5cb3133e4ed5f54a6ecd01aa",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Foxman.png": {
+    "mtime": 1795526849.9590957,
+    "seen": 1795527083.9254968,
+    "ast_hash": "3de11967b575f5e150642818aa39f0c6",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Frilledlizard.png": {
+    "mtime": 1795526849.959487,
+    "seen": 1795527083.925499,
+    "ast_hash": "9b6ca13214c5d7803214967c6db77bcd",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Gatekeeper.png": {
+    "mtime": 1795526849.9598904,
+    "seen": 1795527083.9255004,
+    "ast_hash": "04c7d5ef017d504c4cc7962a93f57a00",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Gnome.png": {
+    "mtime": 1795526849.960248,
+    "seen": 1795527083.925502,
+    "ast_hash": "8132cf31e24e9accc23f023c64655043",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Goblin.png": {
+    "mtime": 1795526849.960599,
+    "seen": 1795527083.9255037,
+    "ast_hash": "5cc5128738af2ca8b00bcc8f315deee9",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/God_of_light.png": {
+    "mtime": 1795526849.96146,
+    "seen": 1795527083.9255056,
+    "ast_hash": "864f445bdb78f578a91fc3fd802f4a35",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Goddess.png": {
+    "mtime": 1795526849.9630878,
+    "seen": 1795527083.925507,
+    "ast_hash": "e017f8b19687fc211de577e15b655caa",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Goddess_of_death.png": {
+    "mtime": 1795526849.9639316,
+    "seen": 1795527083.9255085,
+    "ast_hash": "e8a8d4a64bc6d807578ff06e456783e9",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Hakutaku.png": {
+    "mtime": 1795526849.964641,
+    "seen": 1795527083.9255106,
+    "ast_hash": "43c6d7025fc5dc43a2feec61137b2d67",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Harpy.png": {
+    "mtime": 1795526849.9650896,
+    "seen": 1795527083.9255126,
+    "ast_hash": "e05217ff3fcb3d666d347162479d2808",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Hi_monster.png": {
+    "mtime": 1795526849.965632,
+    "seen": 1795527083.925514,
+    "ast_hash": "23d7bb3528406838aa6aa5a0a44585f1",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Highking.png": {
+    "mtime": 1795526849.9660976,
+    "seen": 1795527083.9255154,
+    "ast_hash": "86adad68d3a4ff7ad085473eaa4c4b8f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Hydra.png": {
+    "mtime": 1795526849.9666646,
+    "seen": 1795527083.925517,
+    "ast_hash": "0250e06d5ebe84be2d7d20b337524039",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Ketos.png": {
+    "mtime": 1795526849.967093,
+    "seen": 1795527083.9255195,
+    "ast_hash": "1fd94c232771cadda7f62090bafdbe29",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Kraken.png": {
+    "mtime": 1795526849.9675508,
+    "seen": 1795527083.9255207,
+    "ast_hash": "3d85e6f452ea872fc76ce59ba254b413",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Lich.png": {
+    "mtime": 1795526849.9681196,
+    "seen": 1795527083.9255223,
+    "ast_hash": "6b5f7c1099514b06e2331862edb0aa1d",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Machinerybee.png": {
+    "mtime": 1795526849.968448,
+    "seen": 1795527083.9255242,
+    "ast_hash": "511957925605df438c6733cba34aa272",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Matango.png": {
+    "mtime": 1795526849.9688306,
+    "seen": 1795527083.925526,
+    "ast_hash": "df9a1579d2857f8414d5c5d039be62df",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Mechascorpion.png": {
+    "mtime": 1795526849.9691994,
+    "seen": 1795527083.9255276,
+    "ast_hash": "2db37905088e1841cf2c606d57c62979",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Medusa.png": {
+    "mtime": 1795526849.9696338,
+    "seen": 1795527083.925529,
+    "ast_hash": "f8379c161335c4f1666dcde6b37480ed",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Mercenary.png": {
+    "mtime": 1795526849.9700053,
+    "seen": 1795527083.925531,
+    "ast_hash": "59615d37b01ad2871115c4526ba5ecdc",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Mimic.png": {
+    "mtime": 1795526849.9703329,
+    "seen": 1795527083.9255323,
+    "ast_hash": "209806d292171d7c5171a09ccbad8a8c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Oddegg.png": {
+    "mtime": 1795526849.9709282,
+    "seen": 1795527083.9255338,
+    "ast_hash": "0db83b5be9d3a054b0e9fbc1bf3ec868",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Petitdevil.png": {
+    "mtime": 1795526849.9712684,
+    "seen": 1795527083.9255357,
+    "ast_hash": "4b4076f82c759798193f23f5f29ba4e5",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Plasma.png": {
+    "mtime": 1795526849.9715948,
+    "seen": 1795527083.9255376,
+    "ast_hash": "00aebd506e9d0267125da46bf09705d2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Agent.png": {
+    "mtime": 1795526849.9719832,
+    "seen": 1795527083.9255393,
+    "ast_hash": "8f9794cae7bc2a968f932d44d1c3203c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Anaconda.png": {
+    "mtime": 1795526849.9724927,
+    "seen": 1795527083.925541,
+    "ast_hash": "8e23cafd7d1f78d25436ed8e987ef863",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_ArmyGorilla.png": {
+    "mtime": 1795526849.9730687,
+    "seen": 1795527083.9255428,
+    "ast_hash": "5b385d63971f99d4c8f14a5d05c7dc76",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Armymonkey.png": {
+    "mtime": 1795526849.9734702,
+    "seen": 1795527083.9255443,
+    "ast_hash": "615084db2c79805ab7d3f800cc2a9f7e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Blueogre.png": {
+    "mtime": 1795526849.9739459,
+    "seen": 1795527083.925546,
+    "ast_hash": "7f92900ca6b0a00c0cfb736cb59aec17",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Boss.png": {
+    "mtime": 1795526849.9743412,
+    "seen": 1795527083.9255478,
+    "ast_hash": "9345aa88af8a01805d4ad669b8a183e4",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Brownbear.png": {
+    "mtime": 1795526849.9747758,
+    "seen": 1795527083.9255497,
+    "ast_hash": "e70d7cec2f629557cf801fb69ebe4db7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Cyborg.png": {
+    "mtime": 1795526849.9752357,
+    "seen": 1795527083.925552,
+    "ast_hash": "3a7019007655305f054001dc82b356ca",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Demon_of_universe.png": {
+    "mtime": 1795526849.975864,
+    "seen": 1795527083.9255536,
+    "ast_hash": "76dd57bb483755bc9b6e49241aaa67a0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Drone.png": {
+    "mtime": 1795526849.9762502,
+    "seen": 1795527083.925555,
+    "ast_hash": "6ed5e56bbba0ffdffb76cfd4fde4a04a",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Enmadaio.png": {
+    "mtime": 1795526849.9769397,
+    "seen": 1795527083.9255564,
+    "ast_hash": "afd175e99d1b1f827bac786fd6a2c6c7",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Evilteddybear.png": {
+    "mtime": 1795526849.977268,
+    "seen": 1795527083.9255583,
+    "ast_hash": "04f3ff01107e198b0caee7cd70ff43ea",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Hannyamask.png": {
+    "mtime": 1795526849.9776394,
+    "seen": 1795527083.92556,
+    "ast_hash": "bd1a86ce02078e55579b9a4f6a39a930",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Hermit.png": {
+    "mtime": 1795526849.9782648,
+    "seen": 1795527083.9255617,
+    "ast_hash": "cef386b8ec744e5a87631bbe637ed578",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Jiangshi.png": {
+    "mtime": 1795526849.9786315,
+    "seen": 1795527083.9255633,
+    "ast_hash": "3d68b5ba34d5d29bd430729300b449e9",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Kamaitachi.png": {
+    "mtime": 1795526849.9789987,
+    "seen": 1795527083.9255652,
+    "ast_hash": "7bbfcb73c6cb7feff7777491b7d5d747",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Kappa.png": {
+    "mtime": 1795526849.9793298,
+    "seen": 1795527083.9255674,
+    "ast_hash": "ff97a6d7984a6d6c9e0568f887f194be",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Madclown.png": {
+    "mtime": 1795526849.979706,
+    "seen": 1795527083.9255693,
+    "ast_hash": "d9ad40097d2b7e2e283fcdd3b47bc8bf",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Madscientist.png": {
+    "mtime": 1795526849.9801471,
+    "seen": 1795527083.9255714,
+    "ast_hash": "9e2f8b260dd956ab9a2ebf867e837f90",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Mafia.png": {
+    "mtime": 1795526849.9805288,
+    "seen": 1795527083.9255726,
+    "ast_hash": "4b5ec7e212a956cb6893047b234326fd",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Mechasphere.png": {
+    "mtime": 1795526849.980889,
+    "seen": 1795527083.925574,
+    "ast_hash": "b2a9b8bceee2549688bbc841af59b85a",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Phoenix.png": {
+    "mtime": 1795526849.9814694,
+    "seen": 1795527083.9255757,
+    "ast_hash": "6933d433ca10101b3d9dda95d1e03aff",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Redogre.png": {
+    "mtime": 1795526849.9819202,
+    "seen": 1795527083.9255774,
+    "ast_hash": "06e203f4043c88448145d73e2a39227a",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Securityrobot.png": {
+    "mtime": 1795526849.9823034,
+    "seen": 1795527083.925579,
+    "ast_hash": "36be314f93d5d25eb06fe52207cb8373",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Shadow.png": {
+    "mtime": 1795526849.9826412,
+    "seen": 1795527083.925581,
+    "ast_hash": "252459c8ac8c1faccf11f077c4f3d2ec",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Skullmask.png": {
+    "mtime": 1795526849.9830196,
+    "seen": 1795527083.9255826,
+    "ast_hash": "d608ba5490eb57a75833b290d7f35500",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Slaughterrobot.png": {
+    "mtime": 1795526849.9836185,
+    "seen": 1795527083.925584,
+    "ast_hash": "6ea6e30e37a334451e8154d77c47c429",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Specialforces.png": {
+    "mtime": 1795526849.9839935,
+    "seen": 1795527083.925586,
+    "ast_hash": "01111ba242a23d3a331325bbeffbee0b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Talkingmuppet.png": {
+    "mtime": 1795526849.9843252,
+    "seen": 1795527083.925588,
+    "ast_hash": "fac961bb7d4370567d88aeb36ef971c2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Timebomb.png": {
+    "mtime": 1795526849.9849348,
+    "seen": 1795527083.9255903,
+    "ast_hash": "38d57e1852027ddcde35df1058ff52bd",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Whitewolf.png": {
+    "mtime": 1795526849.985392,
+    "seen": 1795527083.9255924,
+    "ast_hash": "a6eb28454c730c4d1525052273dd9300",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Will_o_the_wisp.png": {
+    "mtime": 1795526849.9857242,
+    "seen": 1795527083.9255946,
+    "ast_hash": "0ec144f5d27563da8b3254cd66f46e36",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Wolf.png": {
+    "mtime": 1795526849.9861233,
+    "seen": 1795527083.9255965,
+    "ast_hash": "e3c4f52762ccfc8d41ada3634d549b99",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Workrobot.png": {
+    "mtime": 1795526849.9864857,
+    "seen": 1795527083.9255986,
+    "ast_hash": "364a6b8a891310a0abad865d498479b3",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/SF_Zombiedog.png": {
+    "mtime": 1795526849.9868572,
+    "seen": 1795527083.9256003,
+    "ast_hash": "e8507b0ee35c9d06913d217520d88b41",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Sailor.png": {
+    "mtime": 1795526849.9875855,
+    "seen": 1795527083.925602,
+    "ast_hash": "76ffbec5b29b54bfe1b177fe344be152",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Salamander.png": {
+    "mtime": 1795526849.988419,
+    "seen": 1795527083.9256036,
+    "ast_hash": "0e6ec801940ab1f80de13661562aa7b0",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Sandworm.png": {
+    "mtime": 1795526849.9891236,
+    "seen": 1795527083.9256048,
+    "ast_hash": "abc97c2843d20eb63e8396f28810ba3c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Siren.png": {
+    "mtime": 1795526849.9897785,
+    "seen": 1795527083.9256067,
+    "ast_hash": "90783a7fa6d1e781040223a17e530a3e",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Sorcerer.png": {
+    "mtime": 1795526849.9901745,
+    "seen": 1795527083.9256084,
+    "ast_hash": "8e6e9c9487fae5123058af3ac43277f6",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Stoneknight.png": {
+    "mtime": 1795526849.9905996,
+    "seen": 1795527083.9256103,
+    "ast_hash": "33329405bcba2b141ddc2615c8e7244f",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Sylph.png": {
+    "mtime": 1795526849.9909735,
+    "seen": 1795527083.9256117,
+    "ast_hash": "1675c05d2044eafffb95bd2968fef3e2",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Tigerbunny.png": {
+    "mtime": 1795526849.9913158,
+    "seen": 1795527083.9256136,
+    "ast_hash": "0c8174651b061277671f2756917599cc",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Treant.png": {
+    "mtime": 1795526849.9919293,
+    "seen": 1795527083.925615,
+    "ast_hash": "3bb3c6cc8a558b6d8262bee87f2d006b",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Undine.png": {
+    "mtime": 1795526849.9922822,
+    "seen": 1795527083.925617,
+    "ast_hash": "4894c744cfcbc7d2356610145e9d37e8",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Unicorn.png": {
+    "mtime": 1795526849.9929545,
+    "seen": 1795527083.925619,
+    "ast_hash": "2149fbb27bee81c813bc6a7b2758335c",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Witch.png": {
+    "mtime": 1795526849.9933462,
+    "seen": 1795527083.9256206,
+    "ast_hash": "c0acaa9e1fbc7d28481d8a32a58206bf",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Wolfman.png": {
+    "mtime": 1795526849.993807,
+    "seen": 1795527083.925622,
+    "ast_hash": "49cf8d9c717f633b6ff6ce2968ec1eca",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Wraith.png": {
+    "mtime": 1795526849.9941883,
+    "seen": 1795527083.9256244,
+    "ast_hash": "d900e7734253eacbf752639e7469f122",
+    "semantic_hash": ""
+  },
+  "project/my-rpg-game3/assets/sv_enemies/Zombie.png": {
+    "mtime": 1795526849.9945436,
+    "seen": 1795527083.9256258,
+    "ast_hash": "2258021a8a25e8346390b8931b40a229",
+    "semantic_hash": ""
+  },
+  "src/editor/ClassEditorComponents.tsx": {
+    "mtime": 1795527409.9684298,
+    "seen": 1795527456.3511305,
+    "ast_hash": "64cbe58d0e0cebe9037bd39ae6508dac",
+    "semantic_hash": ""
+  },
+  "src/editor/SkillEditorComponents.tsx": {
+    "mtime": 1795534127.1263018,
+    "seen": 1795534304.7764356,
+    "ast_hash": "19255fd48e07e303b7971659f34653e6",
+    "semantic_hash": ""
+  },
+  "src/editor/ItemEditorComponents.tsx": {
+    "mtime": 1795528190.8137014,
+    "seen": 1795528352.4988577,
+    "ast_hash": "7a3c196940d72b39bed666540c4988db",
+    "semantic_hash": ""
+  },
+  "src/editor/WeaponEditorComponents.tsx": {
+    "mtime": 1795528533.335694,
+    "seen": 1795528622.1558177,
+    "ast_hash": "ae9dffe5344b6162a70b4f2b93797a42",
+    "semantic_hash": ""
+  },
+  "src/editor/ArmorEditorComponents.tsx": {
+    "mtime": 1795534146.3790214,
+    "seen": 1795534304.7764182,
+    "ast_hash": "ffbb5ceced0105c4a5e6df92d0c7e403",
+    "semantic_hash": ""
+  },
+  "src/editor/EnemyEditorComponents.tsx": {
+    "mtime": 1795529501.0845048,
+    "seen": 1795529534.5406744,
+    "ast_hash": "a4eb4230dc269ac48e8d3901d6dcfb86",
+    "semantic_hash": ""
+  },
+  "src/editor/TroopEditorComponents.tsx": {
+    "mtime": 1795529970.3707914,
+    "seen": 1795530017.3582082,
+    "ast_hash": "d9e4275bb615f313fd8c73efc0fe89ea",
+    "semantic_hash": ""
+  },
+  "src/editor/StateEditorComponents.tsx": {
+    "mtime": 1795530176.0019815,
+    "seen": 1795530293.9939418,
+    "ast_hash": "ace7dba15a201cb6f4c569a890f803a5",
+    "semantic_hash": ""
+  },
+  "src/editor/AnimationEditorComponents.tsx": {
+    "mtime": 1795530736.5573885,
+    "seen": 1795530961.0317125,
+    "ast_hash": "4a5ab378ce9bf7efe70ae6b59590d3c5",
+    "semantic_hash": ""
+  },
+  "src/editor/CommonEventEditorComponents.tsx": {
+    "mtime": 1795531212.6448226,
+    "seen": 1795531458.5193565,
+    "ast_hash": "9410a49019d4c1f2cb6a0d6061dbe14d",
+    "semantic_hash": ""
+  },
+  "src/editor/SystemEditorComponents.tsx": {
+    "mtime": 1795532560.536355,
+    "seen": 1795532667.5251942,
+    "ast_hash": "8280309c4504acfcbd1399b59557bb06",
+    "semantic_hash": ""
+  },
+  "src/editor/TypesEditorComponents.tsx": {
+    "mtime": 1795532863.0153625,
+    "seen": 1795533006.5285256,
+    "ast_hash": "982c13b3a645a42a66ecdfe187a4580d",
+    "semantic_hash": ""
+  },
+  "src/editor/TermsEditorComponents.tsx": {
+    "mtime": 1795533188.8353753,
+    "seen": 1795533509.0614376,
+    "ast_hash": "5e0b58620416a5623c4e2219cc0bed53",
+    "semantic_hash": ""
+  },
+  "src/editor/archived/LegacyQuestShopComponents.tsx": {
+    "mtime": 1795533696.6503625,
+    "seen": 1795533960.2023401,
+    "ast_hash": "83121199f030fca5b32e3a05cf830208",
+    "semantic_hash": ""
+  },
+  "docs/archived-quest-shop-system.md": {
+    "mtime": 1795533710.1902163,
+    "seen": 1795533960.2025208,
+    "ast_hash": "0095af3589a6bb652c501254487ac71b",
     "semantic_hash": ""
   },
   "package-lock.json": {

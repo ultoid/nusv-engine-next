@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LayerSelection } from '../../core/map-layers.js';
-import type { ProjectBundle } from '../../core/types.js';
-import type { RecentProject } from '../../global.js';
+import type { ProjectBundle, RecentProject } from '../../core/types.js';
 
 export interface EditorTopBarProps {
   bundle: ProjectBundle;

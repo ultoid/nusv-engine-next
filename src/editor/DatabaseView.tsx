@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import type { ActorData, BaseStats, BossPhase, CombatBase, CombatBonuses, EnemyData, EquipmentData, ItemData, SkillData, StateData, TroopData, TraitData } from '../core/combat-types.js';
+import type { ActorData, BaseStats, BossPhase, CombatBase, CombatBonuses, EnemyData, EquipmentData, ItemData, SkillData, StateData, TroopData, TraitData, EnemyDropItem } from '../core/combat-types.js';
 import {
   TRAIT_ELEMENT_RATE,
   TRAIT_DEBUFF_RATE,
@@ -26,39 +26,64 @@ import {
   TRAIT_COLLAPSE_TYPE,
   TRAIT_PARTY_ABILITY
 } from '../core/combat-types.js';
-import type { ClassData, ProjectBundle, QuestData, ShopData, TilesetData, AssetEntry } from '../core/types.js';
+import type { ClassData, ClassLearning, GameData, ProjectBundle, TilesetData, AssetEntry, CommonEventData, EventCommand, TypesData, AnimationData } from '../core/types.js';
 import { TILE_CATALOG, DEFAULT_TILESETS, resolveSheetPath } from '../core/map-layers.js';
 import { getCachedImage, preloadImages } from './imageCache.js';
-import { ActorDetailForm } from './ActorEditorComponents.js';
+import { ActorDetailForm, ActorTraitModal, formatTraitType, formatTraitContent } from './ActorEditorComponents.js';
+import { ClassDetailForm } from './ClassEditorComponents.js';
+import { SkillDetailForm } from './SkillEditorComponents.js';
+import { ItemDetailForm } from './ItemEditorComponents.js';
+import { WeaponDetailForm } from './WeaponEditorComponents.js';
+import { ArmorDetailForm } from './ArmorEditorComponents.js';
+import { EnemyDetailForm } from './EnemyEditorComponents.js';
+import { TroopDetailForm } from './TroopEditorComponents.js';
+import { StateDetailForm } from './StateEditorComponents.js';
+import { AnimationDetailForm } from './AnimationEditorComponents.js';
+import { CommonEventDetailForm } from './CommonEventEditorComponents.js';
+import { System1Editor, System2Editor } from './SystemEditorComponents.js';
+import { TypesEditor } from './TypesEditorComponents.js';
+import { TermsEditor } from './TermsEditorComponents.js';
 import { addAssetToBundle } from '../core/resource-manager.js';
+import { EventCommandPickerModal } from './modals/EventCommandPickerModal.js';
+import { commandName, commandPreview, createCommand } from './events/eventCommands.js';
 
 export type DatabaseCollection =
   | 'actors'
   | 'classes'
   | 'skills'
   | 'items'
+  | 'weapons'
+  | 'armors'
   | 'equipment'
   | 'enemies'
   | 'troops'
   | 'states'
+  | 'animations'
   | 'tilesets'
-  | 'quests'
-  | 'shops'
-  | 'system';
+  | 'commonEvents'
+  | 'system1'
+  | 'system2'
+  | 'system'
+  | 'types'
+  | 'terms';
 
 export const DATABASE_COLLECTIONS: Array<{ id: DatabaseCollection; label: string; icon?: string }> = [
   { id: 'actors', label: 'Actors' },
   { id: 'classes', label: 'Classes' },
   { id: 'skills', label: 'Skills' },
   { id: 'items', label: 'Items' },
-  { id: 'equipment', label: 'Weapons' },
+  { id: 'weapons', label: 'Weapons' },
+  { id: 'armors', label: 'Armors' },
   { id: 'enemies', label: 'Enemies' },
   { id: 'troops', label: 'Troops' },
   { id: 'states', label: 'States' },
+  { id: 'animations', label: 'Animations' },
   { id: 'tilesets', label: 'Tilesets' },
-  { id: 'quests', label: 'Common Events' },
-  { id: 'shops', label: 'Shops' },
-  { id: 'system', label: 'System' }
+  { id: 'commonEvents', label: 'Common Events' },
+  { id: 'system1', label: 'System 1' },
+  { id: 'system2', label: 'System 2' },
+  { id: 'types', label: 'Types' },
+  { id: 'terms', label: 'Terms' }
 ];
 
 interface DatabaseViewProps {
@@ -185,6 +210,16 @@ export function DatabaseView({
       }
     }
 
+    for (const a of localGame.actors || []) {
+      if (a.faceImage && !paths.includes(a.faceImage)) paths.push(a.faceImage);
+      if (a.characterImage && !paths.includes(a.characterImage)) paths.push(a.characterImage);
+      if (a.battlerImage && !paths.includes(a.battlerImage)) paths.push(a.battlerImage);
+      if (a.battlerName) {
+        const bp = `assets/sv_actors/${a.battlerName}.png`;
+        if (!paths.includes(bp)) paths.push(bp);
+      }
+    }
+
     for (const e of localGame.enemies || []) {
       if (e.battlerImage && !paths.includes(e.battlerImage)) paths.push(e.battlerImage);
       const enemyDefImg = `assets/enemies/${e.name}.png`;
@@ -278,11 +313,28 @@ export function DatabaseView({
 
 
 
+  const isSingleton = collection === 'system' || collection === 'system1' || collection === 'system2' || collection === 'types' || collection === 'terms';
+
   const getRecords = (): unknown[] => {
-    if (collection === 'system') return [];
+    if (isSingleton) return [];
     if (collection === 'tilesets') {
       const val = (localGame as Record<string, unknown>).tilesets;
       return Array.isArray(val) && val.length ? val : DEFAULT_TILESETS;
+    }
+    if (collection === 'weapons') {
+      return (localGame.equipment || []).filter((e) => e.slot === 'weapon');
+    }
+    if (collection === 'armors') {
+      return (localGame.equipment || []).filter((e) => e.slot !== 'weapon');
+    }
+    if (collection === 'commonEvents') {
+      return localGame.commonEvents || [];
+    }
+    if (collection === 'equipment') {
+      return localGame.equipment || [];
+    }
+    if (collection === 'animations') {
+      return localGame.animations || [];
     }
     const val = localGame[collection as keyof typeof localGame];
     return Array.isArray(val) ? val : [];
@@ -319,9 +371,20 @@ export function DatabaseView({
     scheduleCommit(nextBundle, 'Pengaturan proyek diperbarui.');
   };
 
+  const handleUpdateGame = (patch: Partial<GameData>) => {
+    const nextGame = { ...localGame, ...patch };
+    setLocalGame(nextGame);
+    const nextBundle: ProjectBundle = {
+      ...bundle,
+      game: nextGame,
+      project: localProject
+    };
+    scheduleCommit(nextBundle, 'Data game diperbarui.');
+  };
+
   const handleAddRecord = () => {
     flushCommit();
-    if (collection === 'system') return;
+    if (isSingleton) return;
     const newId = `${collection.slice(0, -1)}.${Date.now().toString(36)}`;
     let newEntry: Record<string, unknown> = { id: newId, name: 'New Record' };
 
@@ -341,25 +404,106 @@ export function DatabaseView({
         id: newId,
         name: 'New Class',
         tier: 1,
-        growth: { str: 1, vit: 1 }
+        growth: { str: 1, vit: 1 },
+        learnings: [],
+        traits: []
       };
     } else if (collection === 'skills') {
       newEntry = {
         id: newId,
         name: 'New Skill',
+        iconIndex: 76,
+        description: '',
+        stypeId: 1,
+        scope: 1,
+        occasion: 0,
+        speed: 0,
+        successRate: 100,
+        repeats: 1,
+        tpGain: 0,
+        hitType: 1,
+        animationId: -1,
+        message1: '%1 attacks!',
+        message2: '',
+        requiredWtypeId1: 0,
+        requiredWtypeId2: 0,
+        damage: {
+          type: 1,
+          elementId: -1,
+          formula: 'a.atk * 4 - b.def * 2',
+          variance: 20,
+          critical: true
+        },
+        effects: [
+          { code: 21, dataId: 0, value1: 1.0, value2: 0 }
+        ],
         kind: 'physical',
         power: 1.0,
         mpCost: 0,
-        spCost: 5,
-        speed: 0,
+        spCost: 0,
+        tpCost: 0,
         target: 'enemy'
       };
     } else if (collection === 'items') {
       newEntry = {
         id: newId,
         name: 'New Item',
+        iconIndex: 176,
+        description: '',
+        itypeId: 1,
+        price: 10,
+        consumable: true,
+        scope: 7,
+        occasion: 0,
+        speed: 0,
+        successRate: 100,
+        repeats: 1,
+        tpGain: 0,
+        hitType: 0,
+        animationId: 0,
+        damage: {
+          type: 3,
+          elementId: 0,
+          formula: '50',
+          variance: 20,
+          critical: false
+        },
+        effects: [
+          { code: 11, dataId: 0, value1: 0, value2: 50 }
+        ],
         kind: 'heal',
         healHp: 50
+      };
+    } else if (collection === 'weapons') {
+      newEntry = {
+        id: newId,
+        name: 'New Weapon',
+        iconIndex: 97,
+        description: '',
+        slot: 'weapon',
+        wtypeId: 2,
+        weaponType: 'melee',
+        price: 300,
+        animationId: '0006 Slash Physical',
+        params: [0, 0, 5, 0, 0, 0, 0, 0],
+        bonuses: { atk: 5 },
+        stats: { str: 1 },
+        traits: []
+      };
+    } else if (collection === 'armors') {
+      newEntry = {
+        id: newId,
+        name: 'New Armor',
+        iconIndex: 135,
+        description: '',
+        slot: 'body',
+        atypeId: 1,
+        etypeId: 4,
+        price: 300,
+        params: [0, 0, 0, 10, 0, 0, 0, 0],
+        bonuses: { def: 10 },
+        stats: { vit: 1 },
+        traits: []
       };
     } else if (collection === 'equipment') {
       newEntry = {
@@ -367,47 +511,106 @@ export function DatabaseView({
         name: 'New Equipment',
         slot: 'weapon',
         weaponType: 'melee',
+        price: 50,
         stats: { str: 2 },
-        bonuses: { atk: 5 }
+        bonuses: { atk: 5 },
+        traits: []
       };
     } else if (collection === 'enemies') {
       newEntry = {
         id: newId,
         name: 'New Enemy',
-        ai: 'aggressive',
-        stats: { str: 6, int: 4, dex: 6, luk: 4, agi: 6, vit: 6 },
-        base: { hp: 40, mp: 0, atk: 6, def: 4, mat: 2, mdf: 2, agi: 5 },
-        skillIds: [],
-        reward: { gold: 10, baseExp: 25, classExp: 20 }
+        battlerName: 'Goblin',
+        battlerHue: 0,
+        params: [200, 0, 25, 20, 20, 20, 20, 20],
+        base: { hp: 200, mp: 0, atk: 25, def: 20, mat: 20, mdf: 20, agi: 20 },
+        stats: { str: 6, int: 4, dex: 6, luk: 20, agi: 6, vit: 6 },
+        exp: 10,
+        gold: 5,
+        reward: { gold: 5, baseExp: 10, classExp: 10 },
+        actions: [
+          { skillId: localGame.skills[0]?.id || 'skill.attack', rating: 5, conditionType: 'always', conditionParam1: 0, conditionParam2: 0 }
+        ],
+        dropItems: [],
+        traits: [
+          { code: 22, dataId: 0, value: 0.95 },
+          { code: 22, dataId: 1, value: 0.05 },
+          { code: 31, dataId: 1, value: 0 }
+        ],
+        skillIds: localGame.skills[0] ? [localGame.skills[0].id] : [],
+        ai: 'aggressive'
       };
     } else if (collection === 'troops') {
       const defaultEnemy = localGame.enemies[0]?.id ?? 'enemy.moss';
       newEntry = {
         id: newId,
         name: 'New Troop',
-        enemyIds: [defaultEnemy]
+        enemyIds: [defaultEnemy],
+        members: [{ enemyId: defaultEnemy, x: 400, y: 280, hidden: false }],
+        battleback1Name: 'Grassland',
+        battleback2Name: 'Grassland',
+        pages: [
+          {
+            conditions: { turnEnding: false },
+            span: 'battle',
+            commands: []
+          }
+        ]
       };
     } else if (collection === 'states') {
       newEntry = {
         id: newId,
         name: 'New State',
+        iconIndex: 1,
+        restriction: 0,
+        priority: 50,
+        motion: 0,
+        overlay: 0,
+        removeAtBattleEnd: true,
+        removeByRestriction: false,
+        autoRemovalTiming: 2,
+        minTurns: 2,
+        maxTurns: 4,
         duration: 3,
+        removeByDamage: false,
+        chanceByDamage: 100,
+        removeByWalking: false,
+        stepsToRemove: 100,
+        message1: '%1 has fallen!',
+        message2: '%1 is slain!',
+        message3: '',
+        message4: '%1 revives!',
         damagePerTurn: 0,
-        preventsAction: false
+        preventsAction: false,
+        traits: []
       };
-    } else if (collection === 'quests') {
+    } else if (collection === 'animations') {
+      const current = localGame.animations || [];
+      const nextNum = current.length + 1;
+      const idStr = String(nextNum).padStart(4, '0');
       newEntry = {
-        id: newId,
-        name: 'New Quest',
-        description: 'Deskripsi quest baru.',
-        objectives: [{ id: 'obj.1', text: 'Tujuan awal', target: 1 }],
-        rewards: { gold: 50 }
+        id: `anim.${idStr}`,
+        name: `Animation ${nextNum}`,
+        displayType: 1,
+        alignBottom: false,
+        effectName: 'HitPhysical',
+        scale: 100,
+        speed: 100,
+        rotation: { x: 0, y: 0, z: 0 },
+        offsetX: 0,
+        offsetY: 0,
+        soundTimings: [],
+        flashTimings: []
       };
-    } else if (collection === 'shops') {
+    } else if (collection === 'commonEvents') {
+      const current = localGame.commonEvents || [];
+      const nextNum = current.length + 1;
+      const idStr = String(nextNum).padStart(4, '0');
       newEntry = {
-        id: newId,
-        name: 'New Shop',
-        items: localGame.items[0] ? [{ itemId: localGame.items[0].id, price: 10 }] : []
+        id: `common.${idStr}`,
+        name: '',
+        trigger: 'none',
+        commands: []
       };
     } else if (collection === 'tilesets') {
       newEntry = {
@@ -418,11 +621,24 @@ export function DatabaseView({
       };
     }
 
-    const nextList = [...records, newEntry];
-    const nextGame = {
-      ...localGame,
-      [collection]: nextList
-    };
+    let nextGame: typeof localGame;
+    if (collection === 'weapons' || collection === 'armors') {
+      nextGame = {
+        ...localGame,
+        equipment: [...(localGame.equipment || []), newEntry as unknown as EquipmentData]
+      };
+    } else if (collection === 'commonEvents') {
+      nextGame = {
+        ...localGame,
+        commonEvents: [...(localGame.commonEvents || []), newEntry as unknown as CommonEventData]
+      };
+    } else {
+      nextGame = {
+        ...localGame,
+        [collection]: [...records, newEntry]
+      };
+    }
+
     setLocalGame(nextGame);
     const nextBundle: ProjectBundle = {
       ...bundle,
@@ -435,16 +651,37 @@ export function DatabaseView({
 
   const handleDuplicateRecord = () => {
     flushCommit();
-    if (collection === 'system' || selectedIndex === null || !selectedRecord) return;
+    if (isSingleton || selectedIndex === null || !selectedRecord) return;
     const cloned = structuredClone(selectedRecord);
-    cloned.id = `${cloned.id}-copy`;
-    cloned.name = `${String(cloned.name || '')} (Copy)`;
+    if (collection === 'commonEvents') {
+      const current = localGame.commonEvents || [];
+      const nextNum = current.length + 1;
+      const idStr = String(nextNum).padStart(4, '0');
+      cloned.id = `common.${idStr}`;
+      cloned.name = cloned.name ? `${String(cloned.name)} (Copy)` : '';
+    } else {
+      cloned.id = `${cloned.id}-copy`;
+      cloned.name = `${String(cloned.name || '')} (Copy)`;
+    }
 
-    const nextList = [...records, cloned];
-    const nextGame = {
-      ...localGame,
-      [collection]: nextList
-    };
+    let nextGame: typeof localGame;
+    if (collection === 'weapons' || collection === 'armors') {
+      nextGame = {
+        ...localGame,
+        equipment: [...(localGame.equipment || []), cloned as unknown as EquipmentData]
+      };
+    } else if (collection === 'commonEvents') {
+      nextGame = {
+        ...localGame,
+        commonEvents: [...(localGame.commonEvents || []), cloned as unknown as CommonEventData]
+      };
+    } else {
+      nextGame = {
+        ...localGame,
+        [collection]: [...records, cloned]
+      };
+    }
+
     setLocalGame(nextGame);
     const nextBundle: ProjectBundle = {
       ...bundle,
@@ -457,15 +694,29 @@ export function DatabaseView({
 
   const handleDeleteRecord = () => {
     flushCommit();
-    if (collection === 'system' || selectedIndex === null || !selectedRecord) return;
+    if (isSingleton || selectedIndex === null || !selectedRecord) return;
     const recordName = String(selectedRecord.name || selectedRecord.id);
     if (!confirm(`Hapus "${recordName}" dari database?`)) return;
 
-    const nextList = records.filter((_, i) => i !== selectedIndex);
-    const nextGame = {
-      ...localGame,
-      [collection]: nextList
-    };
+    const targetId = String(selectedRecord.id);
+    let nextGame: typeof localGame;
+    if (collection === 'weapons' || collection === 'armors') {
+      nextGame = {
+        ...localGame,
+        equipment: (localGame.equipment || []).filter((e) => e.id !== targetId)
+      };
+    } else if (collection === 'commonEvents') {
+      nextGame = {
+        ...localGame,
+        commonEvents: (localGame.commonEvents || []).filter((ce) => ce.id !== targetId)
+      };
+    } else {
+      nextGame = {
+        ...localGame,
+        [collection]: records.filter((_, i) => i !== selectedIndex)
+      };
+    }
+
     setLocalGame(nextGame);
     const nextBundle: ProjectBundle = {
       ...bundle,
@@ -473,19 +724,34 @@ export function DatabaseView({
       project: localProject
     };
     onCommit(nextBundle, `${recordName} dihapus dari database.`);
-    setSelectedIndex(nextList.length > 0 ? Math.min(selectedIndex, nextList.length - 1) : null);
+    const remainingCount = records.length - 1;
+    setSelectedIndex(remainingCount > 0 ? Math.min(selectedIndex, remainingCount - 1) : null);
   };
 
   const handleUpdateRecord = (patch: Record<string, unknown>) => {
-    if (collection === 'system' || selectedIndex === null || !selectedRecord) return;
+    if (isSingleton || selectedIndex === null || !selectedRecord) return;
     const updated = { ...selectedRecord, ...patch };
-    const nextList = [...records];
-    nextList[selectedIndex] = updated;
 
-    const nextGame = {
-      ...localGame,
-      [collection]: nextList
-    };
+    let nextGame: typeof localGame;
+    if (collection === 'weapons' || collection === 'armors') {
+      const targetId = String(selectedRecord.id);
+      nextGame = {
+        ...localGame,
+        equipment: (localGame.equipment || []).map((e) => (e.id === targetId ? (updated as unknown as EquipmentData) : e))
+      };
+    } else if (collection === 'commonEvents') {
+      const list = [...(localGame.commonEvents || [])];
+      list[selectedIndex] = updated as unknown as CommonEventData;
+      nextGame = { ...localGame, commonEvents: list };
+    } else {
+      const nextList = [...records];
+      nextList[selectedIndex] = updated;
+      nextGame = {
+        ...localGame,
+        [collection]: nextList
+      };
+    }
+
     setLocalGame(nextGame);
 
     const nextBundle: ProjectBundle = {
@@ -514,8 +780,12 @@ export function DatabaseView({
 
   const handleSwitchToJson = () => {
     flushCommit();
-    if (collection === 'system') {
-      setJsonDraft(JSON.stringify({ project: localProject, terms: localGame.translations }, null, 2));
+    if (collection === 'system' || collection === 'system1' || collection === 'system2') {
+      setJsonDraft(JSON.stringify({ project: localProject, system: localGame.system || {} }, null, 2));
+    } else if (collection === 'types') {
+      setJsonDraft(JSON.stringify(localGame.types || {}, null, 2));
+    } else if (collection === 'terms') {
+      setJsonDraft(JSON.stringify(localGame.terms || {}, null, 2));
     } else if (selectedRecord) {
       setJsonDraft(JSON.stringify(selectedRecord, null, 2));
     }
@@ -527,11 +797,11 @@ export function DatabaseView({
     flushCommit();
     try {
       const parsed = JSON.parse(jsonDraft);
-      if (collection === 'system') {
+      if (collection === 'system' || collection === 'system1' || collection === 'system2') {
         const nextProject = parsed.project || localProject;
         const nextGame = {
           ...localGame,
-          translations: parsed.terms || localGame.translations
+          system: parsed.system || localGame.system
         };
         setLocalProject(nextProject);
         setLocalGame(nextGame);
@@ -541,16 +811,53 @@ export function DatabaseView({
           game: nextGame
         };
         onCommit(nextBundle, 'Konfigurasi sistem diperbarui via JSON.');
+      } else if (collection === 'types') {
+        const nextGame = {
+          ...localGame,
+          types: parsed
+        };
+        setLocalGame(nextGame);
+        const nextBundle: ProjectBundle = {
+          ...bundle,
+          project: localProject,
+          game: nextGame
+        };
+        onCommit(nextBundle, 'Tipe database diperbarui via JSON.');
+      } else if (collection === 'terms') {
+        const nextGame = {
+          ...localGame,
+          terms: parsed
+        };
+        setLocalGame(nextGame);
+        const nextBundle: ProjectBundle = {
+          ...bundle,
+          project: localProject,
+          game: nextGame
+        };
+        onCommit(nextBundle, 'Istilah database (Terms) diperbarui via JSON.');
       } else if (selectedIndex !== null) {
         if (!parsed || typeof parsed !== 'object' || !parsed.id) {
           throw new Error('Record harus berupa objek dan memiliki properti "id"');
         }
-        const nextList = [...records];
-        nextList[selectedIndex] = parsed;
-        const nextGame = {
-          ...localGame,
-          [collection]: nextList
-        };
+        let nextGame: typeof localGame;
+        if (collection === 'weapons' || collection === 'armors') {
+          const targetId = String(selectedRecord?.id);
+          nextGame = {
+            ...localGame,
+            equipment: (localGame.equipment || []).map((e) => (e.id === targetId ? parsed : e))
+          };
+        } else if (collection === 'commonEvents') {
+          const list = [...(localGame.commonEvents || [])];
+          list[selectedIndex] = parsed;
+          nextGame = { ...localGame, commonEvents: list };
+        } else {
+          const nextList = [...records];
+          nextList[selectedIndex] = parsed;
+          nextGame = {
+            ...localGame,
+            [collection]: nextList
+          };
+        }
         setLocalGame(nextGame);
         const nextBundle: ProjectBundle = {
           ...bundle,
@@ -588,18 +895,29 @@ export function DatabaseView({
       </aside>
 
       {/* Main Database Content Area */}
-      {collection === 'system' ? (
-        <SystemSettingsEditor
+      {collection === 'system' || collection === 'system1' ? (
+        <System1Editor
           bundle={currentBundle}
           onUpdateProject={handleUpdateProject}
-          onFlushCommit={flushCommit}
-          viewMode={viewMode}
-          jsonDraft={jsonDraft}
-          setJsonDraft={setJsonDraft}
-          jsonError={jsonError}
-          onSwitchToJson={handleSwitchToJson}
-          onApplyJson={handleApplyJson}
+          onUpdateGame={handleUpdateGame}
           assetUrlMap={assetUrlMap}
+        />
+      ) : collection === 'system2' ? (
+        <System2Editor
+          bundle={currentBundle}
+          onUpdateProject={handleUpdateProject}
+          onUpdateGame={handleUpdateGame}
+          assetUrlMap={assetUrlMap}
+        />
+      ) : collection === 'types' ? (
+        <TypesEditor
+          bundle={currentBundle}
+          onUpdateGame={handleUpdateGame}
+        />
+      ) : collection === 'terms' ? (
+        <TermsEditor
+          bundle={currentBundle}
+          onUpdateGame={handleUpdateGame}
         />
       ) : (
         <section className="mz-db-content">
@@ -623,7 +941,7 @@ export function DatabaseView({
                       onClick={() => handleSelectRecord(index)}
                     >
                       <span className="mz-db-record-index">{String(index + 1).padStart(4, '0')}</span>
-                      <span className="mz-db-record-name">{String(r.name || r.id)}</span>
+                      <span className="mz-db-record-name">{collection === 'commonEvents' ? String(r.name || '') : String(r.name || r.id)}</span>
                     </div>
                   );
                 })
@@ -714,282 +1032,6 @@ export function DatabaseView({
         </section>
       )}
     </div>
-  );
-}
-
-// ------------------------------------------------------------------------------------------------
-// System Settings Form
-// ------------------------------------------------------------------------------------------------
-
-function SystemSettingsEditor({
-  bundle,
-  onUpdateProject,
-  onFlushCommit,
-  viewMode,
-  jsonDraft,
-  setJsonDraft,
-  jsonError,
-  onSwitchToJson,
-  onApplyJson,
-  assetUrlMap
-}: {
-  bundle: ProjectBundle;
-  onUpdateProject: (patch: Partial<ProjectBundle['project']>) => void;
-  onFlushCommit?: () => void;
-  viewMode: 'form' | 'json';
-  jsonDraft: string;
-  setJsonDraft: (v: string) => void;
-  jsonError: string | null;
-  onSwitchToJson: () => void;
-  onApplyJson: () => void;
-  assetUrlMap: Record<string, string>;
-}) {
-  const project = bundle.project;
-  const maps = bundle.project.maps.map((id) => bundle.maps[id]).filter(Boolean);
-  const actors = bundle.game.actors;
-
-  const updateProject = (patch: Partial<typeof bundle.project>) => {
-    onUpdateProject(patch);
-  };
-
-  const handlePartyChange = (index: number, actorId: string) => {
-    const nextParty = [...bundle.project.party];
-    nextParty[index] = actorId;
-    updateProject({ party: nextParty });
-  };
-
-  const handleAddParty = () => {
-    if (bundle.project.party.length >= 4) return;
-    const available = actors.find((a) => !bundle.project.party.includes(a.id));
-    if (available) {
-      updateProject({ party: [...bundle.project.party, available.id] });
-    }
-  };
-
-  const handleRemoveParty = (index: number) => {
-    if (bundle.project.party.length <= 1) return;
-    const nextParty = bundle.project.party.filter((_, i) => i !== index);
-    updateProject({ party: nextParty });
-  };
-
-  return (
-    <section className="mz-db-content mz-db-system-pane">
-      <div className="mz-db-detail-header">
-        <div className="mz-db-detail-title">
-          <span className="mv-kicker">DATABASE / SYSTEM</span>
-          <h2>Pengaturan Sistem Proyek (System 1 & System 2)</h2>
-        </div>
-        <div className="mz-db-view-switch">
-          <button className={viewMode === 'form' ? 'active' : ''} onClick={() => onFlushCommit?.()}>
-            Form
-          </button>
-          <button className={viewMode === 'json' ? 'active' : ''} onClick={onSwitchToJson}>
-            JSON
-          </button>
-        </div>
-      </div>
-
-      {viewMode === 'json' ? (
-        <div className="mz-db-json-view">
-          {jsonError && <div className="mz-db-json-error">⚠️ {jsonError}</div>}
-          <textarea
-            className="mz-db-json-textarea"
-            spellCheck={false}
-            value={jsonDraft}
-            onChange={(e) => setJsonDraft(e.target.value)}
-          />
-          <div className="mz-db-json-footer">
-            <button className="primary" onClick={onApplyJson}>
-              Terapkan JSON
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div className="mz-db-form-view mz-system-form">
-          <div className="mz-form-grid-2">
-            <div className="mz-form-card">
-              <h3>Informasi Proyek</h3>
-              <label className="mz-form-field">
-                <span>Nama / Judul Game</span>
-                <input
-                  type="text"
-                  value={project.title}
-                  onChange={(e) => updateProject({ title: e.target.value })}
-                />
-              </label>
-              <label className="mz-form-field">
-                <span>Project ID (Internal)</span>
-                <input
-                  type="text"
-                  value={project.projectId}
-                  onChange={(e) => updateProject({ projectId: e.target.value })}
-                />
-              </label>
-              <div className="mz-form-row">
-                <label className="mz-form-field">
-                  <span>Resolusi Logis (Lebar)</span>
-                  <input
-                    type="number"
-                    value={project.logicalResolution.width}
-                    onChange={(e) =>
-                      updateProject({
-                        logicalResolution: { ...project.logicalResolution, width: Number(e.target.value) }
-                      })
-                    }
-                  />
-                </label>
-                <label className="mz-form-field">
-                  <span>Resolusi Logis (Tinggi)</span>
-                  <input
-                    type="number"
-                    value={project.logicalResolution.height}
-                    onChange={(e) =>
-                      updateProject({
-                        logicalResolution: { ...project.logicalResolution, height: Number(e.target.value) }
-                      })
-                    }
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div className="mz-form-card">
-              <h3>Lokasi Awal Pemain (Starting Position)</h3>
-              <label className="mz-form-field">
-                <span>Map Awal</span>
-                <select
-                  value={project.start.mapId}
-                  onChange={(e) => updateProject({ start: { ...project.start, mapId: e.target.value } })}
-                >
-                  {maps.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name} ({m.id})
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <div className="mz-form-row">
-                <label className="mz-form-field">
-                  <span>Koordinat X</span>
-                  <input
-                    type="number"
-                    value={project.start.x}
-                    min={0}
-                    onChange={(e) => updateProject({ start: { ...project.start, x: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-form-field">
-                  <span>Koordinat Y</span>
-                  <input
-                    type="number"
-                    value={project.start.y}
-                    min={0}
-                    onChange={(e) => updateProject({ start: { ...project.start, y: Number(e.target.value) } })}
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="mz-form-card">
-            <div className="mz-card-header-actions">
-              <h3>Anggota Party Awal (Starting Party: 1–4 Karakter)</h3>
-              <button
-                className="mz-btn-small"
-                disabled={project.party.length >= 4}
-                onClick={handleAddParty}
-              >
-                ＋ Tambah Anggota
-              </button>
-            </div>
-            <div className="mz-party-list">
-              {project.party.map((actorId, idx) => (
-                <div key={idx} className="mz-party-row">
-                  <span>Slot #{idx + 1}:</span>
-                  <select
-                    value={actorId}
-                    onChange={(e) => handlePartyChange(idx, e.target.value)}
-                  >
-                    {actors.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name} ({a.id})
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    className="mz-btn-del-sm"
-                    disabled={project.party.length <= 1}
-                    onClick={() => handleRemoveParty(idx)}
-                    title="Hapus dari party"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mz-form-card">
-            <h3>Vehicle Images (Kendaraan)</h3>
-            <div className="mz-actor-images-card">
-              <div className="mz-image-slot-col">
-                <span className="slot-label">Boat:</span>
-                <div className="mz-checkered-bg mz-character-preview-box">
-                  {assetUrlMap['assets/characters/Vehicle.png'] ? (
-                    <div
-                      className="mz-character-crop"
-                      style={{
-                        backgroundImage: `url("${assetUrlMap['assets/characters/Vehicle.png']}")`,
-                        backgroundSize: '576px 384px',
-                        backgroundPosition: '-48px 0px'
-                      }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: 24 }}>⛵</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="mz-image-slot-col">
-                <span className="slot-label">Ship:</span>
-                <div className="mz-checkered-bg mz-character-preview-box">
-                  {assetUrlMap['assets/characters/Vehicle.png'] ? (
-                    <div
-                      className="mz-character-crop"
-                      style={{
-                        backgroundImage: `url("${assetUrlMap['assets/characters/Vehicle.png']}")`,
-                        backgroundSize: '576px 384px',
-                        backgroundPosition: '-192px 0px'
-                      }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: 24 }}>🚢</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="mz-image-slot-col">
-                <span className="slot-label">Airship:</span>
-                <div className="mz-checkered-bg mz-character-preview-box">
-                  {assetUrlMap['assets/characters/Vehicle.png'] ? (
-                    <div
-                      className="mz-character-crop"
-                      style={{
-                        backgroundImage: `url("${assetUrlMap['assets/characters/Vehicle.png']}")`,
-                        backgroundSize: '576px 384px',
-                        backgroundPosition: '-336px 0px'
-                      }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: 24 }}>🛸</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
   );
 }
 
@@ -1336,12 +1378,12 @@ function TilesetImagePickerModal({
 
   const api = typeof window !== 'undefined'
     ? (window as unknown as {
-        nusvEditor?: {
-          importAsset?: (opts: { category: string }) => Promise<AssetEntry | null>;
-          readAssetData?: (p: string) => Promise<{ dataUrl?: string }>;
-          scanAssets?: () => Promise<AssetEntry[]>;
-        };
-      }).nusvEditor
+      nusvEditor?: {
+        importAsset?: (opts: { category: string }) => Promise<AssetEntry | null>;
+        readAssetData?: (p: string) => Promise<{ dataUrl?: string }>;
+        scanAssets?: () => Promise<AssetEntry[]>;
+      };
+    }).nusvEditor
     : undefined;
 
   // Scan project assets on mount to discover any manually placed tileset sheets
@@ -1401,9 +1443,9 @@ function TilesetImagePickerModal({
 
   const activePreviewUrl = selectedFile
     ? (localUrlMap[resolveSheetPath(selectedFile)] ||
-       assetUrlMap[resolveSheetPath(selectedFile)] ||
-       assetUrlMap[`assets/tilesets/${selectedFile}.png`] ||
-       assetUrlMap[`assets/tilesets/${selectedFile}`] || '')
+      assetUrlMap[resolveSheetPath(selectedFile)] ||
+      assetUrlMap[`assets/tilesets/${selectedFile}.png`] ||
+      assetUrlMap[`assets/tilesets/${selectedFile}`] || '')
     : '';
 
   const handleImport = async () => {
@@ -1745,14 +1787,14 @@ function TilesetDetailForm({
     // Tabs B, C, D, E: 256 tiles per sheet (8 columns x 32 rows, 48x48 px each)
     const sheetName =
       previewTab === 'B' ? (tsNames[5] || 'Outside_B') :
-      previewTab === 'C' ? (tsNames[6] || 'Outside_C') :
-      previewTab === 'D' ? (tsNames[7] || '') :
-      (tsNames[8] || '');
+        previewTab === 'C' ? (tsNames[6] || 'Outside_C') :
+          previewTab === 'D' ? (tsNames[7] || '') :
+            (tsNames[8] || '');
     const sheetUrl = assetUrlMap[resolveSheetPath(sheetName)] || assetUrlMap[`assets/tilesets/${sheetName}.png`] || assetUrlMap[`assets/tilesets/${sheetName}`];
     const baseTileId =
       previewTab === 'B' ? 0 :
-      previewTab === 'C' ? 256 :
-      previewTab === 'D' ? 512 : 768;
+        previewTab === 'C' ? 256 :
+          previewTab === 'D' ? 512 : 768;
 
     const list: PreviewTileItem[] = [];
     for (let i = 0; i < 256; i++) {
@@ -1969,7 +2011,85 @@ function TilesetDetailForm({
 }
 
 // ------------------------------------------------------------------------------------------------
+// Traits Editor Card (Ciri Khusus Standar RPG Maker MZ / NUSV)
+// ------------------------------------------------------------------------------------------------
+
+function TraitsEditorCard({
+  traits,
+  bundle,
+  onUpdateTraits
+}: {
+  traits: TraitData[];
+  bundle: ProjectBundle;
+  onUpdateTraits: (nextTraits: TraitData[]) => void;
+}) {
+  const [traitModalIndex, setTraitModalIndex] = useState<number | 'new' | null>(null);
+
+  const handleAddTrait = (trait: TraitData) => {
+    onUpdateTraits([...traits, trait]);
+    setTraitModalIndex(null);
+  };
+
+  const handleUpdateTrait = (idx: number, trait: TraitData) => {
+    const next = [...traits];
+    next[idx] = trait;
+    onUpdateTraits(next);
+    setTraitModalIndex(null);
+  };
+
+  const handleDeleteTrait = (idx: number) => {
+    onUpdateTraits(traits.filter((_, i) => i !== idx));
+    setTraitModalIndex(null);
+  };
+
+  return (
+    <div className="mz-form-card">
+      <div className="mz-card-header-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <h3 style={{ margin: 0 }}>Ciri Khusus (Traits)</h3>
+        <button type="button" className="mz-btn-small" onClick={() => setTraitModalIndex('new')}>
+          ＋ Tambah Trait
+        </button>
+      </div>
+      <div className="mz-learning-table" style={{ maxHeight: 180, overflowY: 'auto' }}>
+        {traits.length === 0 ? (
+          <div style={{ color: '#888', fontStyle: 'italic', padding: 8 }}>Tidak ada ciri khusus (traits)</div>
+        ) : (
+          traits.map((t, idx) => (
+            <div
+              key={idx}
+              className="mz-learning-row"
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 8px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+            >
+              <span style={{ fontWeight: 600, minWidth: 120 }}>{formatTraitType(t)}</span>
+              <span style={{ flex: 1, padding: '0 8px', color: '#ccc' }}>{formatTraitContent(t, bundle.game)}</span>
+              <div style={{ display: 'flex', gap: 4 }}>
+                <button type="button" className="mz-btn-small" onClick={() => setTraitModalIndex(idx)}>Ubah</button>
+                <button type="button" className="mz-btn-small danger" onClick={() => handleDeleteTrait(idx)}>×</button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {traitModalIndex !== null && (
+        <ActorTraitModal
+          initialTrait={traitModalIndex === 'new' ? null : traits[traitModalIndex]}
+          bundle={bundle}
+          onConfirm={(t) => {
+            if (traitModalIndex === 'new') handleAddTrait(t);
+            else handleUpdateTrait(traitModalIndex, t);
+          }}
+          onDelete={traitModalIndex !== 'new' ? () => handleDeleteTrait(traitModalIndex) : undefined}
+          onClose={() => setTraitModalIndex(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------------------------------------
 // Record Detail Form
+// ------------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------------
 
 function RecordDetailForm({
@@ -2090,787 +2210,120 @@ function RecordDetailForm({
 
   // CLASSES
   if (collection === 'classes') {
-    const cls = record as unknown as ClassData;
-    const growth = cls.growth || { str: 1, vit: 1 };
-
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Pengaturan Kelas (Class Settings)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', cls.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Kelas</span>
-              {textInput('name', cls.name)}
-            </label>
-            <label className="mz-form-field">
-              <span>Tier (1–5)</span>
-              {numberInput('tier', cls.tier, 1)}
-            </label>
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <h3>Pertumbuhan Stat per Level (Base Stat Growth)</h3>
-          <div className="mz-stats-grid">
-            {(['str', 'int', 'dex', 'luk', 'agi', 'vit'] as Array<keyof BaseStats>).map((st) => (
-              <label key={st} className="mz-stat-cell">
-                <span>+{st.toUpperCase()}</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={growth[st] ?? 0}
-                  onChange={(e) =>
-                    onUpdate({
-                      growth: { ...growth, [st]: Number(e.target.value) }
-                    })
-                  }
-                />
-              </label>
-            ))}
-          </div>
-        </div>
-      </div>
+      <ClassDetailForm
+        cls={record as unknown as ClassData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+      />
     );
   }
 
   // SKILLS
   if (collection === 'skills') {
-    const skill = record as unknown as SkillData;
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Pengaturan Skill</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', skill.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Skill</span>
-              {textInput('name', skill.name)}
-            </label>
-            <label className="mz-form-field">
-              <span>Icon</span>
-              {iconPreview('iconIndex', (skill as unknown as Record<string, unknown>).iconIndex ?? 76)}
-            </label>
-            <label className="mz-form-field">
-              <span>Tipe Aksi (Kind)</span>
-              {selectInput('kind', skill.kind, [
-                { value: 'physical', label: 'Physical (Serangan Fisik)' },
-                { value: 'magical', label: 'Magical (Sihir)' },
-                { value: 'heal', label: 'Heal (Pemulihan)' },
-                { value: 'revive', label: 'Revive (Kebangkitan)' }
-              ])}
-            </label>
-          </div>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>Target (Scope)</span>
-              {selectInput('target', skill.target, [
-                { value: 'enemy', label: 'Musuh (Enemy)' },
-                { value: 'ally', label: 'Sekutu (Ally)' }
-              ])}
-            </label>
-            <label className="mz-form-field">
-              <span>Elemen</span>
-              {textInput('element', skill.element)}
-            </label>
-            <label className="mz-form-field">
-              <span>Power (Pengali Damage)</span>
-              <input
-                type="number"
-                step="0.05"
-                value={skill.power}
-                onChange={(e) => onUpdate({ power: Number(e.target.value) })}
-              />
-            </label>
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <h3>Biaya & Kecepatan (Invocation & Cost)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>Biaya MP (MP Cost)</span>
-              {numberInput('mpCost', skill.mpCost, 0)}
-            </label>
-            <label className="mz-form-field">
-              <span>Biaya SP / TP</span>
-              {numberInput('spCost', skill.spCost, 0)}
-            </label>
-            <label className="mz-form-field">
-              <span>Speed Modifier</span>
-              <input
-                type="number"
-                value={skill.speed ?? 0}
-                onChange={(e) => onUpdate({ speed: Number(e.target.value) })}
-              />
-            </label>
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <h3>Efek Status & Mekanik Tambahan</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>Status Efek (State ID)</span>
-              <select
-                value={skill.stateId || ''}
-                onChange={(e) => onUpdate({ stateId: e.target.value || undefined })}
-              >
-                <option value="">(Tidak ada)</option>
-                {bundle.game.states.map((st) => (
-                  <option key={st.id} value={st.id}>
-                    {st.name} ({st.id})
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="mz-form-field">
-              <span>Peluang Status (0.0 – 1.0)</span>
-              <input
-                type="number"
-                step="0.05"
-                min={0}
-                max={1}
-                value={skill.stateChance ?? 0}
-                onChange={(e) => onUpdate({ stateChance: Number(e.target.value) })}
-              />
-            </label>
-            <label className="mz-form-checkbox">
-              <input
-                type="checkbox"
-                checked={Boolean(skill.armorPiercing)}
-                onChange={(e) => onUpdate({ armorPiercing: e.target.checked })}
-              />
-              <span>Tembus Pertahanan (Armor Piercing)</span>
-            </label>
-          </div>
-        </div>
-      </div>
+      <SkillDetailForm
+        skill={record as unknown as SkillData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
   // ITEMS
   if (collection === 'items') {
-    const item = record as unknown as ItemData;
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Pengaturan Item</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', item.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Item</span>
-              {textInput('name', item.name)}
-            </label>
-            <label className="mz-form-field">
-              <span>Icon</span>
-              {iconPreview('iconIndex', (item as unknown as Record<string, unknown>).iconIndex ?? 176)}
-            </label>
-            <label className="mz-form-field">
-              <span>Tipe Item</span>
-              {selectInput('kind', item.kind, [
-                { value: 'key', label: 'Key Item (Benda Penting)' },
-                { value: 'heal', label: 'Heal (Pemulihan)' },
-                { value: 'revive', label: 'Revive (Kebangkitan)' },
-                { value: 'stat-reset', label: 'Stat Reset (Pengatur Ulang)' }
-              ])}
-            </label>
-          </div>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>Pemulihan HP (Flat)</span>
-              {numberInput('healHp', item.healHp, 0)}
-            </label>
-            <label className="mz-form-field">
-              <span>Rasio Kebangkitan HP (0.0 – 1.0)</span>
-              <input
-                type="number"
-                step="0.05"
-                min={0}
-                max={1}
-                value={item.reviveHpRatio ?? 0}
-                onChange={(e) => onUpdate({ reviveHpRatio: Number(e.target.value) })}
-              />
-            </label>
-          </div>
-        </div>
-      </div>
+      <ItemDetailForm
+        item={record as unknown as ItemData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
-  // EQUIPMENT
-  if (collection === 'equipment') {
-    const equip = record as unknown as EquipmentData;
-    const stats: Partial<BaseStats> = equip.stats || {};
-    const bonuses: CombatBonuses = equip.bonuses || {};
-
+  // WEAPONS
+  if (collection === 'weapons' || (collection === 'equipment' && (record as EquipmentData).slot === 'weapon')) {
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Pengaturan Perlengkapan (Weapons & Armors)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', equip.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Perlengkapan</span>
-              {textInput('name', equip.name)}
-            </label>
-            <label className="mz-form-field">
-              <span>Icon</span>
-              {iconPreview('iconIndex', (equip as unknown as Record<string, unknown>).iconIndex ?? 96)}
-            </label>
-            <label className="mz-form-field">
-              <span>Slot Perlengkapan</span>
-              {selectInput('slot', equip.slot, [
-                { value: 'weapon', label: 'Senjata (Weapon)' },
-                { value: 'head', label: 'Kepala (Head)' },
-                { value: 'body', label: 'Tubuh (Body)' },
-                { value: 'accessory', label: 'Aksesoris (Accessory)' }
-              ])}
-            </label>
-            {equip.slot === 'weapon' && (
-              <label className="mz-form-field">
-                <span>Tipe Senjata</span>
-                {selectInput('weaponType', equip.weaponType, [
-                  { value: 'melee', label: 'Melee' },
-                  { value: 'finesse', label: 'Finesse' },
-                  { value: 'ranged', label: 'Ranged' }
-                ])}
-              </label>
-            )}
-          </div>
-        </div>
+      <WeaponDetailForm
+        weapon={record as unknown as EquipmentData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
+    );
+  }
 
-        <div className="mz-form-card">
-          <h3>Bonus Parameter Tempur (Combat Bonuses)</h3>
-          <div className="mz-stats-grid">
-            {(['atk', 'def', 'mat', 'mdf', 'hp', 'mp', 'sp', 'agi'] as Array<keyof CombatBonuses>).map((bn) => (
-              <label key={bn} className="mz-stat-cell">
-                <span>+{bn.toUpperCase()}</span>
-                <input
-                  type="number"
-                  value={bonuses[bn] ?? 0}
-                  onChange={(e) =>
-                    onUpdate({
-                      bonuses: { ...bonuses, [bn]: Number(e.target.value) }
-                    })
-                  }
-                />
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <h3>Bonus Base Stats</h3>
-          <div className="mz-stats-grid">
-            {(['str', 'int', 'dex', 'luk', 'agi', 'vit'] as Array<keyof BaseStats>).map((st) => (
-              <label key={st} className="mz-stat-cell">
-                <span>+{st.toUpperCase()}</span>
-                <input
-                  type="number"
-                  value={stats[st] ?? 0}
-                  onChange={(e) =>
-                    onUpdate({
-                      stats: { ...stats, [st]: Number(e.target.value) }
-                    })
-                  }
-                />
-              </label>
-            ))}
-          </div>
-        </div>
-      </div>
+  // ARMORS
+  if (collection === 'armors' || (collection === 'equipment' && (record as EquipmentData).slot !== 'weapon')) {
+    return (
+      <ArmorDetailForm
+        armor={record as unknown as EquipmentData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
   // ENEMIES
   if (collection === 'enemies') {
-    const enemy = record as unknown as EnemyData;
-    const stats: BaseStats = enemy.stats || { str: 6, int: 4, dex: 6, luk: 4, agi: 6, vit: 6 };
-    const base: CombatBase = enemy.base || { hp: 40, mp: 0, atk: 6, def: 4, mat: 2, mdf: 2, agi: 5 };
-    const reward = enemy.reward || { gold: 10, baseExp: 20, classExp: 15 };
-    const rawBattler = (enemy as unknown as Record<string, unknown>).battlerImage as string | undefined;
-    const battlerPath = rawBattler || `assets/enemies/${enemy.name}.png`;
-    const battlerUrl = assetUrlMap[battlerPath] || assetUrlMap[`assets/enemies/${enemy.name}.png`] || assetUrlMap['assets/enemies/Goblin.png'];
-
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>General Settings</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 320px) 1fr', gap: 16 }}>
-            <div>
-              <label className="mz-form-field">
-                <span>Name:</span>
-                {textInput('name', enemy.name)}
-              </label>
-              <div className="mz-enemy-preview-card" style={{ marginTop: 8 }}>
-                <span style={{ fontWeight: 600, fontSize: 12 }}>Image:</span>
-                <div className="mz-checkered-bg mz-enemy-preview-box">
-                  {battlerUrl ? (
-                    <img src={battlerUrl} alt={enemy.name} className="mz-enemy-preview-img" />
-                  ) : (
-                    <span style={{ fontSize: 40 }}>👹</span>
-                  )}
-                </div>
-                <div style={{ width: '100%' }}>
-                  {assetSelect('battlerImage', enemy.battlerImage || `assets/enemies/${enemy.name}.png`, 'image')}
-                </div>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div className="mz-stats-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-                <label className="mz-stat-cell">
-                  <span>Max HP:</span>
-                  <input
-                    type="number"
-                    min={1}
-                    value={base.hp ?? 40}
-                    onChange={(e) => onUpdate({ base: { ...base, hp: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>Max MP:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={base.mp ?? 0}
-                    onChange={(e) => onUpdate({ base: { ...base, mp: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>Attack:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={base.atk ?? 6}
-                    onChange={(e) => onUpdate({ base: { ...base, atk: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>Defense:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={base.def ?? 4}
-                    onChange={(e) => onUpdate({ base: { ...base, def: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>M.Attack:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={base.mat ?? 2}
-                    onChange={(e) => onUpdate({ base: { ...base, mat: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>M.Defense:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={base.mdf ?? 2}
-                    onChange={(e) => onUpdate({ base: { ...base, mdf: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>Agility:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={base.agi ?? 5}
-                    onChange={(e) => onUpdate({ base: { ...base, agi: Number(e.target.value) } })}
-                  />
-                </label>
-                <label className="mz-stat-cell">
-                  <span>Luck:</span>
-                  <input
-                    type="number"
-                    min={0}
-                    value={stats.luk ?? 4}
-                    onChange={(e) => onUpdate({ stats: { ...stats, luk: Number(e.target.value) } })}
-                  />
-                </label>
-              </div>
-
-              <div className="mz-form-row" style={{ marginTop: 8 }}>
-                <label className="mz-form-field">
-                  <span>ID:</span>
-                  {textInput('id', enemy.id)}
-                </label>
-                <label className="mz-form-field">
-                  <span>AI Archetype:</span>
-                  {selectInput('ai', enemy.ai, [
-                    { value: 'aggressive', label: 'Aggressive (Fisik / Agresif)' },
-                    { value: 'caster', label: 'Caster (Sihir / Taktis)' },
-                    { value: 'guardian', label: 'Guardian (Bertahan)' }
-                  ])}
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <h3>Imbalan Kemenangan (Rewards & Drops)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>Gold</span>
-              <input
-                type="number"
-                min={0}
-                value={reward.gold ?? 0}
-                onChange={(e) =>
-                  onUpdate({
-                    reward: { ...reward, gold: Number(e.target.value) }
-                  })
-                }
-              />
-            </label>
-            <label className="mz-form-field">
-              <span>Base EXP</span>
-              <input
-                type="number"
-                min={0}
-                value={reward.baseExp ?? 0}
-                onChange={(e) =>
-                  onUpdate({
-                    reward: { ...reward, baseExp: Number(e.target.value) }
-                  })
-                }
-              />
-            </label>
-            <label className="mz-form-field">
-              <span>Class EXP</span>
-              <input
-                type="number"
-                min={0}
-                value={reward.classExp ?? 0}
-                onChange={(e) =>
-                  onUpdate({
-                    reward: { ...reward, classExp: Number(e.target.value) }
-                  })
-                }
-              />
-            </label>
-          </div>
-        </div>
-      </div>
+      <EnemyDetailForm
+        enemy={record as unknown as EnemyData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
   // TROOPS
   if (collection === 'troops') {
-    const troop = record as unknown as TroopData;
-    const memberEnemyIds = Array.isArray(troop.enemyIds) ? troop.enemyIds : [];
-
-    const handleAddMember = (enemyId: string) => {
-      onUpdate({ enemyIds: [...memberEnemyIds, enemyId] });
-    };
-
-    const handleRemoveMember = (idx: number) => {
-      onUpdate({ enemyIds: memberEnemyIds.filter((_, i) => i !== idx) });
-    };
-
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Pengaturan Kelompok Pertempuran (Troop Settings)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', troop.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Troop</span>
-              {textInput('name', troop.name)}
-            </label>
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <div className="mz-card-header-actions">
-            <h3>Anggota Musuh dalam Pertempuran ({memberEnemyIds.length} Enemies)</h3>
-            <div className="mz-add-inline">
-              <select
-                id="select-add-enemy"
-                defaultValue={bundle.game.enemies[0]?.id || ''}
-              >
-                {bundle.game.enemies.map((e) => (
-                  <option key={e.id} value={e.id}>
-                    {e.name} ({e.id})
-                  </option>
-                ))}
-              </select>
-              <button
-                className="mz-btn-small"
-                onClick={() => {
-                  const el = document.getElementById('select-add-enemy') as HTMLSelectElement;
-                  if (el && el.value) handleAddMember(el.value);
-                }}
-              >
-                ＋ Tambah ke Troop
-              </button>
-            </div>
-          </div>
-
-          <div className="mz-troop-members-list">
-            {memberEnemyIds.map((enemyId, idx) => {
-              const enemyObj = bundle.game.enemies.find((e) => e.id === enemyId);
-              return (
-                <div key={idx} className="mz-troop-member-item">
-                  <span>#{idx + 1}: <strong>{enemyObj?.name || enemyId}</strong></span>
-                  <small>ID: {enemyId}</small>
-                  <button className="mz-btn-del-sm" onClick={() => handleRemoveMember(idx)}>
-                    ×
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <TroopDetailForm
+        troop={record as unknown as TroopData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
   // STATES
   if (collection === 'states') {
-    const state = record as unknown as StateData;
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Pengaturan Efek Status (Buff / Debuff)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', state.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Status</span>
-              {textInput('name', state.name)}
-            </label>
-            <label className="mz-form-field">
-              <span>Durasi (Turns)</span>
-              {numberInput('duration', state.duration, 1)}
-            </label>
-          </div>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>Damage per Turn (DoT)</span>
-              {numberInput('damagePerTurn', state.damagePerTurn, 0)}
-            </label>
-            <label className="mz-form-field">
-              <span>PDR (Fisik Rate)</span>
-              <input
-                type="number"
-                step="0.1"
-                value={state.pdr ?? 1.0}
-                onChange={(e) => onUpdate({ pdr: Number(e.target.value) })}
-              />
-            </label>
-            <label className="mz-form-field">
-              <span>MDR (Sihir Rate)</span>
-              <input
-                type="number"
-                step="0.1"
-                value={state.mdr ?? 1.0}
-                onChange={(e) => onUpdate({ mdr: Number(e.target.value) })}
-              />
-            </label>
-          </div>
-          <label className="mz-form-checkbox">
-            <input
-              type="checkbox"
-              checked={Boolean(state.preventsAction)}
-              onChange={(e) => onUpdate({ preventsAction: e.target.checked })}
-            />
-            <span>Mencegah Aksi Karakter (Stun / Sleep / Freeze)</span>
-          </label>
-        </div>
-      </div>
+      <StateDetailForm
+        state={record as unknown as StateData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
-  // QUESTS
-  if (collection === 'quests') {
-    const quest = record as unknown as QuestData;
-    const objectives = quest.objectives || [];
-
-    const handleAddObjective = () => {
-      const objId = `obj.${Date.now().toString(36)}`;
-      onUpdate({
-        objectives: [...objectives, { id: objId, text: 'Tujuan quest baru', target: 1 }]
-      });
-    };
-
-    const handleRemoveObjective = (idx: number) => {
-      onUpdate({
-        objectives: objectives.filter((_, i) => i !== idx)
-      });
-    };
-
+  // ANIMATIONS
+  if (collection === 'animations') {
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Informasi Quest</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', quest.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Quest</span>
-              {textInput('name', quest.name)}
-            </label>
-          </div>
-          <label className="mz-form-field">
-            <span>Deskripsi / Alur Cerita</span>
-            <textarea
-              value={quest.description || ''}
-              onChange={(e) => onUpdate({ description: e.target.value })}
-              rows={3}
-            />
-          </label>
-        </div>
-
-        <div className="mz-form-card">
-          <div className="mz-card-header-actions">
-            <h3>Tujuan Quest (Objectives)</h3>
-            <button className="mz-btn-small" onClick={handleAddObjective}>
-              ＋ Tambah Tujuan
-            </button>
-          </div>
-          <div className="mz-learning-table">
-            {objectives.map((obj, idx) => (
-              <div key={idx} className="mz-learning-row">
-                <span>Teks:</span>
-                <input
-                  type="text"
-                  value={obj.text}
-                  onChange={(e) => {
-                    const next = [...objectives];
-                    next[idx] = { ...next[idx], text: e.target.value };
-                    onUpdate({ objectives: next });
-                  }}
-                  style={{ flex: 1 }}
-                />
-                <span>Target:</span>
-                <input
-                  type="number"
-                  min={1}
-                  value={obj.target}
-                  onChange={(e) => {
-                    const next = [...objectives];
-                    next[idx] = { ...next[idx], target: Number(e.target.value) };
-                    onUpdate({ objectives: next });
-                  }}
-                  style={{ width: '60px' }}
-                />
-                <button className="mz-btn-del-sm" onClick={() => handleRemoveObjective(idx)}>
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <AnimationDetailForm
+        animation={record as unknown as AnimationData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 
-  // SHOPS
-  if (collection === 'shops') {
-    const shop = record as unknown as ShopData;
-    const items = shop.items || [];
-
-    const handleAddItem = () => {
-      const defaultItem = bundle.game.items[0]?.id || 'item.potion';
-      onUpdate({
-        items: [...items, { itemId: defaultItem, price: 10 }]
-      });
-    };
-
-    const handleRemoveItem = (idx: number) => {
-      onUpdate({
-        items: items.filter((_, i) => i !== idx)
-      });
-    };
-
+  // COMMON EVENTS
+  if (collection === 'commonEvents') {
     return (
-      <div className="mz-db-grid-sections">
-        <div className="mz-form-card">
-          <h3>Informasi Toko (Shop Settings)</h3>
-          <div className="mz-form-row">
-            <label className="mz-form-field">
-              <span>ID</span>
-              {textInput('id', shop.id)}
-            </label>
-            <label className="mz-form-field">
-              <span>Nama Toko</span>
-              {textInput('name', shop.name)}
-            </label>
-          </div>
-        </div>
-
-        <div className="mz-form-card">
-          <div className="mz-card-header-actions">
-            <h3>Daftar Barang Dagangan (Shop Goods)</h3>
-            <button className="mz-btn-small" onClick={handleAddItem}>
-              ＋ Tambah Barang
-            </button>
-          </div>
-          <div className="mz-learning-table">
-            {items.map((it, idx) => (
-              <div key={idx} className="mz-learning-row">
-                <span>Barang:</span>
-                <select
-                  value={it.itemId}
-                  onChange={(e) => {
-                    const next = [...items];
-                    next[idx] = { ...next[idx], itemId: e.target.value };
-                    onUpdate({ items: next });
-                  }}
-                  style={{ flex: 1 }}
-                >
-                  {bundle.game.items.map((itm) => (
-                    <option key={itm.id} value={itm.id}>
-                      {itm.name} ({itm.id})
-                    </option>
-                  ))}
-                </select>
-                <span>Harga:</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={it.price}
-                  onChange={(e) => {
-                    const next = [...items];
-                    next[idx] = { ...next[idx], price: Number(e.target.value) };
-                    onUpdate({ items: next });
-                  }}
-                  style={{ width: '80px' }}
-                />
-                <span>Gold</span>
-                <button className="mz-btn-del-sm" onClick={() => handleRemoveItem(idx)}>
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <CommonEventDetailForm
+        commonEvent={record as unknown as CommonEventData}
+        bundle={bundle}
+        onUpdate={onUpdate}
+        assetUrlMap={assetUrlMap}
+      />
     );
   }
 

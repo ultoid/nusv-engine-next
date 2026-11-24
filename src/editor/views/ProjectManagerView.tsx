@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { RecentProject } from '../../global.js';
+import type { RecentProject } from '../../core/types.js';
 
 export interface ProjectManagerViewProps {
   recentProjects: RecentProject[];

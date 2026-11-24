@@ -7,6 +7,7 @@ export class TextureManager {
   private textureCache = new Map<string, Texture>();
   private frameCache = new Map<string, Texture>();
   private faceCropCache = new Map<string, string>();
+  private svCropCache = new Map<string, string>();
 
   async loadDataUrl(path: string): Promise<string | null> {
     if (!path) return null;
@@ -153,6 +154,35 @@ export class TextureManager {
       ctx.drawImage(img, col * faceW, row * faceH, faceW, faceH, 0, 0, faceW, faceH);
       const croppedUrl = canvas.toDataURL('image/png');
       this.faceCropCache.set(cacheKey, croppedUrl);
+      return croppedUrl;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Extracts a side-view battler frame (default 64x64) from a standard 9x6 RPG Maker MZ sv_actor sheet.
+   */
+  async getSvBattlerDataUrl(path: string, col = 0, row = 0): Promise<string | null> {
+    const cacheKey = `${path}:${col}:${row}`;
+    if (this.svCropCache.has(cacheKey)) return this.svCropCache.get(cacheKey)!;
+
+    const img = await this.loadImage(path);
+    if (!img) return null;
+
+    try {
+      const frameW = Math.floor(img.naturalWidth / 9) || 64;
+      const frameH = Math.floor(img.naturalHeight / 6) || 64;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = frameW;
+      canvas.height = frameH;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      ctx.drawImage(img, col * frameW, row * frameH, frameW, frameH, 0, 0, frameW, frameH);
+      const croppedUrl = canvas.toDataURL('image/png');
+      this.svCropCache.set(cacheKey, croppedUrl);
       return croppedUrl;
     } catch {
       return null;

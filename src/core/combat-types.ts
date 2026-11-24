@@ -71,12 +71,204 @@ export interface ActorData {
   [key: string]: unknown;
 }
 
-export interface EnemyData extends ActorData { reward: { gold: number; baseExp?: number; classExp?: number; items?: Record<string, number> }; ai?:'aggressive'|'caster'|'guardian';bossPhases?:BossPhase[]; battlerImage?: string }
-export interface SkillData { id: string; name: string; kind: 'physical' | 'magical' | 'heal' | 'revive'; power: number; mpCost?: number; spCost?: number; speed?: number; target: 'enemy' | 'ally'; armorPiercing?: boolean; element?:string; stateId?: string; stateChance?: number;sequence?:Array<'approach'|'cast'|'impact'|'return'>; iconIndex?: number; [key: string]: unknown }
-export interface ItemData { id: string; name: string; kind: 'key' | 'heal' | 'revive' | 'stat-reset'; healHp?: number; reviveHpRatio?:number; iconIndex?: number; [key: string]: unknown }
-export interface EquipmentData { id:string; name:string; slot:'weapon'|'shield'|'head'|'body'|'accessory'; stats?:Partial<BaseStats>; bonuses?:CombatBonuses; weaponType?:'melee'|'finesse'|'ranged'; iconIndex?: number; traits?: TraitData[]; note?: string; [key: string]: unknown }
-export interface TroopData { id: string; name: string; enemyIds: string[] }
-export interface StateData { id:string; name:string; duration:number; pdr?:number; mdr?:number; damagePerTurn?:number; preventsAction?:boolean }
+export interface EnemyDropItem {
+  kind: 'item' | 'weapon' | 'armor';
+  dataId: string;
+  denominator: number;
+}
+
+export interface EnemyAction {
+  skillId: string;
+  rating: number;
+  conditionType?: 'always' | 'turn' | 'hp' | 'mp' | 'state' | 'level' | 'switch' | number;
+  conditionParam1?: number | string;
+  conditionParam2?: number;
+}
+
+export interface EnemyData extends ActorData {
+  reward: { gold: number; baseExp?: number; classExp?: number; items?: Record<string, number> };
+  ai?: 'aggressive' | 'caster' | 'guardian';
+  bossPhases?: BossPhase[];
+  battlerImage?: string;
+  battlerName?: string;
+  battlerHue?: number;
+  params?: number[];
+  exp?: number;
+  gold?: number;
+  dropItems?: EnemyDropItem[];
+  actions?: EnemyAction[];
+}
+
+export interface SkillDamage {
+  type: number; // 0: None, 1: HP Damage, 2: MP Damage, 3: HP Recover, 4: MP Recover, 5: HP Drain, 6: MP Drain
+  elementId?: number | string; // -1: Normal Attack, 0: None, 1..: Element ID
+  formula?: string;
+  variance?: number;
+  critical?: boolean;
+}
+
+export interface SkillEffect {
+  code: number;
+  dataId: number | string;
+  value1: number;
+  value2: number;
+}
+
+export interface SkillData {
+  id: string;
+  name: string;
+  kind: 'physical' | 'magical' | 'heal' | 'revive';
+  power: number;
+  mpCost?: number;
+  spCost?: number;
+  tpCost?: number;
+  tpGain?: number;
+  speed?: number;
+  target: 'enemy' | 'ally';
+  scope?: number | string;
+  occasion?: 'always' | 'battle' | 'menu' | 'never' | number;
+  armorPiercing?: boolean;
+  element?: string;
+  stateId?: string;
+  stateChance?: number;
+  sequence?: Array<'approach' | 'cast' | 'impact' | 'return'>;
+  iconIndex?: number;
+  description?: string;
+  animationId?: string | number;
+  note?: string;
+
+  // RPG Maker MZ Standard Fields
+  stypeId?: number;
+  successRate?: number;
+  repeats?: number;
+  hitType?: number;
+  message1?: string;
+  message2?: string;
+  requiredWtypeId1?: number | string;
+  requiredWtypeId2?: number | string;
+  damage?: SkillDamage;
+  effects?: SkillEffect[];
+  [key: string]: unknown;
+}
+
+export interface ItemData {
+  id: string;
+  name: string;
+  kind: 'key' | 'heal' | 'revive' | 'stat-reset' | 'buff' | string;
+  healHp?: number;
+  reviveHpRatio?: number;
+  iconIndex?: number;
+  price?: number;
+  consumable?: boolean;
+  scope?: number | string;
+  occasion?: 'always' | 'battle' | 'menu' | 'never' | number;
+  description?: string;
+  animationId?: string | number;
+  note?: string;
+
+  // RPG Maker MZ Standard Fields
+  itypeId?: number; // 1: Regular Item, 2: Key Item, 3: Hidden Item A, 4: Hidden Item B
+  speed?: number;
+  successRate?: number;
+  repeats?: number;
+  tpGain?: number;
+  hitType?: number; // 0: Certain Hit, 1: Physical Attack, 2: Magical Attack
+  damage?: SkillDamage;
+  effects?: SkillEffect[];
+  [key: string]: unknown;
+}
+
+export interface EquipmentData {
+  id: string;
+  name: string;
+  slot: 'weapon' | 'shield' | 'head' | 'body' | 'accessory';
+  stats?: Partial<BaseStats>;
+  bonuses?: CombatBonuses;
+  weaponType?: 'melee' | 'finesse' | 'ranged';
+  price?: number;
+  iconIndex?: number;
+  traits?: TraitData[];
+  description?: string;
+  animationId?: string | number;
+  wtypeId?: number;
+  atypeId?: number;
+  etypeId?: number;
+  params?: number[]; // [mhp, mmp, atk, def, mat, mdf, agi, luk]
+  note?: string;
+  [key: string]: unknown;
+}
+
+export interface TroopMember {
+  enemyId: string;
+  x?: number;
+  y?: number;
+  hidden?: boolean;
+}
+
+export interface TroopPageConditions {
+  turnEnding?: boolean;
+  turnValid?: boolean;
+  turnA?: number;
+  turnB?: number;
+  enemyValid?: boolean;
+  enemyIndex?: number;
+  enemyHp?: number;
+  actorValid?: boolean;
+  actorId?: string;
+  actorHp?: number;
+  switchValid?: boolean;
+  switchId?: string;
+}
+
+export interface TroopPage {
+  conditions: TroopPageConditions;
+  span: 'battle' | 'turn' | 'moment';
+  commands: unknown[];
+}
+
+export interface TroopData {
+  id: string;
+  name: string;
+  enemyIds: string[];
+  members?: TroopMember[];
+  battleback1?: string;
+  battleback2?: string;
+  battleback1Name?: string;
+  battleback2Name?: string;
+  pages?: TroopPage[];
+  [key: string]: unknown;
+}
+
+export interface StateData {
+  id: string;
+  name: string;
+  duration: number;
+  pdr?: number;
+  mdr?: number;
+  damagePerTurn?: number;
+  preventsAction?: boolean;
+  iconIndex?: number;
+  restriction?: 'none' | 'attackEnemy' | 'attackAnyone' | 'attackAlly' | 'cannotMove' | number;
+  priority?: number;
+  motion?: number;
+  overlay?: number;
+  removeAtBattleEnd?: boolean;
+  removeByRestriction?: boolean;
+  autoRemovalTiming?: number;
+  minTurns?: number;
+  maxTurns?: number;
+  removeByDamage?: boolean;
+  chanceByDamage?: number;
+  removeByWalking?: boolean;
+  stepsToRemove?: number;
+  message1?: string;
+  message2?: string;
+  message3?: string;
+  message4?: string;
+  traits?: TraitData[];
+  note?: string;
+  [key: string]: unknown;
+}
 export interface ActiveState { id:string; turns:number }
 export interface ActorProgress { baseLevel:number; baseExp:number; unspentStatPoints:number; allocated:BaseStats; equipment:Record<string,string>; activeClassId:string; classes:Record<string,{level:number;exp:number;tier:1|2|3|4|5}> }
 export interface DerivedStats { maxHp: number; maxMp: number; maxSp: number; atk: number; def: number; mat: number; mdf: number; actionSpeed: number; hit: number; eva: number; cri: number; cev: number; criticalDamage: number; guard: number; hpRegen: number; mpRegen: number; spRegen: number }

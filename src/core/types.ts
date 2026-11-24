@@ -1,20 +1,232 @@
 import type { ActorData, ActorProgress, EnemyData, EquipmentData, ItemData, ResourceState, SkillData, StateData, TroopData } from './combat-types.js';
-export interface QuestData { id:string;name:string;description:string;objectives:Array<{id:string;text:string;target:number}>;rewards?:{gold?:number;items?:Record<string,number>} }
-export interface QuestProgress { status:'active'|'completed';objectives:Record<string,number> }
-export interface ShopData { id:string;name:string;items:Array<{itemId:string;price:number}> }
-export interface ClassData { id:string;name:string;tier:1|2|3|4|5;growth?:Partial<import('./combat-types.js').BaseStats> }
-export interface RuntimeSettings { language:'id'|'en';masterVolume:number;musicVolume:number;sfxVolume:number;textScale:number;highContrast:boolean;reducedMotion:boolean }
-export interface ProjectManifest { schemaVersion: 1; projectId: string; title: string; logicalResolution: { width: number; height: number }; maps: string[]; start: { mapId: string; x: number; y: number }; party: string[]; [key: string]: unknown }
+export interface QuestData { id: string; name: string; description: string; objectives: Array<{ id: string; text: string; target: number }>; rewards?: { gold?: number; items?: Record<string, number> } }
+export interface QuestProgress { status: 'active' | 'completed'; objectives: Record<string, number> }
+export interface ShopData { id: string; name: string; items: Array<{ itemId: string; price: number }> }
+export interface ClassLearning {
+  level: number;
+  skillId: string;
+  note?: string;
+}
+
+export interface ClassData {
+  id: string;
+  name: string;
+  tier: 1 | 2 | 3 | 4 | 5;
+  growth?: Partial<import('./combat-types.js').BaseStats>;
+  statGrowth?: Partial<import('./combat-types.js').BaseStats>;
+  learnings?: ClassLearning[];
+  traits?: import('./combat-types.js').TraitData[];
+  expParams?: [number, number, number, number];
+  params?: number[][];
+  expCurve?: { basis: number; extra: number; accA: number; accB: number };
+  note?: string;
+  [key: string]: unknown;
+}
+export interface RuntimeSettings { language: 'id' | 'en'; masterVolume: number; musicVolume: number; sfxVolume: number; textScale: number; highContrast: boolean; reducedMotion: boolean }
+export interface ProjectManifest { schemaVersion: 1; projectId: string; title: string; logicalResolution: { width: number; height: number }; maps: string[]; start: { mapId: string; x: number; y: number }; party: string[];[key: string]: unknown }
 export interface TilesetData { id: string; name: string; mode: number; tilesetNames: string[]; note?: string; flags?: number[] }
 export interface CommonEventData {
   id: string;
   name: string;
-  trigger?: 'none' | 'autorun' | 'parallel';
+  trigger?: 'none' | 'autorun' | 'parallel' | number;
   switchId?: string;
   commands: EventCommand[];
+  note?: string;
+  [key: string]: unknown;
 }
 
-export interface GameData { schemaVersion: 1; actors: ActorData[]; enemies: EnemyData[]; equipment:EquipmentData[]; skills: SkillData[]; states:StateData[]; troops: TroopData[]; items: ItemData[]; tilesets?: TilesetData[]; quests?:QuestData[];shops?:ShopData[];classes?:ClassData[];commonEvents?:CommonEventData[];translations?:Record<string,Record<string,string>>; [key: string]: unknown }
+export interface TypesData {
+  elements?: string[];
+  skillTypes?: string[];
+  weaponTypes?: string[];
+  armorTypes?: string[];
+  equipmentTypes?: string[];
+  [key: string]: unknown;
+}
+
+export interface AnimationSoundTiming {
+  frame: number;
+  se: {
+    name: string;
+    volume?: number;
+    pitch?: number;
+    pan?: number;
+  };
+}
+
+export interface AnimationFlashTiming {
+  frame: number;
+  duration: number;
+  color: [number, number, number, number]; // [r, g, b, a]
+  target?: number; // 0: target, 1: screen, 2: hide target
+}
+
+export interface AnimationRotation {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface AnimationData {
+  id: string;
+  name: string;
+  displayType: number; // 0: None, 1: For each target, 2: For entire screen
+  alignBottom?: boolean;
+  effectName: string;
+  scale?: number;
+  speed?: number;
+  rotation?: AnimationRotation;
+  offsetX?: number;
+  offsetY?: number;
+  soundTimings?: AnimationSoundTiming[];
+  flashTimings?: AnimationFlashTiming[];
+  note?: string;
+  [key: string]: unknown;
+}
+
+export interface SystemAudioSettings {
+  name: string;
+  volume?: number;
+  pitch?: number;
+  pan?: number;
+}
+
+export interface SystemVehicleImage {
+  characterName: string;
+  characterIndex: number;
+}
+
+export interface SystemStartingPosition {
+  mapId: string;
+  x: number;
+  y: number;
+}
+
+export interface SystemTitleScreen {
+  title1Name?: string;
+  title2Name?: string;
+  drawTitle?: boolean;
+  commandWindow?: {
+    background?: number; // 0: Window, 1: Dim, 2: Transparent
+    offsetX?: number;
+    offsetY?: number;
+  };
+}
+
+export interface SystemOptions {
+  optTransparent?: boolean;
+  optFollowers?: boolean;
+  optSlipDeath?: boolean;
+  optFloorDeath?: boolean;
+  optDisplayTp?: boolean;
+  optExtraExp?: boolean;
+  optKeyItemsNumber?: boolean;
+  optAutosave?: boolean;
+}
+
+export interface SystemSvAttackMotion {
+  weaponTypeId: number | string;
+  motion: number; // 0: Thrust, 1: Swing, 2: Missile
+  animationId?: number | string;
+  weaponImageId?: number;
+}
+
+export interface SystemAdvanced {
+  screenWidth?: number;
+  screenHeight?: number;
+  uiAreaWidth?: number;
+  uiAreaHeight?: number;
+  tileSize?: 16 | 24 | 32 | 48;
+  windowOpacity?: number;
+  mainFontFilename?: string;
+  numberFontFilename?: string;
+  fallbackFont?: string;
+  fontSize?: number;
+}
+
+export interface SystemData {
+  // System 1
+  gameTitle?: string;
+  partyMembers?: string[];
+  currencyUnit?: string;
+  windowTone?: [number, number, number, number?];
+  boat?: SystemVehicleImage;
+  ship?: SystemVehicleImage;
+  airship?: SystemVehicleImage;
+  startPositions?: {
+    player?: SystemStartingPosition;
+    boat?: SystemStartingPosition | null;
+    ship?: SystemStartingPosition | null;
+    airship?: SystemStartingPosition | null;
+  };
+  titleScreen?: SystemTitleScreen;
+  battleScreen?: {
+    sideView: boolean;
+  };
+  battleSystem?: 0 | 1 | 2; // 0: Turn-based, 1: Time Progress (Active), 2: Time Progress (Wait)
+  options?: SystemOptions;
+  bgm?: {
+    title?: SystemAudioSettings;
+    battle?: SystemAudioSettings;
+    victory?: SystemAudioSettings;
+    defeat?: SystemAudioSettings;
+    gameover?: SystemAudioSettings;
+    boat?: SystemAudioSettings;
+    ship?: SystemAudioSettings;
+    airship?: SystemAudioSettings;
+  };
+  sounds?: Record<string, SystemAudioSettings>;
+
+  // System 2
+  menuCommands?: {
+    item?: boolean;
+    skill?: boolean;
+    equip?: boolean;
+    status?: boolean;
+    formation?: boolean;
+    save?: boolean;
+  };
+  itemCategories?: {
+    item?: boolean;
+    weapon?: boolean;
+    armor?: boolean;
+    keyItem?: boolean;
+  };
+  svMagicSkills?: (number | string)[];
+  svAttackMotions?: SystemSvAttackMotion[];
+  advanced?: SystemAdvanced;
+  [key: string]: unknown;
+}
+
+export interface TermsData {
+  basic?: string[];
+  params?: string[];
+  commands?: string[];
+  messages?: Record<string, string>;
+  [key: string]: unknown;
+}
+
+export interface GameData {
+  schemaVersion: 1;
+  actors: ActorData[];
+  enemies: EnemyData[];
+  equipment: EquipmentData[];
+  skills: SkillData[];
+  states: StateData[];
+  troops: TroopData[];
+  items: ItemData[];
+  animations?: AnimationData[];
+  tilesets?: TilesetData[];
+  quests?: QuestData[];
+  shops?: ShopData[];
+  classes?: ClassData[];
+  commonEvents?: CommonEventData[];
+  types?: TypesData;
+  terms?: TermsData;
+  translations?: Record<string, Record<string, string>>;
+  system?: SystemData;
+  [key: string]: unknown;
+}
 export type BranchCondition =
   | { kind: 'switch'; id: string; value: boolean }
   | { kind: 'variable'; id: string; op: '==' | '>=' | '<=' | '>' | '<' | '!='; value: number }
@@ -79,11 +291,11 @@ export interface MoveRoute {
   list: MoveRouteCommand[];
 }
 
-export type EventCommand = 
-  | { type: 'text'; text: string; speakerName?: string; faceName?: string; faceIndex?: number; background?: number; positionType?: number } 
-  | { type: 'choice'; prompt: string; choices: Array<{ text: string; commands: EventCommand[] }> } 
-  | { type: 'setSwitch'; id: string; value: boolean } 
-  | { type: 'setVariable'; id: string; value: number } 
+export type EventCommand =
+  | { type: 'text'; text: string; speakerName?: string; faceName?: string; faceIndex?: number; background?: number; positionType?: number }
+  | { type: 'choice'; prompt: string; choices: Array<{ text: string; commands: EventCommand[] }> }
+  | { type: 'setSwitch'; id: string; value: boolean }
+  | { type: 'setVariable'; id: string; value: number }
   | { type: 'setSelfSwitch'; key: 'A' | 'B' | 'C' | 'D'; value: boolean; eventId?: string }
   | { type: 'branch'; condition: BranchCondition; thenCommands: EventCommand[]; elseCommands?: EventCommand[] }
   | { type: 'loop'; commands: EventCommand[] }
@@ -93,9 +305,9 @@ export type EventCommand =
   | { type: 'jumpToLabel'; name: string }
   | { type: 'wait'; frames: number }
   | { type: 'changeGold'; amount: number; operation?: 'add' | 'sub' }
-  | { type: 'giveItem'; itemId: string; amount: number } 
-  | { type: 'transfer'; designation?: 'direct' | 'variables'; mapId: string; x: number; y: number; mapVariableId?: string; xVariableId?: string; yVariableId?: string; direction?: 'retain' | 'down' | 'left' | 'right' | 'up'; fade?: 'black' | 'white' | 'none' } 
-  | { type: 'battle'; troopId: string; victorySwitchId?: string } 
+  | { type: 'giveItem'; itemId: string; amount: number }
+  | { type: 'transfer'; designation?: 'direct' | 'variables'; mapId: string; x: number; y: number; mapVariableId?: string; xVariableId?: string; yVariableId?: string; direction?: 'retain' | 'down' | 'left' | 'right' | 'up'; fade?: 'black' | 'white' | 'none' }
+  | { type: 'battle'; troopId: string; victorySwitchId?: string }
   | { type: 'questStart'; questId: string }
   | { type: 'questAdvance'; questId: string; objectiveId: string; amount: number }
   | { type: 'questComplete'; questId: string }
@@ -229,9 +441,9 @@ export type EventTrigger = 'interact' | 'touch' | 'event_touch' | 'autorun' | 'p
 export type MoveType = 'fixed' | 'random' | 'approach' | 'custom';
 export type PriorityType = 'below' | 'same' | 'above';
 
-export interface EventPage { 
-  conditions?: EventPageConditions; 
-  solid: boolean; 
+export interface EventPage {
+  conditions?: EventPageConditions;
+  solid: boolean;
   trigger?: EventTrigger;
   graphic?: EventGraphic;
   commands: EventCommand[];
@@ -246,8 +458,8 @@ export interface EventPage {
   priorityType?: PriorityType;
   [key: string]: unknown;
 }
-export interface MapEvent { id: string; name: string; note?: string; x: number; y: number; trigger: EventTrigger; pages: EventPage[]; [key: string]: unknown }
-export interface TileLayer { id:string;type:'tile';name:string;data:number[];autotileShapes?:Record<number, Array<{ srcX: number; srcY: number; left: number; top: number }>>;[key:string]:unknown }
+export interface MapEvent { id: string; name: string; note?: string; x: number; y: number; trigger: EventTrigger; pages: EventPage[];[key: string]: unknown }
+export interface TileLayer { id: string; type: 'tile'; name: string; data: number[]; autotileShapes?: Record<number, Array<{ srcX: number; srcY: number; left: number; top: number }>>;[key: string]: unknown }
 export interface MapParallax {
   name: string;
   loopX?: boolean;
@@ -288,7 +500,23 @@ export interface MapData {
   note?: string;
   [key: string]: unknown;
 }
-export interface AssetEntry { id: string; type: string; path: string; category?: string; license?: string; size?: number; [key: string]: unknown }
-export interface AssetManifest { schemaVersion: 1; assets: Array<AssetEntry>; [key: string]: unknown }
+export interface AssetEntry { id: string; type: string; path: string; category?: string; license?: string; size?: number;[key: string]: unknown }
+export interface AssetManifest { schemaVersion: 1; assets: Array<AssetEntry>;[key: string]: unknown }
 export interface ProjectBundle { root?: string; project: ProjectManifest; game: GameData; maps: Record<string, MapData>; assets: AssetManifest }
-export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]>; vehiclePositions?: Record<string, { mapId: string; x: number; y: number }>; inVehicle?: 'boat' | 'ship' | 'airship' | null; showFollowers?: boolean; pictureRotations?: Record<number, number>; systemSettings?: { saveEnabled?: boolean; menuEnabled?: boolean; encounterEnabled?: boolean; formationEnabled?: boolean; battleBgm?: string; victoryMe?: string; defeatMe?: string; vehicleBgm?: Record<string, string>; windowColor?: [number, number, number] }; mapNameDisplay?: boolean; activeTilesetId?: string; parallax?: { name: string; loopX?: boolean; loopY?: boolean; sx?: number; sy?: number }; battleBack?: { battleback1?: string; battleback2?: string }; actorImages?: Record<string, { characterName?: string; characterIndex?: number; faceName?: string; faceIndex?: number; battlerName?: string }>; vehicleImages?: Record<string, { imageName: string; imageIndex: number }>; enemyBattleState?: Record<number, { hp?: number; mp?: number; tp?: number; states?: string[]; hidden?: boolean; enemyId?: string }> }
+export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress: Record<string, ActorProgress>; gold: number; quests: Record<string, QuestProgress>; formation: string[]; settings: RuntimeSettings; telemetry: { battles: number; victories: number; turns: number; damageTaken: number }; eventPositions: Record<string, { mapId: string; x: number; y: number }>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]>; vehiclePositions?: Record<string, { mapId: string; x: number; y: number }>; inVehicle?: 'boat' | 'ship' | 'airship' | null; showFollowers?: boolean; pictureRotations?: Record<number, number>; systemSettings?: { saveEnabled?: boolean; menuEnabled?: boolean; encounterEnabled?: boolean; formationEnabled?: boolean; battleBgm?: string; victoryMe?: string; defeatMe?: string; vehicleBgm?: Record<string, string>; windowColor?: [number, number, number] }; mapNameDisplay?: boolean; activeTilesetId?: string; parallax?: { name: string; loopX?: boolean; loopY?: boolean; sx?: number; sy?: number }; battleBack?: { battleback1?: string; battleback2?: string }; actorImages?: Record<string, { characterName?: string; characterIndex?: number; faceName?: string; faceIndex?: number; battlerName?: string }>; vehicleImages?: Record<string, { imageName: string; imageIndex: number }>; enemyBattleState?: Record<number, { hp?: number; mp?: number; tp?: number; states?: string[]; hidden?: boolean; enemyId?: string }> }
+
+export interface ImportReport {
+  source: string;
+  converted: string[];
+  warnings: string[];
+  unsupported: string[];
+  errors: string[];
+  idMap: Record<string, string>;
+}
+
+export interface RecentProject {
+  path: string;
+  title: string;
+  lastOpened: number;
+}
+

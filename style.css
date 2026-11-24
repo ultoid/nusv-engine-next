@@ -2439,9 +2439,17 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
 .battle-card { display: flex; align-items: center; gap: 14px; white-space: pre-line; margin: 12px 0; padding: 16px; border: 1px solid #6d8f8a; border-radius: 10px; background: #132a31e6; backdrop-filter: blur(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
 .battle-card.down { opacity: .4; filter: grayscale(1); }
 .battler-sprite { max-width: 110px; max-height: 110px; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8)); flex-shrink: 0; }
+.sv-actor-sprite { width: 64px; height: 64px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.85)); transform: scale(1.35); }
 .face-thumbnail { width: 56px; height: 56px; border-radius: 6px; border: 1px solid #d5b46d; object-fit: cover; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+.battle-card.party-card { flex-direction: row-reverse; }
+.battle-card.party-card .battle-card-content { text-align: right; }
 .battle-card-content { flex: 1; min-width: 0; }
-.battle-card.action-approach { transform:translateX(18px); }.battle-card.action-cast { box-shadow:0 0 28px #65dfbd;filter:brightness(1.4); }.battle-card.action-impact { transform:scale(1.06);background:#754531; }.battle-card.action-return { transform:translateX(-8px); }
+.battle-card.action-approach { transform: translateX(24px); }
+.battle-card.party-card.action-approach { transform: translateX(-24px); }
+.battle-card.action-cast { box-shadow: 0 0 28px #65dfbd; filter: brightness(1.4); }
+.battle-card.action-impact { transform: scale(1.06); background: #754531; }
+.battle-card.action-return { transform: translateX(-10px); }
+.battle-card.party-card.action-return { transform: translateX(10px); }
 .battle-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; max-width: 960px; margin: 28px auto; padding: 18px; border-radius: 10px; background: #0a121be6; backdrop-filter: blur(4px); }
 .battle-actions strong { width: 100%; text-align: center; }
 .battle-actions button { padding: 10px 16px; border: 1px solid #d5b46d; border-radius: 7px; background: #253846; color: #fff; cursor: pointer; }
@@ -5029,6 +5037,59 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
   gap: 6px;
   justify-content: flex-end;
   margin-top: 4px;
+}
+
+/* Parameter Curves Grid (Classes - RPG Maker MZ) */
+.mz-class-editor-root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.mz-param-curves-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.mz-param-curve-cell {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 4px 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.mz-param-curve-cell:hover {
+  border-color: #0078d7;
+  box-shadow: 0 2px 6px rgba(0, 120, 215, 0.25);
+  transform: translateY(-1px);
+}
+
+.mz-param-curve-header {
+  font-size: 10px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mz-param-curve-svg-box {
+  width: 100%;
+  height: 42px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
 }
 
 /* Accordion for NUSV Core Advanced Settings */
