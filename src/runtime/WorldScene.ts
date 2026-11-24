@@ -1,7 +1,7 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
-import type { ProgressState, ProjectBundle } from '../core/types.js';
+import type { MapEvent, ProgressState, ProjectBundle } from '../core/types.js';
 import { autotileMask, DEFAULT_TILESETS, getAutotileQuadrants, tileDefinition } from '../core/map-layers.js';
-import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, type Direction } from '../core/world.js';
+import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, type Direction, type EventIO } from '../core/world.js';
 import { AdventureController, applyRuntimeSettings } from './AdventureController.js';
 import type { AudioManager } from './AudioManager.js';
 import { BattleController } from './BattleController.js';
@@ -28,6 +28,7 @@ export class WorldScene {
   private adventure: AdventureController;
   private textures: TextureManager;
   private stepCount = 0;
+  private parallelRunning = new Set<string>();
 
   constructor(
     private readonly bundle: ProjectBundle,
@@ -154,22 +155,24 @@ export class WorldScene {
       const position = eventPosition(this.state, map.id, event);
       const isTouch = event.trigger === 'touch';
 
-      let eventGraphic: string | null = null;
-      let eventIdx = 0;
-      let eventDir: Direction = 'down';
-      let eventStep = 1;
+      let eventGraphic: string | null = page.graphic?.characterName ?? null;
+      let eventIdx = page.graphic?.characterIndex ?? 0;
+      let eventDir: Direction = page.graphic?.direction ?? 'down';
+      let eventStep = page.graphic?.pattern ?? 1;
 
-      if (event.id.includes('gate') || event.name.toLowerCase().includes('gerbang') || event.name.toLowerCase().includes('pintu')) {
-        eventGraphic = 'assets/characters/Door1.png';
-        const isOpen = this.state.switches['door.open'] === true;
-        eventDir = isOpen ? 'right' : 'down';
-        eventStep = isOpen ? 2 : 1;
-      } else if (event.id.includes('chest') || event.name.toLowerCase().includes('peti')) {
-        eventGraphic = 'assets/characters/Chest.png';
-      } else if (event.id.includes('guide') || event.name.toLowerCase().includes('penjaga')) {
-        eventGraphic = 'assets/characters/Actor2.png';
-        eventIdx = 0;
-        eventDir = 'down';
+      if (!eventGraphic) {
+        if (event.id.includes('gate') || event.name.toLowerCase().includes('gerbang') || event.name.toLowerCase().includes('pintu')) {
+          eventGraphic = 'assets/characters/Door1.png';
+          const isOpen = this.state.switches['door.open'] === true;
+          eventDir = isOpen ? 'right' : 'down';
+          eventStep = isOpen ? 2 : 1;
+        } else if (event.id.includes('chest') || event.name.toLowerCase().includes('peti')) {
+          eventGraphic = 'assets/characters/Chest.png';
+        } else if (event.id.includes('guide') || event.name.toLowerCase().includes('penjaga')) {
+          eventGraphic = 'assets/characters/Actor2.png';
+          eventIdx = 0;
+          eventDir = 'down';
+        }
       }
 
       const eventFallback = new Graphics().roundRect(position.x * tile + 8, position.y * tile + 8, tile - 16, tile - 16, 7).fill(isTouch ? 0xc99b4e : 0x77a9c8);
@@ -251,6 +254,29 @@ export class WorldScene {
       this.debug.toggle();
       this.debug.draw(this.state);
     }
+    const currentMap = this.bundle.maps[this.state.mapId];
+    if (currentMap) {
+      const parallelEvents = currentMap.events.filter(e => {
+        const page = activePage(e, this.state);
+        return page && (page.trigger ?? e.trigger) === 'parallel';
+      });
+      for (const pe of parallelEvents) {
+        if (!this.parallelRunning.has(pe.id)) {
+          this.parallelRunning.add(pe.id);
+          void this.runParallelEvent(pe);
+        }
+      }
+      if (!this.busy) {
+        const autorunEvent = currentMap.events.find(e => {
+          const page = activePage(e, this.state);
+          return page && (page.trigger ?? e.trigger) === 'autorun';
+        });
+        if (autorunEvent) {
+          void this.runEvent(autorunEvent);
+          return;
+        }
+      }
+    }
     if (this.busy) return;
     if (input.wasPressed('menu')) return void this.openParty();
     if (input.wasPressed('journal')) return void this.openJournal();
@@ -298,6 +324,75 @@ export class WorldScene {
     }
   }
 
+  private createEventIO(): EventIO {
+    return {
+      showText: (text: string) => this.dialogue.showText(text),
+      choose: (prompt: string, choices: string[]) => this.dialogue.choose(prompt, choices),
+      battle: async (troopId: string, state: ProgressState) => {
+        const result = await this.battle.run(troopId, state);
+        this.playMapBgm();
+        return result;
+      },
+      shop: (shopId: string, state: ProgressState) => this.adventure.shop(shopId, state),
+      inn: (price: number, state: ProgressState) => this.adventure.inn(price, state),
+      cutscene: (lines: string[], vfx: 'flash' | 'shake' | undefined) => this.adventure.cutscene(lines, vfx, text => this.dialogue.showText(text)),
+      music: (mood: 'calm' | 'danger' | 'boss' | 'silence') => this.audio.setMood(mood),
+      eventMove: async (state: ProgressState) => {
+        this.state = state;
+        this.rebuild();
+        await wait(state.settings.reducedMotion ? 1 : 120);
+      },
+      wait: async (frames: number) => {
+        await wait(frames * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      tintScreen: async (_tone, duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      flashScreen: async (_color, duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      shakeScreen: async (_power, _speed, duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      fadeoutScreen: async (duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      fadeinScreen: async (duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      weather: async (_weatherType, _power, duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      showPicture: async () => {},
+      movePicture: async (_id, duration) => {
+        await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      erasePicture: async () => {},
+      showBalloon: async () => {
+        await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      showAnimation: async () => {
+        await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
+      },
+      transparency: () => {},
+      playSe: (path, vol) => {
+        void this.audio.playSe(path, { volume: vol });
+      },
+      stopSe: () => {
+        this.audio.stopSe();
+      },
+      playMe: async (path, vol) => {
+        await this.audio.playMe(path, { volume: vol });
+      },
+      playBgs: (path, vol) => {
+        void this.audio.playBgs(path, { volume: vol });
+      },
+      fadeoutBgs: async (seconds) => {
+        await this.audio.fadeoutBgs(seconds);
+      }
+    };
+  }
+
   private async runEvent(event: NonNullable<ReturnType<typeof eventAt>>) {
     const page = activePage(event, this.state);
     if (!page) return;
@@ -305,26 +400,10 @@ export class WorldScene {
     const prevMapId = this.state.mapId;
     this.debug.log(`event start: ${event.id} (${page.commands.map(command => command.type).join(', ')})`);
     try {
-      const io = {
-        showText: (text: string) => this.dialogue.showText(text),
-        choose: (prompt: string, choices: string[]) => this.dialogue.choose(prompt, choices),
-        battle: async (troopId: string, state: ProgressState) => {
-          const result = await this.battle.run(troopId, state);
-          this.playMapBgm();
-          return result;
-        },
-        shop: (shopId: string, state: ProgressState) => this.adventure.shop(shopId, state),
-        inn: (price: number, state: ProgressState) => this.adventure.inn(price, state),
-        cutscene: (lines: string[], vfx: 'flash' | 'shake' | undefined) => this.adventure.cutscene(lines, vfx, text => this.dialogue.showText(text)),
-        music: (mood: 'calm' | 'danger' | 'boss' | 'silence') => this.audio.setMood(mood),
-        eventMove: async (state: ProgressState) => {
-          this.state = state;
-          this.rebuild();
-          await wait(state.settings.reducedMotion ? 1 : 120);
-        }
-      };
-      this.state = await executeCommands(this.bundle, this.state, page.commands, io);
+      const io = this.createEventIO();
+      this.state = await executeCommands(this.bundle, this.state, page.commands, io, { eventId: event.id, mapId: this.state.mapId });
       if (this.state.mapId !== prevMapId) {
+        this.parallelRunning.clear();
         this.playMapBgm();
       }
       this.rebuild();
@@ -334,6 +413,28 @@ export class WorldScene {
       this.dialogue.toast(`Event gagal: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       this.busy = false;
+    }
+  }
+
+  private async runParallelEvent(event: MapEvent) {
+    const page = activePage(event, this.state);
+    if (!page) {
+      this.parallelRunning.delete(event.id);
+      return;
+    }
+    const prevMapId = this.state.mapId;
+    try {
+      const io = this.createEventIO();
+      this.state = await executeCommands(this.bundle, this.state, page.commands, io, { eventId: event.id, mapId: this.state.mapId });
+      if (this.state.mapId !== prevMapId) {
+        this.parallelRunning.clear();
+        this.playMapBgm();
+        this.rebuild();
+      }
+    } catch (error) {
+      this.debug.log(`parallel event ${event.id} error: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      this.parallelRunning.delete(event.id);
     }
   }
 
@@ -388,6 +489,7 @@ export class WorldScene {
       const saved = await window.nusvRuntime!.loadProgress();
       if (saved) {
         this.state = saved;
+        this.parallelRunning.clear();
         applyRuntimeSettings(saved.settings);
         this.audio.setMix(saved.settings);
         this.playMapBgm();

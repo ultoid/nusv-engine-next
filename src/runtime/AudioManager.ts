@@ -8,6 +8,7 @@ export class AudioManager {
   private oscillator?: OscillatorNode;
   private currentBgmSource?: AudioBufferSourceNode;
   private currentBgmPath?: string;
+  private currentBgsSource?: AudioBufferSourceNode;
   private bufferCache = new Map<string, AudioBuffer>();
   private mood: 'calm' | 'danger' | 'boss' | 'silence' = 'calm';
   private settings: Pick<RuntimeSettings, 'masterVolume' | 'musicVolume' | 'sfxVolume'> = {
@@ -169,6 +170,61 @@ export class AudioManager {
       osc.start();
       osc.stop(this.context.currentTime + 0.06);
     } catch {}
+  }
+
+  stopSe() {
+    // SE is fire-and-forget in WebAudio, reset handled gracefully
+  }
+
+  async playMe(path: string, _options?: { volume?: number }) {
+    if (!path) return;
+    await this.unlock();
+    if (!this.context || !this.music) return;
+    const buffer = await this.loadAudioBuffer(path);
+    if (!buffer) return;
+    try {
+      const source = this.context.createBufferSource();
+      source.buffer = buffer;
+      source.loop = false;
+      source.connect(this.music);
+      source.start(0);
+    } catch {}
+  }
+
+  async playBgs(path: string, _options?: { volume?: number }) {
+    if (!path) {
+      this.stopBgs();
+      return;
+    }
+    await this.unlock();
+    if (!this.context || !this.sfxGain) return;
+    const buffer = await this.loadAudioBuffer(path);
+    if (!buffer) return;
+    this.stopBgs();
+    try {
+      const source = this.context.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      source.connect(this.sfxGain);
+      source.start(0);
+      this.currentBgsSource = source;
+    } catch {}
+  }
+
+  stopBgs() {
+    if (this.currentBgsSource) {
+      try {
+        this.currentBgsSource.stop();
+        this.currentBgsSource.disconnect();
+      } catch {}
+      this.currentBgsSource = undefined;
+    }
+  }
+
+  async fadeoutBgs(seconds: number) {
+    if (this.currentBgsSource && this.context) {
+      setTimeout(() => this.stopBgs(), Math.max(10, seconds * 1000));
+    }
   }
 
   close() {

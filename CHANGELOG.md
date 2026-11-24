@@ -4,6 +4,49 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ---
 
+## [Unreleased] — 2026-11-24
+
+### 1. Event System & Movement Route Engine (Standar RPG Maker MZ)
+- **Autonomous Movement & Custom Route Runner (`runMoveRoute`)**:
+  - Implementasi runner rute pergerakan kustom dengan dukungan:
+    - Langkah koordinat: `moveDown`, `moveLeft`, `moveRight`, `moveUp`, `moveLowerLeft`, `moveLowerRight`, `moveUpperLeft`, `moveUpperRight`, `moveRandom`, `moveTowardPlayer`, `moveAwayFromPlayer`, `stepForward`, `stepBackward`, `jump`, dan `wait`.
+    - Arah hadap (*Turn*): `turnDown`, `turnLeft`, `turnRight`, `turnUp`, `turn90Right`, `turn90Left`, `turn180`, `turn90RightOrLeft`, `turnRandom`, `turnTowardPlayer`, `turnAwayFromPlayer`.
+    - Pengaturan bendera & sakelar: `walkAnimeOn/Off`, `stepAnimeOn/Off`, `directionFixOn/Off`, `throughOn/Off`, `switchOn/Off`, serta eksekusi kode `script`.
+    - Opsi loop rute (`repeat`), proteksi jalan buntu (`skippable`), dan sinkronisasi eksekusi (`wait`).
+- **13 Perintah Event Baru RPG Maker MZ**:
+  - `setMovementRoute`: Menjalankan rute gerakan kustom pada pemain atau event tertentu di peta.
+  - `changeHp`: Pengurangan/penambahan HP dengan opsi proteksi *knockout clamping*.
+  - `changeMp` & `recoverAll`: Pengelolaan MP dan pemulihan status penuh seluruh aktor/party.
+  - `changeLevel` & `changeExp`: Penambahan/pengurangan level dan akumulasi EXP.
+  - `changePartyMember` & `changeSkill`: Rekrut/lepas aktor party serta pelajari/lupakan skill.
+  - `setEventLocation` & `scrollMap`: Pemindahan posisi event seketika dan pergeseran kamera peta halus.
+  - `eraseEvent` & `gameOver`: Penghapusan sementara event hingga pindah peta dan transisi Game Over.
+  - `script`: Menjalankan kode JavaScript arbitrer di dalam konteks event.
+- **Validasi Skema Lengkap**:
+  - Skema validasi di `src/core/validation.ts` diperluas untuk memvalidasi struktur `MoveRoute` dan seluruh 48 tipe perintah event secara deterministik.
+
+### 2. Frontend UI Event Editor & Modals (100% RPG Maker MZ Style)
+- **Autonomous Movement Route Modal (`MoveRouteModal`)**:
+  - Menambahkan tombol `Route...` di seksi *Autonomous Movement* pada `EventEditorModal` (aktif saat `Type: Custom`).
+  - Modal dialog 2-kolom khas RPG Maker MZ: daftar urutan langkah di kiri dengan tombol hapus/bersihkan, dan tombol palet perintah gerakan, hadap, sakelar, dan skrip di kanan.
+- **Palet Pemilih Perintah 3 Tab (`EventCommandPickerModal`)**:
+  - **Tab 1:** Messages, Game Progression, Flow Control, Party & Actor, Quests.
+  - **Tab 2:** Movement, Character Visuals, Picture, Screen Effects.
+  - **Tab 3:** Audio, Scenes & Battle, Advanced.
+  - Pencarian perintah instan dengan filter real-time.
+- **Form Edit Perintah & Perbaikan Kontras Input**:
+  - Penataan form kontrol input (`CommandFields.tsx`) dengan tema kontras tinggi (background putih `#ffffff`, teks gelap `#0f172a`) untuk memastikan seluruh teks dan nilai field terbaca jelas.
+- **Penanda Visual Event di Peta**:
+  - Kotak event tanpa grafik diselaraskan dengan visual RPG Maker MZ (border bergaris biru muda transparan dan highlight seleksi).
+  - Penutupan context menu peta seketika saat pengguna menekan tombol klik di luar atau tombol `Escape`.
+
+### 3. Pengujian & Verifikasi
+- Menambahkan suite pengujian `tests/stage16-mz-movement-routes-and-commands.test.js`.
+- Seluruh 102 unit test otomatis lulus (**102 passed, 0 failed**).
+- Verifikasi kompilasi `npm run build` (typecheck TypeScript, bundling Vite, dan kompilasi Electron) lulus 100%.
+
+---
+
 ## [Unreleased] — 2026-11-23
 
 ### 1. Map Editor Backend & Sistem Undo / Redo

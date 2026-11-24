@@ -33,7 +33,16 @@ export function getDefaultAutotileQuadrants(
 ): TileQuadrant[] {
   const bx = tile.autotileBaseX ?? 0;
   const by = tile.autotileBaseY ?? 0;
+  const isA3A4 = tile.id >= 6000 && tile.id < 8000;
   if (mode === 'center') {
+    if (isA3A4) {
+      return [
+        { srcX: bx + 48, srcY: by + 48, left: 0, top: 0 },
+        { srcX: bx + 72, srcY: by + 48, left: 24, top: 0 },
+        { srcX: bx + 48, srcY: by + 72, left: 0, top: 24 },
+        { srcX: bx + 72, srcY: by + 72, left: 24, top: 24 }
+      ];
+    }
     return [
       { srcX: bx + 48, srcY: by + 96, left: 0, top: 0 },
       { srcX: bx + 72, srcY: by + 96, left: 24, top: 0 },
@@ -129,6 +138,14 @@ export function getAutotileQuadrants(
   else if (S && !E) q3 = [3, 3];
   else if (!SE) q3 = [3, 1];
   else q3 = [1, 3];
+
+  const isA3A4 = tile.id >= 6000 && tile.id < 8000;
+  if (isA3A4) {
+    q0[1] = Math.min(q0[1], 3);
+    q1[1] = Math.min(q1[1], 3);
+    q2[1] = Math.min(q2[1], 3);
+    q3[1] = Math.min(q3[1], 3);
+  }
 
   return [
     { srcX: bx + q0[0] * 24, srcY: by + q0[1] * 24, left: 0, top: 0 },
@@ -415,6 +432,58 @@ export function tileDefinition(id: number, tileset?: TilesetData): TileDefinitio
     };
   }
 
+  // Dynamic Sheet A3: Roof & Building autotiles (IDs 6000..6031)
+  if (id >= 6000 && id < 6032) {
+    const i = id - 6000;
+    const col = i % 8;
+    const row = Math.floor(i / 8);
+    const autotileBaseX = col * 96;
+    const autotileBaseY = row * 96;
+    const sheetName = tileset?.tilesetNames?.[2] || 'Outside_A3';
+    return {
+      id,
+      name: `Roof A3 #${i + 1}`,
+      group: 'A',
+      defaultLayer: 1,
+      color: 0x854d0e,
+      glyph: '▲',
+      tileset: resolveSheetPath(sheetName),
+      srcX: autotileBaseX,
+      srcY: autotileBaseY,
+      paletteSrcX: autotileBaseX,
+      paletteSrcY: autotileBaseY,
+      autotile: true,
+      autotileBaseX,
+      autotileBaseY
+    };
+  }
+
+  // Dynamic Sheet A4: Wall & Cliff autotiles (IDs 7000..7047)
+  if (id >= 7000 && id < 7048) {
+    const i = id - 7000;
+    const col = i % 8;
+    const row = Math.floor(i / 8);
+    const autotileBaseX = col * 96;
+    const autotileBaseY = row * 96;
+    const sheetName = tileset?.tilesetNames?.[3] || 'Outside_A4';
+    return {
+      id,
+      name: `Wall A4 #${i + 1}`,
+      group: 'A',
+      defaultLayer: 0,
+      color: 0x475569,
+      glyph: '▥',
+      tileset: resolveSheetPath(sheetName),
+      srcX: autotileBaseX,
+      srcY: autotileBaseY,
+      paletteSrcX: autotileBaseX,
+      paletteSrcY: autotileBaseY,
+      autotile: true,
+      autotileBaseX,
+      autotileBaseY
+    };
+  }
+
   return TILE_MAP.get(id) ?? TILE_CATALOG[0];
 }
 
@@ -532,7 +601,7 @@ export function getPaletteTiles(
   }
 
   if (group === 'R') {
-    return TILE_CATALOG.filter(t => t.group === 'D');
+    return getPaletteRegions(64) as unknown as TileDefinition[];
   }
 
   // Group A
@@ -556,11 +625,68 @@ export function getPaletteTiles(
         paletteSrcY: srcY
       });
     }
+
+    const a3SheetName = tileset.tilesetNames?.[2];
+    const a3Tiles: TileDefinition[] = [];
+    if (a3SheetName) {
+      const a3Path = resolveSheetPath(a3SheetName);
+      for (let i = 0; i < 32; i++) {
+        const col = i % 8;
+        const row = Math.floor(i / 8);
+        const bx = col * 96;
+        const by = row * 96;
+        a3Tiles.push({
+          id: 6000 + i,
+          name: `Roof A3 #${i + 1}`,
+          group: 'A',
+          defaultLayer: 1,
+          color: 0x854d0e,
+          glyph: '▲',
+          tileset: a3Path,
+          srcX: bx,
+          srcY: by,
+          paletteSrcX: bx,
+          paletteSrcY: by,
+          autotile: true,
+          autotileBaseX: bx,
+          autotileBaseY: by
+        });
+      }
+    }
+
+    const a4SheetName = tileset.tilesetNames?.[3];
+    const a4Tiles: TileDefinition[] = [];
+    if (a4SheetName) {
+      const a4Path = resolveSheetPath(a4SheetName);
+      for (let i = 0; i < 48; i++) {
+        const col = i % 8;
+        const row = Math.floor(i / 8);
+        const bx = col * 96;
+        const by = row * 96;
+        a4Tiles.push({
+          id: 7000 + i,
+          name: `Wall A4 #${i + 1}`,
+          group: 'A',
+          defaultLayer: 0,
+          color: 0x475569,
+          glyph: '▥',
+          tileset: a4Path,
+          srcX: bx,
+          srcY: by,
+          paletteSrcX: bx,
+          paletteSrcY: by,
+          autotile: true,
+          autotileBaseX: bx,
+          autotileBaseY: by
+        });
+      }
+    }
+
     const a2Sheet = tileset.tilesetNames?.[1] ? resolveSheetPath(tileset.tilesetNames[1]) : undefined;
     const baseATiles = TILE_CATALOG
       .filter(t => t.group === 'A' && t.paletteSrcX !== undefined)
       .map(t => (a2Sheet && t.tileset?.includes('A2') ? { ...t, tileset: a2Sheet } : t));
-    return [...list, ...baseATiles];
+    return [...list, ...a3Tiles, ...a4Tiles, ...baseATiles];
   }
 
   const worldA2 = tileset?.tilesetNames?.[1] ? resolveSheetPath(tileset.tilesetNames[1]) : undefined;
@@ -874,8 +1000,9 @@ export function shiftMapData(
   height: number,
   dx: number,
   dy: number,
-  loop: boolean
-): { layers: TileLayer[]; collision: Array<0 | 1> } {
+  loop: boolean,
+  regions?: number[]
+): { layers: TileLayer[]; collision: Array<0 | 1>; regions?: number[] } {
   const nextLayers = layers.map(layer => {
     const data = Array(width * height).fill(0);
     for (let y = 0; y < height; y++) {
@@ -909,7 +1036,25 @@ export function shiftMapData(
     }
   }
 
-  return { layers: nextLayers, collision: nextCollision };
+  let nextRegions: number[] | undefined;
+  if (Array.isArray(regions)) {
+    nextRegions = Array(width * height).fill(0);
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        let nx = x + dx;
+        let ny = y + dy;
+        if (loop) {
+          nx = ((nx % width) + width) % width;
+          ny = ((ny % height) + height) % height;
+        }
+        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+          nextRegions[ny * width + nx] = regions[y * width + x];
+        }
+      }
+    }
+  }
+
+  return { layers: nextLayers, collision: nextCollision, regions: nextRegions };
 }
 
 export function generateDungeonData(
@@ -917,7 +1062,7 @@ export function generateDungeonData(
   height: number,
   wallTile: number = 6,
   floorTile: number = 3
-): { layers: TileLayer[]; collision: Array<0 | 1> } {
+): { layers: TileLayer[]; collision: Array<0 | 1>; regions: number[] } {
   const cells = width * height;
   const l1 = Array(cells).fill(wallTile);
   const coll = Array(cells).fill(1) as (0 | 1)[];
@@ -965,7 +1110,140 @@ export function generateDungeonData(
     { id: 'layer.4', type: 'tile', name: 'Layer 4', data: Array(cells).fill(0) }
   ];
 
-  return { layers, collision: coll };
+  return { layers, collision: coll, regions: Array(cells).fill(0) };
+}
+
+export interface RegionDefinition {
+  id: number;
+  name: string;
+  color: string;
+  glyph: string;
+}
+
+export const REGION_COLORS: string[] = [
+  'rgba(0,0,0,0)', // 0: clear
+  'rgba(239, 68, 68, 0.65)',   // 1: red
+  'rgba(249, 115, 22, 0.65)',  // 2: orange
+  'rgba(245, 158, 11, 0.65)',  // 3: amber
+  'rgba(234, 179, 8, 0.65)',   // 4: yellow
+  'rgba(132, 204, 22, 0.65)',  // 5: lime
+  'rgba(34, 197, 94, 0.65)',   // 6: green
+  'rgba(16, 185, 129, 0.65)',  // 7: emerald
+  'rgba(6, 182, 212, 0.65)',   // 8: cyan
+  'rgba(14, 165, 233, 0.65)',  // 9: sky
+  'rgba(59, 130, 246, 0.65)',  // 10: blue
+  'rgba(99, 102, 241, 0.65)',  // 11: indigo
+  'rgba(139, 92, 246, 0.65)',  // 12: violet
+  'rgba(168, 85, 247, 0.65)',  // 13: purple
+  'rgba(217, 70, 239, 0.65)',  // 14: fuchsia
+  'rgba(236, 72, 153, 0.65)',  // 15: pink
+  'rgba(244, 63, 94, 0.65)'    // 16: rose
+];
+
+export function getRegionColor(regionId: number): string {
+  if (regionId <= 0) return 'rgba(0,0,0,0)';
+  if (regionId < REGION_COLORS.length) return REGION_COLORS[regionId];
+  const hue = Math.round(((regionId - 1) * 137.508) % 360);
+  return `hsla(${hue}, 80%, 45%, 0.65)`;
+}
+
+export function getPaletteRegions(count = 64): RegionDefinition[] {
+  const list: RegionDefinition[] = [
+    { id: 0, name: 'Clear Region', color: 'rgba(0,0,0,0.15)', glyph: '⌫' }
+  ];
+  for (let r = 1; r <= count; r++) {
+    list.push({
+      id: r,
+      name: `Region ${r}`,
+      color: getRegionColor(r),
+      glyph: String(r)
+    });
+  }
+  return list;
+}
+
+export function paintRegionCell(
+  regions: number[],
+  cellIndex: number,
+  regionId: number
+): number[] {
+  const next = [...regions];
+  next[cellIndex] = Math.max(0, Math.min(255, regionId));
+  return next;
+}
+
+export function paintRegionRectangle(
+  regions: number[],
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  regionId: number,
+  width: number
+): number[] {
+  const left = Math.min(startX, endX), right = Math.max(startX, endX);
+  const top = Math.min(startY, endY), bottom = Math.max(startY, endY);
+  const next = [...regions];
+  const reg = Math.max(0, Math.min(255, regionId));
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= right; x++) {
+      next[y * width + x] = reg;
+    }
+  }
+  return next;
+}
+
+export function paintRegionCircle(
+  regions: number[],
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  regionId: number,
+  width: number
+): number[] {
+  const left = Math.min(startX, endX), right = Math.max(startX, endX);
+  const top = Math.min(startY, endY), bottom = Math.max(startY, endY);
+  const rx = (right - left) / 2, ry = (bottom - top) / 2;
+  const cx = left + rx, cy = top + ry;
+  const next = [...regions];
+  const reg = Math.max(0, Math.min(255, regionId));
+  for (let y = top; y <= bottom; y++) {
+    for (let x = left; x <= right; x++) {
+      const dx = rx > 0 ? (x - cx) / rx : 0, dy = ry > 0 ? (y - cy) / ry : 0;
+      if (dx * dx + dy * dy <= 1.08) {
+        next[y * width + x] = reg;
+      }
+    }
+  }
+  return next;
+}
+
+export function floodFillRegion(
+  regions: number[],
+  start: number,
+  regionId: number,
+  width: number,
+  height: number
+): number[] {
+  const target = regions[start];
+  const reg = Math.max(0, Math.min(255, regionId));
+  if (target === reg) return regions;
+  const next = [...regions];
+  const queue = [start];
+  const visited = new Uint8Array(width * height);
+  while (queue.length) {
+    const cell = queue.pop()!;
+    if (visited[cell] || next[cell] !== target) continue;
+    visited[cell] = 1;
+    next[cell] = reg;
+    const x = cell % width, y = Math.floor(cell / width);
+    if (x > 0) queue.push(cell - 1);
+    if (x < width - 1) queue.push(cell + 1);
+    if (y > 0) queue.push(cell - width);
+    if (y < height - 1) queue.push(cell + width);
+  }
+  return next;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1007,6 +1285,8 @@ export function getTileFlag(tileId: number, tileset?: TilesetData): number {
   if (tileId === 43) return 0x80 | 0x0f; // Counter table (solid + counter)
   if (tileId === 13 || tileId === 28) return 0x10; // Roof (Star)
   if (tileId >= 101 && tileId <= 116) return 0x10; // Region tags (transparent)
+  if (tileId >= 6000 && tileId < 6032) return 0x00; // Roofs passable by default
+  if (tileId >= 7000 && tileId < 7048) return 0x0f; // Walls impassable by default
   if ([1, 2, 3, 4, 6, 9, 10, 16, 22, 23, 24, 25, 26, 27, 30, 31, 35, 40, 42].includes(tileId)) {
     return 0x0f; // Impassable
   }

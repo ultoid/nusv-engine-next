@@ -1,0 +1,275 @@
+import React, { useState, useMemo } from 'react';
+import type { EventCommand } from '../../core/types.js';
+import { commandName } from '../events/eventCommands.js';
+
+export interface EventCommandPickerModalProps {
+  onSelect: (type: EventCommand['type']) => void;
+  onClose: () => void;
+}
+
+interface CommandButtonDef {
+  type: EventCommand['type'];
+  label: string;
+}
+
+interface CommandGroupDef {
+  title: string;
+  commands: CommandButtonDef[];
+}
+
+const TAB_1_GROUPS: CommandGroupDef[] = [
+  {
+    title: 'Messages',
+    commands: [
+      { type: 'text', label: 'Show Text...' },
+      { type: 'choice', label: 'Show Choices...' },
+    ]
+  },
+  {
+    title: 'Game Progression',
+    commands: [
+      { type: 'setSwitch', label: 'Control Switch...' },
+      { type: 'setVariable', label: 'Control Variable...' },
+      { type: 'setSelfSwitch', label: 'Control Self Switch...' },
+      { type: 'changeGold', label: 'Change Gold...' },
+      { type: 'giveItem', label: 'Give Item...' },
+    ]
+  },
+  {
+    title: 'Flow Control',
+    commands: [
+      { type: 'branch', label: 'Conditional Branch...' },
+      { type: 'loop', label: 'Loop' },
+      { type: 'breakLoop', label: 'Break Loop' },
+      { type: 'exitEvent', label: 'Exit Event Processing' },
+      { type: 'label', label: 'Label...' },
+      { type: 'jumpToLabel', label: 'Jump to Label...' },
+      { type: 'wait', label: 'Wait...' },
+    ]
+  },
+  {
+    title: 'Party & Actor',
+    commands: [
+      { type: 'changeHp', label: 'Change HP...' },
+      { type: 'changeMp', label: 'Change MP...' },
+      { type: 'recoverAll', label: 'Recover All' },
+      { type: 'changeLevel', label: 'Change Level...' },
+      { type: 'changeExp', label: 'Change EXP...' },
+      { type: 'changePartyMember', label: 'Change Party Member...' },
+      { type: 'changeSkill', label: 'Change Skills...' },
+    ]
+  },
+  {
+    title: 'Quests & Story',
+    commands: [
+      { type: 'questStart', label: 'Start Quest...' },
+      { type: 'questAdvance', label: 'Advance Quest...' },
+      { type: 'questComplete', label: 'Complete Quest...' },
+    ]
+  }
+];
+
+const TAB_2_GROUPS: CommandGroupDef[] = [
+  {
+    title: 'Movement',
+    commands: [
+      { type: 'transfer', label: 'Transfer Player...' },
+      { type: 'setMovementRoute', label: 'Set Movement Route...' },
+      { type: 'setEventLocation', label: 'Set Event Location...' },
+      { type: 'scrollMap', label: 'Scroll Map...' },
+      { type: 'cutscene', label: 'Cutscene Movement...' },
+    ]
+  },
+  {
+    title: 'Character Visuals',
+    commands: [
+      { type: 'transparency', label: 'Change Transparency...' },
+      { type: 'showAnimation', label: 'Show Animation...' },
+      { type: 'showBalloon', label: 'Show Balloon Icon...' },
+      { type: 'eraseEvent', label: 'Erase Event' },
+    ]
+  },
+  {
+    title: 'Picture',
+    commands: [
+      { type: 'showPicture', label: 'Show Picture...' },
+      { type: 'movePicture', label: 'Move Picture...' },
+      { type: 'erasePicture', label: 'Erase Picture...' },
+    ]
+  },
+  {
+    title: 'Screen Effects',
+    commands: [
+      { type: 'fadeoutScreen', label: 'Fadeout Screen...' },
+      { type: 'fadeinScreen', label: 'Fadein Screen...' },
+      { type: 'tintScreen', label: 'Tint Screen...' },
+      { type: 'flashScreen', label: 'Flash Screen...' },
+      { type: 'shakeScreen', label: 'Shake Screen...' },
+      { type: 'weather', label: 'Set Weather Effect...' },
+    ]
+  }
+];
+
+const TAB_3_GROUPS: CommandGroupDef[] = [
+  {
+    title: 'Audio',
+    commands: [
+      { type: 'playSe', label: 'Play SE...' },
+      { type: 'stopSe', label: 'Stop SE' },
+      { type: 'playMe', label: 'Play ME...' },
+      { type: 'playBgs', label: 'Play BGS...' },
+      { type: 'fadeoutBgs', label: 'Fadeout BGS...' },
+      { type: 'music', label: 'Change Music...' },
+    ]
+  },
+  {
+    title: 'Scenes & Battle',
+    commands: [
+      { type: 'battle', label: 'Battle Processing...' },
+      { type: 'shop', label: 'Shop Processing...' },
+      { type: 'inn', label: 'Innkeeper Processing...' },
+      { type: 'gameOver', label: 'Game Over' },
+    ]
+  },
+  {
+    title: 'Advanced',
+    commands: [
+      { type: 'script', label: 'Script...' },
+    ]
+  }
+];
+
+export function EventCommandPickerModal({ onSelect, onClose }: EventCommandPickerModalProps) {
+  const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1);
+  const [search, setSearch] = useState('');
+
+  const allCommands = useMemo(() => {
+    const list: Array<{ type: EventCommand['type']; label: string; tab: number; group: string }> = [];
+    TAB_1_GROUPS.forEach(g => g.commands.forEach(c => list.push({ ...c, tab: 1, group: g.title })));
+    TAB_2_GROUPS.forEach(g => g.commands.forEach(c => list.push({ ...c, tab: 2, group: g.title })));
+    TAB_3_GROUPS.forEach(g => g.commands.forEach(c => list.push({ ...c, tab: 3, group: g.title })));
+    return list;
+  }, []);
+
+  const searchResults = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return null;
+    return allCommands.filter(c =>
+      c.label.toLowerCase().includes(q) ||
+      c.type.toLowerCase().includes(q) ||
+      (commandName[c.type] && commandName[c.type].toLowerCase().includes(q))
+    );
+  }, [search, allCommands]);
+
+  const currentGroups = activeTab === 1 ? TAB_1_GROUPS : activeTab === 2 ? TAB_2_GROUPS : TAB_3_GROUPS;
+
+  return (
+    <div className="mv-modal-backdrop mz-cmd-picker-backdrop" onClick={onClose}>
+      <div className="mz-cmd-picker-dialog" onClick={e => e.stopPropagation()}>
+        <div className="mz-dialog-titlebar">
+          <span>Event Commands</span>
+          <button className="mz-close-btn" onClick={onClose} title="Tutup">×</button>
+        </div>
+
+        {/* Filter bar */}
+        <div className="mz-cmd-picker-searchbar">
+          <input
+            type="text"
+            className="mz-input mz-search-input"
+            placeholder="Cari perintah (misal: text, gold, se, switch, branch)..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            autoFocus
+          />
+          {search && (
+            <button className="mz-btn mz-btn-sm" onClick={() => setSearch('')}>Clear</button>
+          )}
+        </div>
+
+        {/* Tabs 1, 2, 3 */}
+        {!searchResults && (
+          <div className="mz-cmd-tabs">
+            <button
+              type="button"
+              className={`mz-tab-item ${activeTab === 1 ? 'active' : ''}`}
+              onClick={() => setActiveTab(1)}
+            >
+              1 Messages & Logic
+            </button>
+            <button
+              type="button"
+              className={`mz-tab-item ${activeTab === 2 ? 'active' : ''}`}
+              onClick={() => setActiveTab(2)}
+            >
+              2 Movement & Screen
+            </button>
+            <button
+              type="button"
+              className={`mz-tab-item ${activeTab === 3 ? 'active' : ''}`}
+              onClick={() => setActiveTab(3)}
+            >
+              3 Audio & Scene
+            </button>
+          </div>
+        )}
+
+        {/* Command Grid Body */}
+        <div className="mz-cmd-picker-body">
+          {searchResults ? (
+            <div className="mz-cmd-search-results">
+              {searchResults.length === 0 ? (
+                <div className="mz-empty-text">Tidak ada perintah yang cocok dengan "{search}".</div>
+              ) : (
+                <div className="mz-cmd-grid">
+                  {searchResults.map(c => (
+                    <button
+                      key={c.type}
+                      type="button"
+                      className="mz-btn mz-cmd-choice-btn"
+                      onClick={() => onSelect(c.type)}
+                    >
+                      <span className="mz-cmd-name">{c.label}</span>
+                      <small className="mz-cmd-cat">Tab {c.tab} · {c.group}</small>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mz-cmd-columns">
+              {currentGroups.map(group => (
+                <div key={group.title} className="mz-group-box mz-cmd-group">
+                  <div className="mz-group-title">{group.title}</div>
+                  <div className="mz-group-content mz-cmd-group-content">
+                    {group.commands.map(cmd => (
+                      <button
+                        key={cmd.type}
+                        type="button"
+                        className="mz-btn mz-cmd-btn"
+                        onClick={() => onSelect(cmd.type)}
+                      >
+                        {cmd.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="mz-dialog-footer">
+          <div className="mz-footer-left">
+            <span className="mz-cmd-count-hint">
+              {allCommands.length} perintah standar RPG Maker MZ didukung
+            </span>
+          </div>
+          <div className="mz-footer-right">
+            <button type="button" className="mz-btn" onClick={onClose}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

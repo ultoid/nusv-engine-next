@@ -7,12 +7,222 @@ export interface RuntimeSettings { language:'id'|'en';masterVolume:number;musicV
 export interface ProjectManifest { schemaVersion: 1; projectId: string; title: string; logicalResolution: { width: number; height: number }; maps: string[]; start: { mapId: string; x: number; y: number }; party: string[]; [key: string]: unknown }
 export interface TilesetData { id: string; name: string; mode: number; tilesetNames: string[]; note?: string; flags?: number[] }
 export interface GameData { schemaVersion: 1; actors: ActorData[]; enemies: EnemyData[]; equipment:EquipmentData[]; skills: SkillData[]; states:StateData[]; troops: TroopData[]; items: ItemData[]; tilesets?: TilesetData[]; quests?:QuestData[];shops?:ShopData[];classes?:ClassData[];translations?:Record<string,Record<string,string>>; [key: string]: unknown }
-export type EventCommand = { type: 'text'; text: string } | { type: 'choice'; prompt: string; choices: Array<{ text: string; commands: EventCommand[] }> } | { type: 'setSwitch'; id: string; value: boolean } | { type: 'setVariable'; id: string; value: number } | { type: 'giveItem'; itemId: string; amount: number } | { type: 'transfer'; mapId: string; x: number; y: number } | { type: 'battle'; troopId: string; victorySwitchId?: string } | {type:'questStart';questId:string}|{type:'questAdvance';questId:string;objectiveId:string;amount:number}|{type:'questComplete';questId:string}|{type:'shop';shopId:string}|{type:'inn';price:number}|{type:'cutscene';lines:string[];vfx?:'flash'|'shake';movement?:{eventId:string;directions:Array<'up'|'down'|'left'|'right'>}}|{type:'music';mood:'calm'|'danger'|'boss'|'silence'};
-export interface EventPage { conditions?: { switchId?: string; switchValue?: boolean }; solid: boolean; commands: EventCommand[] }
-export interface MapEvent { id: string; name: string; x: number; y: number; trigger: 'interact' | 'touch'; pages: EventPage[] }
+export type BranchCondition =
+  | { kind: 'switch'; id: string; value: boolean }
+  | { kind: 'variable'; id: string; op: '==' | '>=' | '<=' | '>' | '<' | '!='; value: number }
+  | { kind: 'selfSwitch'; key: 'A' | 'B' | 'C' | 'D'; value: boolean; eventId?: string }
+  | { kind: 'item'; itemId: string }
+  | { kind: 'gold'; op: '>=' | '<='; amount: number }
+  | { kind: 'actor'; actorId: string }
+  | { kind: 'script'; code: string };
+
+export type MoveRouteCode =
+  | 'moveDown'
+  | 'moveLeft'
+  | 'moveRight'
+  | 'moveUp'
+  | 'moveLowerLeft'
+  | 'moveLowerRight'
+  | 'moveUpperLeft'
+  | 'moveUpperRight'
+  | 'moveRandom'
+  | 'moveTowardPlayer'
+  | 'moveAwayFromPlayer'
+  | 'stepForward'
+  | 'stepBackward'
+  | 'jump'
+  | 'wait'
+  | 'turnDown'
+  | 'turnLeft'
+  | 'turnRight'
+  | 'turnUp'
+  | 'turn90Right'
+  | 'turn90Left'
+  | 'turn180'
+  | 'turn90RightOrLeft'
+  | 'turnRandom'
+  | 'turnTowardPlayer'
+  | 'turnAwayFromPlayer'
+  | 'switchOn'
+  | 'switchOff'
+  | 'changeSpeed'
+  | 'changeFrequency'
+  | 'walkAnimeOn'
+  | 'walkAnimeOff'
+  | 'stepAnimeOn'
+  | 'stepAnimeOff'
+  | 'directionFixOn'
+  | 'directionFixOff'
+  | 'throughOn'
+  | 'throughOff'
+  | 'transparentOn'
+  | 'transparentOff'
+  | 'script';
+
+export interface MoveRouteCommand {
+  code: MoveRouteCode;
+  parameters?: any[];
+}
+
+export interface MoveRoute {
+  repeat?: boolean;
+  skippable?: boolean;
+  wait?: boolean;
+  list: MoveRouteCommand[];
+}
+
+export type EventCommand = 
+  | { type: 'text'; text: string; speakerName?: string; faceName?: string; faceIndex?: number } 
+  | { type: 'choice'; prompt: string; choices: Array<{ text: string; commands: EventCommand[] }> } 
+  | { type: 'setSwitch'; id: string; value: boolean } 
+  | { type: 'setVariable'; id: string; value: number } 
+  | { type: 'setSelfSwitch'; key: 'A' | 'B' | 'C' | 'D'; value: boolean; eventId?: string }
+  | { type: 'branch'; condition: BranchCondition; thenCommands: EventCommand[]; elseCommands?: EventCommand[] }
+  | { type: 'loop'; commands: EventCommand[] }
+  | { type: 'breakLoop' }
+  | { type: 'exitEvent' }
+  | { type: 'label'; name: string }
+  | { type: 'jumpToLabel'; name: string }
+  | { type: 'wait'; frames: number }
+  | { type: 'changeGold'; amount: number; operation?: 'add' | 'sub' }
+  | { type: 'giveItem'; itemId: string; amount: number } 
+  | { type: 'transfer'; mapId: string; x: number; y: number } 
+  | { type: 'battle'; troopId: string; victorySwitchId?: string } 
+  | { type: 'questStart'; questId: string }
+  | { type: 'questAdvance'; questId: string; objectiveId: string; amount: number }
+  | { type: 'questComplete'; questId: string }
+  | { type: 'shop'; shopId: string }
+  | { type: 'inn'; price: number }
+  | { type: 'cutscene'; lines: string[]; vfx?: 'flash' | 'shake'; movement?: { eventId: string; directions: Array<'up' | 'down' | 'left' | 'right'> } }
+  | { type: 'music'; mood: 'calm' | 'danger' | 'boss' | 'silence' }
+  | { type: 'tintScreen'; tone: [number, number, number, number]; duration: number; wait?: boolean }
+  | { type: 'flashScreen'; color: [number, number, number, number]; duration: number; wait?: boolean }
+  | { type: 'shakeScreen'; power: number; speed: number; duration: number; wait?: boolean }
+  | { type: 'fadeoutScreen'; duration?: number }
+  | { type: 'fadeinScreen'; duration?: number }
+  | { type: 'weather'; weatherType: 'none' | 'rain' | 'storm' | 'snow'; power: number; duration: number; wait?: boolean }
+  | { type: 'showPicture'; picture: PictureState }
+  | { type: 'movePicture'; id: number; duration: number; x: number; y: number; scaleX?: number; scaleY?: number; opacity?: number; wait?: boolean }
+  | { type: 'erasePicture'; id: number }
+  | { type: 'showBalloon'; target: 'player' | string; balloon: 'exclamation' | 'question' | 'music' | 'heart' | 'anger' | 'sweat' | 'silence' | 'lightbulb' | 'zzz'; wait?: boolean }
+  | { type: 'showAnimation'; target: 'player' | string; animationId: string; wait?: boolean }
+  | { type: 'transparency'; value: boolean }
+  | { type: 'playSe'; path: string; volume?: number; pitch?: number }
+  | { type: 'stopSe' }
+  | { type: 'playMe'; path: string; volume?: number; pitch?: number }
+  | { type: 'playBgs'; path: string; volume?: number; pitch?: number }
+  | { type: 'fadeoutBgs'; seconds: number }
+  | { type: 'setMovementRoute'; target: 'player' | 'this' | string; route: MoveRoute; wait?: boolean }
+  | { type: 'changeHp'; actorId?: string; operation: 'add' | 'sub'; amount: number; allowKnockout?: boolean }
+  | { type: 'changeMp'; actorId?: string; operation: 'add' | 'sub'; amount: number }
+  | { type: 'recoverAll'; actorId?: string }
+  | { type: 'changeLevel'; actorId: string; operation: 'add' | 'sub'; amount: number }
+  | { type: 'changeExp'; actorId: string; operation: 'add' | 'sub'; amount: number }
+  | { type: 'changePartyMember'; actorId: string; operation: 'add' | 'remove' }
+  | { type: 'changeSkill'; actorId: string; skillId: string; operation: 'learn' | 'forget' }
+  | { type: 'setEventLocation'; eventId: string; x: number; y: number; direction?: 'down' | 'left' | 'right' | 'up' }
+  | { type: 'scrollMap'; direction: 'down' | 'left' | 'right' | 'up'; distance: number; speed: number }
+  | { type: 'eraseEvent'; eventId?: string }
+  | { type: 'gameOver' }
+  | { type: 'script'; code: string };
+
+export interface PictureState {
+  id: number;
+  path: string;
+  origin?: 'upperLeft' | 'center';
+  x: number;
+  y: number;
+  scaleX?: number;
+  scaleY?: number;
+  opacity?: number;
+  blendMode?: 'normal' | 'add' | 'multiply' | 'screen';
+}
+
+export interface EventGraphic {
+  characterName?: string;
+  characterIndex?: number;
+  direction?: 'down' | 'left' | 'right' | 'up';
+  pattern?: number;
+  tileId?: number;
+}
+
+export interface EventPageConditions {
+  switchId?: string;
+  switchValue?: boolean;
+  switch2Id?: string;
+  switch2Value?: boolean;
+  variableId?: string;
+  variableValue?: number;
+  selfSwitchKey?: 'A' | 'B' | 'C' | 'D';
+  selfSwitchValue?: boolean;
+  itemId?: string;
+  actorId?: string;
+}
+
+export type EventTrigger = 'interact' | 'touch' | 'event_touch' | 'autorun' | 'parallel';
+export type MoveType = 'fixed' | 'random' | 'approach' | 'custom';
+export type PriorityType = 'below' | 'same' | 'above';
+
+export interface EventPage { 
+  conditions?: EventPageConditions; 
+  solid: boolean; 
+  trigger?: EventTrigger;
+  graphic?: EventGraphic;
+  commands: EventCommand[];
+  moveType?: MoveType;
+  moveSpeed?: number;
+  moveFrequency?: number;
+  moveRoute?: MoveRoute;
+  walkAnime?: boolean;
+  stepAnime?: boolean;
+  directionFix?: boolean;
+  through?: boolean;
+  priorityType?: PriorityType;
+  [key: string]: unknown;
+}
+export interface MapEvent { id: string; name: string; note?: string; x: number; y: number; trigger: EventTrigger; pages: EventPage[]; [key: string]: unknown }
 export interface TileLayer { id:string;type:'tile';name:string;data:number[];autotileShapes?:Record<number, Array<{ srcX: number; srcY: number; left: number; top: number }>>;[key:string]:unknown }
-export interface MapData { schemaVersion: 1; id: string; name: string; width: number; height: number; tileSize: number; layers: TileLayer[]; collision: Array<0 | 1>; events: MapEvent[]; tilesetId?: string; scrollType?: string; bgm?: string; [key: string]: unknown }
+export interface MapParallax {
+  name: string;
+  loopX?: boolean;
+  loopY?: boolean;
+  sx?: number;
+  sy?: number;
+  showInEditor?: boolean;
+}
+
+export interface MapEncounter {
+  troopId: string;
+  weight: number;
+  regionFlags?: number[];
+}
+
+export interface MapData {
+  schemaVersion: 1;
+  id: string;
+  name: string;
+  displayName?: string;
+  width: number;
+  height: number;
+  tileSize: number;
+  layers: TileLayer[];
+  collision: Array<0 | 1>;
+  regions?: number[];
+  events: MapEvent[];
+  tilesetId?: string;
+  scrollType?: string;
+  bgm?: string;
+  bgs?: string;
+  parallax?: MapParallax;
+  battleback1?: string;
+  battleback2?: string;
+  encounterStep?: number;
+  encounterList?: MapEncounter[];
+  disableDash?: boolean;
+  note?: string;
+  [key: string]: unknown;
+}
 export interface AssetEntry { id: string; type: string; path: string; category?: string; license?: string; size?: number; [key: string]: unknown }
 export interface AssetManifest { schemaVersion: 1; assets: Array<AssetEntry>; [key: string]: unknown }
 export interface ProjectBundle { root?: string; project: ProjectManifest; game: GameData; maps: Record<string, MapData>; assets: AssetManifest }
-export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}> }
+export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean> }
