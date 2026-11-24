@@ -56,6 +56,30 @@ export function useEventEditor({
     return Array.from(new Set([...fromAssets, ...defaults]));
   }, [bundle?.assets]);
 
+  const faceOptions = useMemo(() => {
+    const fromAssets = bundle?.assets?.assets
+      ?.filter(a => a.category === 'faces' || a.path.includes('faces/'))
+      ?.map(a => a.path) ?? [];
+    const defaults = [
+      'assets/faces/Actor1.png',
+      'assets/faces/Actor2.png',
+      'assets/faces/Actor3.png',
+      'assets/faces/Evil.png',
+      'assets/faces/Monster.png',
+      'assets/faces/Nature.png',
+      'assets/faces/People1.png',
+      'assets/faces/People2.png',
+      'assets/faces/People3.png',
+      'assets/faces/People4.png',
+      'assets/faces/SF_Actor1.png',
+      'assets/faces/SF_Actor2.png',
+      'assets/faces/SF_Actor3.png',
+      'assets/faces/SF_Monster.png',
+      'assets/faces/SF_People1.png'
+    ];
+    return Array.from(new Set([...fromAssets, ...defaults]));
+  }, [bundle?.assets]);
+
   const parsedEvent = useMemo(() => {
     try {
       const parsed = JSON.parse(eventDraft) as MapEvent;
@@ -367,6 +391,7 @@ export function useEventEditor({
     clipboard,
     setClipboard,
     characterOptions,
+    faceOptions,
     parsedEvent,
     selectEvent,
     createEventAt,

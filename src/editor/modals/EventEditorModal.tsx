@@ -16,6 +16,7 @@ export interface EventEditorModalProps {
   eventDraft: string;
   setEventDraft: (s: string) => void;
   characterOptions: string[];
+  faceOptions?: string[];
   selectedCommandIndex: number | null;
   setSelectedCommandIndex: (idx: number | null) => void;
   copiedPage: EventPage | null;
@@ -48,6 +49,7 @@ export function EventEditorModal({
   eventDraft,
   setEventDraft,
   characterOptions,
+  faceOptions = [],
   selectedCommandIndex,
   setSelectedCommandIndex,
   copiedPage,
@@ -1017,6 +1019,8 @@ export function EventEditorModal({
                   command={curPage.commands[editingCommandIndex]}
                   bundle={bundle}
                   onChange={cmd => updateCommand(editingCommandIndex, cmd)}
+                  assetUrls={assetUrls}
+                  faceOptions={faceOptions}
                 />
               </div>
               <div className="mz-edit-popover-footer">

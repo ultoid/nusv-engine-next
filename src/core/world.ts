@@ -8,7 +8,7 @@ import type { EventCommand, EventPage, EventTrigger, MapEvent, ProgressState, Pr
 export { isLadderTile, isBushTile, isCounterTile, isDamageFloorTile, terrainTag };
 export type Direction = ProgressState['facing'];
 export interface EventIO {
-  showText(text: string): Promise<void>;
+  showText(text: string, options?: { speakerName?: string; faceName?: string; faceIndex?: number; background?: number; positionType?: number }): Promise<void>;
   choose(prompt: string, choices: string[]): Promise<number>;
   battle(troopId: string, state: ProgressState): Promise<{
     victory: boolean;
@@ -408,7 +408,13 @@ async function runCommandList(
   while (pc < commands.length) {
     const command = commands[pc];
     if (command.type === 'text') {
-      await io.showText(command.text);
+      await io.showText(command.text, {
+        speakerName: command.speakerName,
+        faceName: command.faceName,
+        faceIndex: command.faceIndex,
+        background: command.background,
+        positionType: command.positionType
+      });
     } else if (command.type === 'choice') {
       const selected = await io.choose(command.prompt, command.choices.map(choice => choice.text));
       const choice = command.choices[selected];

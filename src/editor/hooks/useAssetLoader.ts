@@ -43,6 +43,19 @@ export function useAssetLoader({ api, bundle }: UseAssetLoaderParams) {
       'assets/characters/Door1.png',
       'assets/characters/Chest.png',
       'assets/characters/Vehicle.png',
+      'assets/faces/Actor1.png',
+      'assets/faces/Actor2.png',
+      'assets/faces/Actor3.png',
+      'assets/faces/Evil.png',
+      'assets/faces/Monster.png',
+      'assets/faces/Nature.png',
+      'assets/faces/People1.png',
+      'assets/faces/People2.png',
+      'assets/faces/People3.png',
+      'assets/faces/People4.png',
+      'assets/faces/SF_Actor1.png',
+      'assets/faces/SF_Actor2.png',
+      'assets/faces/SF_Actor3.png',
       'assets/system/IconSet.png'
     ];
 
@@ -63,7 +76,9 @@ export function useAssetLoader({ api, bundle }: UseAssetLoaderParams) {
 
     const manifestAssets = bundle.assets?.assets || [];
     for (const asset of manifestAssets) {
-      if (asset.category === 'tilesets' || asset.path.includes('/tilesets/')) {
+      if (asset.category === 'tilesets' || asset.path.includes('/tilesets/') ||
+          asset.category === 'characters' || asset.path.includes('/characters/') ||
+          asset.category === 'faces' || asset.path.includes('/faces/')) {
         if (!pathsToLoad.includes(asset.path)) pathsToLoad.push(asset.path);
       }
     }

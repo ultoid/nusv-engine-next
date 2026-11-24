@@ -72,7 +72,7 @@ export interface MoveRoute {
 }
 
 export type EventCommand = 
-  | { type: 'text'; text: string; speakerName?: string; faceName?: string; faceIndex?: number } 
+  | { type: 'text'; text: string; speakerName?: string; faceName?: string; faceIndex?: number; background?: number; positionType?: number } 
   | { type: 'choice'; prompt: string; choices: Array<{ text: string; commands: EventCommand[] }> } 
   | { type: 'setSwitch'; id: string; value: boolean } 
   | { type: 'setVariable'; id: string; value: number } 

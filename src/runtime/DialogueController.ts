@@ -1,8 +1,159 @@
+export interface ShowTextOptions {
+  speakerName?: string;
+  faceName?: string;
+  faceIndex?: number;
+  faceUrl?: string;
+  background?: number; // 0: Window, 1: Dim, 2: Transparent
+  positionType?: number; // 0: Top, 1: Middle, 2: Bottom
+}
+
 export class DialogueController {
-  private box=document.createElement('section');
-  constructor(){this.box.className='dialogue';document.body.append(this.box);}
-  showText(text:string){return new Promise<void>(resolve=>{this.box.replaceChildren();const paragraph=document.createElement('p');paragraph.textContent=text;const button=document.createElement('button');button.textContent='Lanjut';const done=(event?:KeyboardEvent)=>{if(event&&!['Enter','Space'].includes(event.code))return;if(event){event.preventDefault();event.stopImmediatePropagation();}window.removeEventListener('keydown',done,true);this.box.classList.remove('open');resolve();};button.onclick=()=>done();this.box.append(paragraph,button);this.box.classList.add('open');window.addEventListener('keydown',done,true);});}
-  choose(prompt:string,choices:string[]){return new Promise<number>(resolve=>{let selected=0;this.box.replaceChildren();const title=document.createElement('p');title.textContent=prompt;const list=document.createElement('div');this.box.append(title,list);const draw=()=>{list.replaceChildren(...choices.map((choice,index)=>{const button=document.createElement('button');button.textContent=`${index===selected?'› ':''}${choice}`;button.onclick=()=>finish(index);return button;}));};const finish=(index:number)=>{window.removeEventListener('keydown',key,true);this.box.classList.remove('open');resolve(index);};const key=(event:KeyboardEvent)=>{if(event.code==='ArrowUp')selected=(selected+choices.length-1)%choices.length;else if(event.code==='ArrowDown')selected=(selected+1)%choices.length;else if(['Enter','Space'].includes(event.code)){event.preventDefault();event.stopImmediatePropagation();return finish(selected);}else return;event.preventDefault();event.stopImmediatePropagation();draw();};window.addEventListener('keydown',key,true);this.box.classList.add('open');draw();});}
-  toast(text:string){this.box.replaceChildren();const paragraph=document.createElement('p');paragraph.textContent=text;this.box.append(paragraph);this.box.classList.add('open','toast');setTimeout(()=>this.box.classList.remove('open','toast'),1200);}
-  destroy(){this.box.remove();}
+  private box = document.createElement('section');
+
+  constructor() {
+    this.box.className = 'dialogue';
+    document.body.append(this.box);
+  }
+
+  showText(text: string, options?: ShowTextOptions) {
+    return new Promise<void>(resolve => {
+      this.box.replaceChildren();
+
+      // Reset & apply positioning and background styling
+      this.box.className = 'dialogue';
+      if (options?.positionType === 0) {
+        this.box.classList.add('pos-top');
+      } else if (options?.positionType === 1) {
+        this.box.classList.add('pos-middle');
+      } else {
+        this.box.classList.add('pos-bottom');
+      }
+
+      if (options?.background === 1) {
+        this.box.classList.add('bg-dim');
+      } else if (options?.background === 2) {
+        this.box.classList.add('bg-transparent');
+      } else {
+        this.box.classList.add('bg-window');
+      }
+
+      // Speaker Name box (RPG Maker MZ style name tag above the window)
+      if (options?.speakerName) {
+        const nameBox = document.createElement('div');
+        nameBox.className = 'dialogue-name-box';
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = options.speakerName;
+        nameBox.append(nameSpan);
+        this.box.append(nameBox);
+      }
+
+      // Main inner content layout
+      const inner = document.createElement('div');
+      inner.className = 'dialogue-inner';
+
+      // Face graphic portrait
+      if (options?.faceUrl) {
+        const faceContainer = document.createElement('div');
+        faceContainer.className = 'dialogue-face-frame';
+        const faceImg = document.createElement('img');
+        faceImg.src = options.faceUrl;
+        faceImg.alt = options.speakerName || 'Face';
+        faceImg.className = 'dialogue-face-image';
+        faceContainer.append(faceImg);
+        inner.append(faceContainer);
+      }
+
+      // Text body
+      const body = document.createElement('div');
+      body.className = 'dialogue-body';
+      const paragraph = document.createElement('p');
+      paragraph.className = 'dialogue-text';
+      paragraph.textContent = text;
+      body.append(paragraph);
+      inner.append(body);
+
+      // Next / Advance button
+      const button = document.createElement('button');
+      button.className = 'dialogue-next-btn';
+      button.textContent = '▼';
+      button.title = 'Lanjut (Enter / Space)';
+
+      const done = (event?: KeyboardEvent) => {
+        if (event && !['Enter', 'Space', 'KeyZ', 'KeyX'].includes(event.code)) return;
+        if (event) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+        window.removeEventListener('keydown', done, true);
+        this.box.classList.remove('open');
+        resolve();
+      };
+
+      button.onclick = () => done();
+      this.box.append(inner, button);
+      this.box.classList.add('open');
+      window.addEventListener('keydown', done, true);
+    });
+  }
+
+  choose(prompt: string, choices: string[]) {
+    return new Promise<number>(resolve => {
+      let selected = 0;
+      this.box.replaceChildren();
+      this.box.className = 'dialogue pos-bottom bg-window';
+      const title = document.createElement('p');
+      title.textContent = prompt;
+      const list = document.createElement('div');
+      list.className = 'dialogue-choices';
+      this.box.append(title, list);
+
+      const draw = () => {
+        list.replaceChildren(
+          ...choices.map((choice, index) => {
+            const button = document.createElement('button');
+            button.textContent = `${index === selected ? '› ' : ''}${choice}`;
+            button.onclick = () => finish(index);
+            return button;
+          })
+        );
+      };
+
+      const finish = (index: number) => {
+        window.removeEventListener('keydown', key, true);
+        this.box.classList.remove('open');
+        resolve(index);
+      };
+
+      const key = (event: KeyboardEvent) => {
+        if (event.code === 'ArrowUp') selected = (selected + choices.length - 1) % choices.length;
+        else if (event.code === 'ArrowDown') selected = (selected + 1) % choices.length;
+        else if (['Enter', 'Space', 'KeyZ'].includes(event.code)) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return finish(selected);
+        } else return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        draw();
+      };
+
+      window.addEventListener('keydown', key, true);
+      this.box.classList.add('open');
+      draw();
+    });
+  }
+
+  toast(text: string) {
+    this.box.replaceChildren();
+    this.box.className = 'dialogue toast';
+    const paragraph = document.createElement('p');
+    paragraph.textContent = text;
+    this.box.append(paragraph);
+    this.box.classList.add('open');
+    setTimeout(() => this.box.classList.remove('open'), 1200);
+  }
+
+  destroy() {
+    this.box.remove();
+  }
 }

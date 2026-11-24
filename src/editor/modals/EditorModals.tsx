@@ -143,6 +143,7 @@ export function EditorModals({
           eventDraft={eventEditor.eventDraft}
           setEventDraft={eventEditor.setEventDraft}
           characterOptions={eventEditor.characterOptions}
+          faceOptions={eventEditor.faceOptions}
           selectedCommandIndex={eventEditor.selectedCommandIndex}
           setSelectedCommandIndex={eventEditor.setSelectedCommandIndex}
           copiedPage={eventEditor.copiedPage}

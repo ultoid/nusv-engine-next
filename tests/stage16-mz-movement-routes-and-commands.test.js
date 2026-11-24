@@ -187,3 +187,42 @@ test('RPG Maker MZ Event Positioning & Control Commands: setEventLocation, erase
 
   assert.equal(next.variables['custom.test'], 42);
 });
+
+test('RPG Maker MZ Show Text: meneruskan speakerName, faceName, faceIndex, background, dan positionType ke EventIO', async () => {
+  const { executeCommands, initialProgress } = await import('../.electron-dist/src/core/world.js');
+  const bundle = loadProject(fixture);
+  const state = initialProgress(bundle);
+
+  let capturedText = '';
+  let capturedOptions = null;
+
+  const io = {
+    showText: async (text, options) => {
+      capturedText = text;
+      capturedOptions = options;
+    },
+    choose: async () => 0,
+    battle: async () => ({ victory: true, actorResources: {}, actorProgress: {}, inventory: {}, gold: 0 })
+  };
+
+  const command = {
+    type: 'text',
+    text: 'Halo petualang nusv!',
+    speakerName: 'Harold',
+    faceName: 'assets/faces/Actor1.png',
+    faceIndex: 2,
+    background: 0,
+    positionType: 2
+  };
+
+  await executeCommands(bundle, state, [command], io);
+
+  assert.equal(capturedText, 'Halo petualang nusv!');
+  assert.deepEqual(capturedOptions, {
+    speakerName: 'Harold',
+    faceName: 'assets/faces/Actor1.png',
+    faceIndex: 2,
+    background: 0,
+    positionType: 2
+  });
+});

@@ -19,7 +19,18 @@ export const commandName: Record<EventCommand['type'], string> = {
 };
 
 export const commandPreview = (command: EventCommand): string => {
-  if(command.type==='text')return `"${command.text}"`;
+  if(command.type==='text') {
+    const parts: string[] = [];
+    if (command.faceName) {
+      const base = command.faceName.split('/').pop()?.replace('.png', '') ?? '';
+      parts.push(`[${base}(${command.faceIndex ?? 0})]`);
+    }
+    if (command.speakerName) {
+      parts.push(`${command.speakerName}:`);
+    }
+    parts.push(`"${command.text}"`);
+    return parts.join(' ');
+  }
   if(command.type==='choice')return command.prompt;
   if(command.type==='setSwitch')return `${command.id} = ${command.value ? 'ON' : 'OFF'}`;
   if(command.type==='setVariable')return `${command.id} = ${command.value}`;
@@ -76,7 +87,7 @@ export const commandPreview = (command: EventCommand): string => {
 };
 
 export function createCommand(type: EventCommand['type'], bundle: ProjectBundle): EventCommand {
-  if(type==='text')return{type,text:'New dialogue.'};
+  if(type==='text')return{type,text:'New dialogue.',background:0,positionType:2};
   if(type==='choice')return{type,prompt:'Choose:',choices:[{text:'Yes',commands:[]},{text:'No',commands:[]}]};
   if(type==='setSwitch')return{type,id:'story.flag',value:true};
   if(type==='setVariable')return{type,id:'story.step',value:1};

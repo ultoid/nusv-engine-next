@@ -2,20 +2,149 @@ import React, { useState } from 'react';
 import type { EventCommand, ProjectBundle } from '../../core/types.js';
 import { commandName, commandPreview, createCommand } from './eventCommands.js';
 import { MoveRouteModal } from '../modals/MoveRouteModal.js';
+import { FacePickerModal } from '../modals/FacePickerModal.js';
 
 export function CommandFields({
   command,
   bundle,
-  onChange
+  onChange,
+  assetUrls = {},
+  faceOptions = []
 }: {
   command: EventCommand;
   bundle: ProjectBundle;
   onChange: (command: EventCommand) => void;
+  assetUrls?: Record<string, string>;
+  faceOptions?: string[];
 }) {
   const [editingRoute, setEditingRoute] = useState(false);
+  const [pickingFace, setPickingFace] = useState(false);
+
+  // Helper for face url resolution
+  let resolvedFaceUrl: string | undefined = undefined;
+  if (command.type === 'text' && command.faceName) {
+    resolvedFaceUrl = assetUrls[command.faceName];
+    if (!resolvedFaceUrl) {
+      const clean = command.faceName.split('/').pop()?.replace('.png', '').toLowerCase() ?? '';
+      if (clean) {
+        const matchedKey = Object.keys(assetUrls).find(k => {
+          const base = k.split('/').pop()?.replace('.png', '').toLowerCase();
+          return base === clean;
+        });
+        if (matchedKey) resolvedFaceUrl = assetUrls[matchedKey];
+      }
+    }
+  }
 
   const renderFields = () => {
-    if(command.type==='text')return <label>Dialogue<textarea className="mz-textarea" value={command.text} onChange={event=>onChange({...command,text:event.target.value})}/></label>;
+    if (command.type === 'text') {
+      const faceIdx = command.faceIndex ?? 0;
+      const col = faceIdx % 4;
+      const row = Math.floor(faceIdx / 4);
+      return (
+        <div className="mz-show-text-modal-content">
+          <div className="mz-show-text-top-grid">
+            <div className="mz-face-preview-col">
+              <span className="mz-field-label">Face:</span>
+              <div
+                className="mz-face-preview-frame"
+                onClick={() => setPickingFace(true)}
+                title="Klik untuk memilih wajah (Face Graphic)"
+              >
+                {resolvedFaceUrl ? (
+                  <div
+                    className="mz-face-cropped-preview"
+                    style={{
+                      backgroundImage: `url(${resolvedFaceUrl})`,
+                      backgroundPosition: `${col * 33.3333}% ${row * 100}%`,
+                      backgroundSize: '400% 200%'
+                    }}
+                  />
+                ) : (
+                  <div className="mz-face-empty-checker" />
+                )}
+              </div>
+              {command.faceName && (
+                <button
+                  type="button"
+                  className="mz-btn-text-clear"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onChange({ ...command, faceName: undefined, faceIndex: undefined });
+                  }}
+                  title="Hapus wajah"
+                >
+                  Clear Face
+                </button>
+              )}
+            </div>
+
+            <div className="mz-dialogue-text-col">
+              <span className="mz-field-label">Text:</span>
+              <textarea
+                className="mz-textarea mz-dialogue-textarea"
+                rows={5}
+                value={command.text}
+                placeholder="Masukkan teks dialog..."
+                onChange={event => onChange({ ...command, text: event.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="mz-show-text-bottom-row">
+            <label className="mz-show-text-field">
+              <span className="mz-field-label">Name:</span>
+              <input
+                type="text"
+                className="mz-input mz-name-input"
+                value={command.speakerName ?? ''}
+                placeholder="Speaker name"
+                onChange={e => onChange({ ...command, speakerName: e.target.value || undefined })}
+              />
+            </label>
+
+            <label className="mz-show-text-field">
+              <span className="mz-field-label">Background:</span>
+              <select
+                className="mz-select"
+                value={command.background ?? 0}
+                onChange={e => onChange({ ...command, background: Number(e.target.value) })}
+              >
+                <option value={0}>Window</option>
+                <option value={1}>Dim</option>
+                <option value={2}>Transparent</option>
+              </select>
+            </label>
+
+            <label className="mz-show-text-field">
+              <span className="mz-field-label">Window Position:</span>
+              <select
+                className="mz-select"
+                value={command.positionType ?? 2}
+                onChange={e => onChange({ ...command, positionType: Number(e.target.value) })}
+              >
+                <option value={0}>Top</option>
+                <option value={1}>Middle</option>
+                <option value={2}>Bottom</option>
+              </select>
+            </label>
+          </div>
+
+          {pickingFace && (
+            <FacePickerModal
+              currentFaceName={command.faceName}
+              currentFaceIndex={command.faceIndex}
+              faceOptions={faceOptions}
+              assetUrls={assetUrls}
+              onSelect={(faceName, faceIndex) => {
+                onChange({ ...command, faceName, faceIndex });
+              }}
+              onClose={() => setPickingFace(false)}
+            />
+          )}
+        </div>
+      );
+    }
     if(command.type==='choice')return <><label>Prompt<input className="mz-input" value={command.prompt} placeholder="Contoh: Pilih tindakan..." onChange={event=>onChange({...command,prompt:event.target.value})}/></label><label>Choices, one per line<textarea className="mz-textarea" rows={4} value={command.choices.map(choice=>choice.text).join('\n')} onChange={event=>{const labels=event.target.value.split('\n');onChange({...command,choices:labels.map((text,index)=>({text,commands:command.choices[index]?.commands??[]}))});}}/></label></>;
     if(command.type==='setSwitch')return <><label>Switch ID<input value={command.id} onChange={event=>onChange({...command,id:event.target.value})}/></label><label>Value<select value={String(command.value)} onChange={event=>onChange({...command,value:event.target.value==='true'})}><option value="true">ON</option><option value="false">OFF</option></select></label></>;
     if(command.type==='setVariable')return <><label>Variable ID<input value={command.id} onChange={event=>onChange({...command,id:event.target.value})}/></label><label>Value<input type="number" value={command.value} onChange={event=>onChange({...command,value:Number(event.target.value)})}/></label></>;

@@ -6,7 +6,28 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Event System & Movement Route Engine (Standar RPG Maker MZ)
+### 1. Show Text & Face Graphic Picker (Standar RPG Maker MZ)
+- **Face Graphic Picker Modal (`FacePickerModal`)**:
+  - Implementasi modal pemilih potret wajah otentik RPG Maker MZ (`Select an Image`):
+    - Kolom kiri: Daftar berkas wajah (`(None)`, `Actor1`, `Actor2`, `People1`, `SF_Actor1`, dst.) tanpa ekstensi.
+    - Kolom kanan: Tampilan spritesheet 4x2 berukuran 576x288 px dengan latar kotak catur transparan, grid pemisah 144x144 px, dan kursor seleksi berkontur ganda hitam-putih khas MZ.
+    - Interaksi intuitif: Klik satu kali untuk memilih nomor indeks wajah (0–7), klik ganda untuk konfirmasi langsung dan menutup dialog, tombol *Clear Face* untuk menghapus wajah.
+- **Show Text Command Editor (`CommandFields`)**:
+  - Rekonstruksi tampilan dialog perintah *Show Text* agar identik dengan RPG Maker MZ:
+    - Baris atas: Kotak pratinjau *Face* (klik untuk membuka picker, tombol hapus) berdampingan dengan kotak teks dialog multi-baris.
+    - Baris bawah: Input *Name* (nama karakter pembicara), dropdown *Background* (`Window`, `Dim`, `Transparent`), dan dropdown *Window Position* (`Top`, `Middle`, `Bottom`).
+  - Pratinjau perintah di baris Contents menampilkan format standar: `[Face(idx)] Name: "Text"`.
+- **Runtime Dialogue Box & Rendering (`DialogueController` & `WorldScene`)**:
+  - Ekstraksi dan pemotongan otomatis potret 144x144 px dari spritesheet 4x2 secara instan via `TextureManager.getFaceDataUrl`.
+  - Rendering kotak nama pembicara (*Name Window*) yang menempel di atas jendela dialog utama.
+  - Dukungan penuh untuk posisi vertikal jendela dialog (`pos-top`, `pos-middle`, `pos-bottom`).
+  - Dukungan variasi latar belakang jendela (`bg-window` dengan border emas klasik, `bg-dim` semi-transparan gelap, dan `bg-transparent` teks tanpa jendela).
+  - Tombol indikator panah lanjut (`▼`) beranimasi dan navigasi tombol aksi (`Enter`, `Space`, `Z`, `X`).
+- **Pemuatan Aset & Pengujian**:
+  - Preloader aset otomatis untuk kategori `faces` di `useAssetLoader` dan ekspos `faceOptions` di `useEventEditor`.
+  - Penambahan unit test verifikasi penerusan parameter `speakerName`, `faceName`, `faceIndex`, `background`, dan `positionType` ke `EventIO` (103/103 tests pass).
+
+### 2. Event System & Movement Route Engine (Standar RPG Maker MZ)
 - **Autonomous Movement & Custom Route Runner (`runMoveRoute`)**:
   - Implementasi runner rute pergerakan kustom dengan dukungan:
     - Langkah koordinat: `moveDown`, `moveLeft`, `moveRight`, `moveUp`, `moveLowerLeft`, `moveLowerRight`, `moveUpperLeft`, `moveUpperRight`, `moveRandom`, `moveTowardPlayer`, `moveAwayFromPlayer`, `stepForward`, `stepBackward`, `jump`, dan `wait`.

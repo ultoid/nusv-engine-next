@@ -326,7 +326,14 @@ export class WorldScene {
 
   private createEventIO(): EventIO {
     return {
-      showText: (text: string) => this.dialogue.showText(text),
+      showText: async (text: string, options?: { speakerName?: string; faceName?: string; faceIndex?: number; background?: number; positionType?: number }) => {
+        let faceUrl: string | undefined;
+        if (options?.faceName) {
+          const url = await this.textures.getFaceDataUrl(options.faceName, options.faceIndex ?? 0);
+          if (url) faceUrl = url;
+        }
+        return this.dialogue.showText(text, { ...options, faceUrl });
+      },
       choose: (prompt: string, choices: string[]) => this.dialogue.choose(prompt, choices),
       battle: async (troopId: string, state: ProgressState) => {
         const result = await this.battle.run(troopId, state);
