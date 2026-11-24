@@ -44,6 +44,10 @@ export interface EventIO {
   fadeoutBgs?(seconds: number): Promise<void>;
   scrollMap?(direction: Direction, distance: number, speed: number): Promise<void>;
   gameOver?(): Promise<void>;
+  inputNumber?(variableId: string, digits: number): Promise<number>;
+  selectItem?(variableId: string, itemType?: string): Promise<string>;
+  scrollingText?(text: string, speed?: number, noFastForward?: boolean): Promise<void>;
+  controlTimer?(operation: 'start' | 'stop', seconds?: number): void;
 }
 
 export const directionDelta: Record<Direction, [number, number]> = {
@@ -661,6 +665,105 @@ async function runCommandList(
       try {
         new Function('state', 'bundle', command.code)(next, bundle);
       } catch {}
+    } else if (command.type === 'inputNumber') {
+      let val = 0;
+      if (io.inputNumber) {
+        val = await io.inputNumber(command.variableId, command.digits);
+      } else {
+        val = next.variables[command.variableId] ?? 0;
+      }
+      next.variables[command.variableId] = val;
+    } else if (command.type === 'selectItem') {
+      let selectedId = '';
+      if (io.selectItem) {
+        selectedId = await io.selectItem(command.variableId, command.itemType);
+      } else {
+        selectedId = Object.keys(next.inventory).find(id => (next.inventory[id] ?? 0) > 0) ?? '';
+      }
+      next.variables[command.variableId] = selectedId ? (Number(selectedId) || (selectedId as unknown as number)) : 0;
+    } else if (command.type === 'scrollingText') {
+      if (io.scrollingText) {
+        await io.scrollingText(command.text, command.speed ?? 2, command.noFastForward ?? false);
+      } else {
+        await io.showText(command.text);
+      }
+    } else if (command.type === 'controlTimer') {
+      if (command.operation === 'start') {
+        next.timer = { active: true, seconds: command.seconds ?? 0 };
+      } else {
+        next.timer = { active: false, seconds: 0 };
+      }
+      io.controlTimer?.(command.operation, command.seconds);
+    } else if (command.type === 'commonEvent') {
+      const ce = bundle.game.commonEvents?.find(c => c.id === command.commonEventId);
+      if (ce && ce.commands && ce.commands.length > 0) {
+        const sub = await runCommandList(bundle, next, ce.commands, io, context);
+        next = sub.state;
+        if (sub.signal !== 'none') return sub;
+      }
+    } else if (command.type === 'comment') {
+      // Documentation note, no-op
+    } else if (command.type === 'changeWeapons') {
+      const op = command.operation ?? 'add';
+      const current = next.inventory[command.weaponId] ?? 0;
+      next.inventory[command.weaponId] = op === 'add' ? current + command.amount : Math.max(0, current - command.amount);
+    } else if (command.type === 'changeArmors') {
+      const op = command.operation ?? 'add';
+      const current = next.inventory[command.armorId] ?? 0;
+      next.inventory[command.armorId] = op === 'add' ? current + command.amount : Math.max(0, current - command.amount);
+    } else if (command.type === 'changeTp') {
+      const targetIds = command.actorId ? [command.actorId] : next.formation;
+      for (const aId of targetIds) {
+        const res = next.actorResources[aId];
+        if (res) {
+          const newSp = command.operation === 'add' ? res.sp + command.amount : Math.max(0, res.sp - command.amount);
+          next.actorResources[aId] = { ...res, sp: Math.min(100, newSp) };
+        }
+      }
+    } else if (command.type === 'changeState') {
+      if (!next.activeStates) next.activeStates = {};
+      const targetIds = command.actorId ? [command.actorId] : next.formation;
+      for (const aId of targetIds) {
+        const cur = next.activeStates[aId] ?? [];
+        if (command.operation === 'add') {
+          if (!cur.includes(command.stateId)) next.activeStates[aId] = [...cur, command.stateId];
+        } else {
+          next.activeStates[aId] = cur.filter(id => id !== command.stateId);
+        }
+      }
+    } else if (command.type === 'changeParameter') {
+      const prog = next.actorProgress[command.actorId];
+      if (prog && prog.allocated) {
+        const current = (prog.allocated as any)[command.param] ?? 0;
+        const updated = command.operation === 'add' ? current + command.amount : Math.max(0, current - command.amount);
+        (prog.allocated as any)[command.param] = updated;
+      }
+    } else if (command.type === 'changeEquipment') {
+      const prog = next.actorProgress[command.actorId];
+      if (prog) {
+        if (!prog.equipment) prog.equipment = {};
+        if (command.equipId) {
+          prog.equipment[command.slot] = command.equipId;
+        } else {
+          delete prog.equipment[command.slot];
+        }
+      }
+    } else if (command.type === 'changeName') {
+      if (!next.actorOverrides) next.actorOverrides = {};
+      next.actorOverrides[command.actorId] = { ...next.actorOverrides[command.actorId], name: command.name };
+    } else if (command.type === 'changeClass') {
+      const prog = next.actorProgress[command.actorId];
+      if (prog) {
+        prog.activeClassId = command.classId;
+      }
+      if (!next.actorOverrides) next.actorOverrides = {};
+      next.actorOverrides[command.actorId] = { ...next.actorOverrides[command.actorId], classId: command.classId };
+    } else if (command.type === 'changeNickname') {
+      if (!next.actorOverrides) next.actorOverrides = {};
+      next.actorOverrides[command.actorId] = { ...next.actorOverrides[command.actorId], nickname: command.nickname };
+    } else if (command.type === 'changeProfile') {
+      if (!next.actorOverrides) next.actorOverrides = {};
+      next.actorOverrides[command.actorId] = { ...next.actorOverrides[command.actorId], profile: command.profile };
     }
 
     pc++;

@@ -335,6 +335,18 @@ export class WorldScene {
         return this.dialogue.showText(text, { ...options, faceUrl });
       },
       choose: (prompt: string, choices: string[]) => this.dialogue.choose(prompt, choices),
+      inputNumber: (variableId: string, digits: number) => this.dialogue.inputNumber(digits, this.state.variables[variableId] ?? 0),
+      selectItem: async (variableId: string, itemType?: string) => {
+        const inventoryItems = Object.keys(this.state.inventory)
+          .filter(id => (this.state.inventory[id] ?? 0) > 0)
+          .map(id => {
+            const def = this.bundle.game.items.find(it => it.id === id);
+            return { id, name: def?.name ?? id, kind: def?.kind };
+          })
+          .filter(it => !itemType || (itemType === 'key' ? it.kind === 'key' : true));
+        return this.dialogue.selectItem(inventoryItems);
+      },
+      scrollingText: (text: string, speed?: number) => this.dialogue.scrollingText(text, speed),
       battle: async (troopId: string, state: ProgressState) => {
         const result = await this.battle.run(troopId, state);
         this.playMapBgm();

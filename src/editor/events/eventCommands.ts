@@ -6,7 +6,8 @@ export const commandTypes: Array<EventCommand['type']> = [
   'showPicture','movePicture','erasePicture','showBalloon','showAnimation','transparency',
   'playSe','stopSe','playMe','playBgs','fadeoutBgs',
   'giveItem','transfer','battle','questStart','questAdvance','questComplete','shop','inn','cutscene','music',
-  'setMovementRoute','changeHp','changeMp','recoverAll','changeLevel','changeExp','changePartyMember','changeSkill','setEventLocation','scrollMap','eraseEvent','gameOver','script'
+  'setMovementRoute','changeHp','changeMp','recoverAll','changeLevel','changeExp','changePartyMember','changeSkill','setEventLocation','scrollMap','eraseEvent','gameOver','script',
+  'inputNumber','selectItem','scrollingText','controlTimer','commonEvent','comment','changeWeapons','changeArmors','changeTp','changeState','changeParameter','changeEquipment','changeName','changeClass','changeNickname','changeProfile'
 ];
 
 export const commandName: Record<EventCommand['type'], string> = {
@@ -15,7 +16,8 @@ export const commandName: Record<EventCommand['type'], string> = {
   showPicture:'Show Picture',movePicture:'Move Picture',erasePicture:'Erase Picture',showBalloon:'Show Balloon Icon',showAnimation:'Show Animation',transparency:'Change Transparency',
   playSe:'Play SE',stopSe:'Stop SE',playMe:'Play ME',playBgs:'Play BGS',fadeoutBgs:'Fadeout BGS',
   giveItem:'Give Item',transfer:'Transfer Player',battle:'Start Battle',questStart:'Start Quest',questAdvance:'Advance Quest',questComplete:'Complete Quest',shop:'Open Shop',inn:'Open Inn',cutscene:'Cutscene',music:'Change Music',
-  setMovementRoute:'Set Movement Route',changeHp:'Change HP',changeMp:'Change MP',recoverAll:'Recover All',changeLevel:'Change Level',changeExp:'Change EXP',changePartyMember:'Change Party Member',changeSkill:'Change Skill',setEventLocation:'Set Event Location',scrollMap:'Scroll Map',eraseEvent:'Erase Event',gameOver:'Game Over',script:'Script'
+  setMovementRoute:'Set Movement Route',changeHp:'Change HP',changeMp:'Change MP',recoverAll:'Recover All',changeLevel:'Change Level',changeExp:'Change EXP',changePartyMember:'Change Party Member',changeSkill:'Change Skill',setEventLocation:'Set Event Location',scrollMap:'Scroll Map',eraseEvent:'Erase Event',gameOver:'Game Over',script:'Script',
+  inputNumber:'Input Number',selectItem:'Select Item',scrollingText:'Show Scrolling Text',controlTimer:'Control Timer',commonEvent:'Common Event',comment:'Comment',changeWeapons:'Change Weapons',changeArmors:'Change Armors',changeTp:'Change TP',changeState:'Change State',changeParameter:'Change Parameter',changeEquipment:'Change Equipment',changeName:'Change Name',changeClass:'Change Class',changeNickname:'Change Nickname',changeProfile:'Change Profile'
 };
 
 export const commandPreview = (command: EventCommand): string => {
@@ -83,6 +85,22 @@ export const commandPreview = (command: EventCommand): string => {
   if(command.type==='eraseEvent')return `Erase Event: ${command.eventId ?? 'This Event'}`;
   if(command.type==='gameOver')return `Game Over`;
   if(command.type==='script')return `Script: ${command.code.slice(0, 30)}...`;
+  if(command.type==='inputNumber')return `Input Number: Variable [${command.variableId}], ${command.digits} digits`;
+  if(command.type==='selectItem')return `Select Item: Variable [${command.variableId}]${command.itemType ? ` (${command.itemType})` : ''}`;
+  if(command.type==='scrollingText')return `Scroll Text: "${command.text.slice(0, 30)}..."`;
+  if(command.type==='controlTimer')return `Timer: ${command.operation.toUpperCase()}${command.seconds ? ` (${command.seconds}s)` : ''}`;
+  if(command.type==='commonEvent')return `Common Event: #${command.commonEventId}`;
+  if(command.type==='comment')return `// ${command.text}`;
+  if(command.type==='changeWeapons')return `Weapons: ${command.operation === 'sub' ? '-' : '+'}${command.amount}× [${command.weaponId}]`;
+  if(command.type==='changeArmors')return `Armors: ${command.operation === 'sub' ? '-' : '+'}${command.amount}× [${command.armorId}]`;
+  if(command.type==='changeTp')return `TP ${command.actorId ?? 'Party'}: ${command.operation === 'sub' ? '-' : '+'}${command.amount}`;
+  if(command.type==='changeState')return `State ${command.actorId ?? 'Party'}: ${command.operation === 'add' ? '+' : '-'}[${command.stateId}]`;
+  if(command.type==='changeParameter')return `Param ${command.actorId}: ${command.param.toUpperCase()} ${command.operation === 'sub' ? '-' : '+'}${command.amount}`;
+  if(command.type==='changeEquipment')return `Equip ${command.actorId}: [${command.slot}] = ${command.equipId ?? '(None)'}`;
+  if(command.type==='changeName')return `Name ${command.actorId}: "${command.name}"`;
+  if(command.type==='changeClass')return `Class ${command.actorId}: [${command.classId}]`;
+  if(command.type==='changeNickname')return `Nickname ${command.actorId}: "${command.nickname}"`;
+  if(command.type==='changeProfile')return `Profile ${command.actorId}: "${command.profile.slice(0, 25)}..."`;
   return '';
 };
 
@@ -139,5 +157,21 @@ export function createCommand(type: EventCommand['type'], bundle: ProjectBundle)
   if(type==='eraseEvent')return{type};
   if(type==='gameOver')return{type};
   if(type==='script')return{type,code:'// script code'};
+  if(type==='inputNumber')return{type,variableId:'story.input',digits:4};
+  if(type==='selectItem')return{type,variableId:'story.item',itemType:'regular'};
+  if(type==='scrollingText')return{type,text:'Prologue...',speed:2,noFastForward:false};
+  if(type==='controlTimer')return{type,operation:'start',seconds:120};
+  if(type==='commonEvent')return{type,commonEventId:bundle.game.commonEvents?.[0]?.id??'common.1'};
+  if(type==='comment')return{type,text:'Tulis catatan atau komentar alur event di sini.'};
+  if(type==='changeWeapons')return{type,weaponId:bundle.game.equipment.find(e=>e.slot==='weapon')?.id??'weapon.sword',operation:'add',amount:1};
+  if(type==='changeArmors')return{type,armorId:bundle.game.equipment.find(e=>e.slot!=='weapon')?.id??'armor.shield',operation:'add',amount:1};
+  if(type==='changeTp')return{type,actorId:bundle.project.party[0],operation:'add',amount:10};
+  if(type==='changeState')return{type,actorId:bundle.project.party[0],operation:'add',stateId:bundle.game.states?.[0]?.id??'state.poison'};
+  if(type==='changeParameter')return{type,actorId:bundle.project.party[0]??'actor.missing',param:'atk',operation:'add',amount:5};
+  if(type==='changeEquipment')return{type,actorId:bundle.project.party[0]??'actor.missing',slot:'weapon',equipId:bundle.game.equipment.find(e=>e.slot==='weapon')?.id};
+  if(type==='changeName')return{type,actorId:bundle.project.party[0]??'actor.missing',name:'Hero'};
+  if(type==='changeClass')return{type,actorId:bundle.project.party[0]??'actor.missing',classId:bundle.game.classes?.[0]?.id??'class.warrior',keepLevel:true};
+  if(type==='changeNickname')return{type,actorId:bundle.project.party[0]??'actor.missing',nickname:'The Brave'};
+  if(type==='changeProfile')return{type,actorId:bundle.project.party[0]??'actor.missing',profile:'A young hero from the village.'};
   return{type:'music',mood:'calm'};
 }

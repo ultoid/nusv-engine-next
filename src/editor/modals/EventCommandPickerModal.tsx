@@ -19,20 +19,51 @@ interface CommandGroupDef {
 
 const TAB_1_GROUPS: CommandGroupDef[] = [
   {
-    title: 'Messages',
+    title: 'Message',
     commands: [
       { type: 'text', label: 'Show Text...' },
       { type: 'choice', label: 'Show Choices...' },
+      { type: 'inputNumber', label: 'Input Number...' },
+      { type: 'selectItem', label: 'Select Item...' },
+      { type: 'scrollingText', label: 'Show Scrolling Text...' },
+    ]
+  },
+  {
+    title: 'Party',
+    commands: [
+      { type: 'changeGold', label: 'Change Gold...' },
+      { type: 'giveItem', label: 'Change Items...' },
+      { type: 'changeWeapons', label: 'Change Weapons...' },
+      { type: 'changeArmors', label: 'Change Armors...' },
+      { type: 'changePartyMember', label: 'Change Party Member...' },
     ]
   },
   {
     title: 'Game Progression',
     commands: [
-      { type: 'setSwitch', label: 'Control Switch...' },
-      { type: 'setVariable', label: 'Control Variable...' },
+      { type: 'setSwitch', label: 'Control Switches...' },
+      { type: 'setVariable', label: 'Control Variables...' },
       { type: 'setSelfSwitch', label: 'Control Self Switch...' },
-      { type: 'changeGold', label: 'Change Gold...' },
-      { type: 'giveItem', label: 'Give Item...' },
+      { type: 'controlTimer', label: 'Control Timer...' },
+    ]
+  },
+  {
+    title: 'Actor',
+    commands: [
+      { type: 'changeHp', label: 'Change HP...' },
+      { type: 'changeMp', label: 'Change MP...' },
+      { type: 'changeTp', label: 'Change TP...' },
+      { type: 'changeState', label: 'Change State...' },
+      { type: 'recoverAll', label: 'Recover All...' },
+      { type: 'changeExp', label: 'Change EXP...' },
+      { type: 'changeLevel', label: 'Change Level...' },
+      { type: 'changeParameter', label: 'Change Parameter...' },
+      { type: 'changeSkill', label: 'Change Skill...' },
+      { type: 'changeEquipment', label: 'Change Equipment...' },
+      { type: 'changeName', label: 'Change Name...' },
+      { type: 'changeClass', label: 'Change Class...' },
+      { type: 'changeNickname', label: 'Change Nickname...' },
+      { type: 'changeProfile', label: 'Change Profile...' },
     ]
   },
   {
@@ -42,21 +73,11 @@ const TAB_1_GROUPS: CommandGroupDef[] = [
       { type: 'loop', label: 'Loop' },
       { type: 'breakLoop', label: 'Break Loop' },
       { type: 'exitEvent', label: 'Exit Event Processing' },
+      { type: 'commonEvent', label: 'Common Event...' },
       { type: 'label', label: 'Label...' },
       { type: 'jumpToLabel', label: 'Jump to Label...' },
+      { type: 'comment', label: 'Comment...' },
       { type: 'wait', label: 'Wait...' },
-    ]
-  },
-  {
-    title: 'Party & Actor',
-    commands: [
-      { type: 'changeHp', label: 'Change HP...' },
-      { type: 'changeMp', label: 'Change MP...' },
-      { type: 'recoverAll', label: 'Recover All' },
-      { type: 'changeLevel', label: 'Change Level...' },
-      { type: 'changeExp', label: 'Change EXP...' },
-      { type: 'changePartyMember', label: 'Change Party Member...' },
-      { type: 'changeSkill', label: 'Change Skills...' },
     ]
   },
   {
@@ -161,7 +182,24 @@ export function EventCommandPickerModal({ onSelect, onClose }: EventCommandPicke
     );
   }, [search, allCommands]);
 
-  const currentGroups = activeTab === 1 ? TAB_1_GROUPS : activeTab === 2 ? TAB_2_GROUPS : TAB_3_GROUPS;
+  const { col1, col2 } = useMemo(() => {
+    if (activeTab === 1) {
+      return {
+        col1: TAB_1_GROUPS.filter(g => ['Message', 'Game Progression', 'Flow Control'].includes(g.title)),
+        col2: TAB_1_GROUPS.filter(g => ['Party', 'Actor', 'Quests & Story'].includes(g.title))
+      };
+    } else if (activeTab === 2) {
+      return {
+        col1: TAB_2_GROUPS.filter(g => ['Movement', 'Character Visuals'].includes(g.title)),
+        col2: TAB_2_GROUPS.filter(g => ['Picture', 'Screen Effects'].includes(g.title))
+      };
+    } else {
+      return {
+        col1: TAB_3_GROUPS.filter(g => ['Audio'].includes(g.title)),
+        col2: TAB_3_GROUPS.filter(g => ['Scenes & Battle', 'Advanced'].includes(g.title))
+      };
+    }
+  }, [activeTab]);
 
   return (
     <div className="mv-modal-backdrop mz-cmd-picker-backdrop" onClick={onClose}>
@@ -237,23 +275,44 @@ export function EventCommandPickerModal({ onSelect, onClose }: EventCommandPicke
             </div>
           ) : (
             <div className="mz-cmd-columns">
-              {currentGroups.map(group => (
-                <div key={group.title} className="mz-group-box mz-cmd-group">
-                  <div className="mz-group-title">{group.title}</div>
-                  <div className="mz-group-content mz-cmd-group-content">
-                    {group.commands.map(cmd => (
-                      <button
-                        key={cmd.type}
-                        type="button"
-                        className="mz-btn mz-cmd-btn"
-                        onClick={() => onSelect(cmd.type)}
-                      >
-                        {cmd.label}
-                      </button>
-                    ))}
+              <div className="mz-cmd-col">
+                {col1.map(group => (
+                  <div key={group.title} className="mz-group-box mz-cmd-group">
+                    <div className="mz-group-title">{group.title}</div>
+                    <div className="mz-group-content mz-cmd-group-content">
+                      {group.commands.map(cmd => (
+                        <button
+                          key={cmd.type}
+                          type="button"
+                          className="mz-btn mz-cmd-btn"
+                          onClick={() => onSelect(cmd.type)}
+                        >
+                          {cmd.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="mz-cmd-col">
+                {col2.map(group => (
+                  <div key={group.title} className="mz-group-box mz-cmd-group">
+                    <div className="mz-group-title">{group.title}</div>
+                    <div className="mz-group-content mz-cmd-group-content">
+                      {group.commands.map(cmd => (
+                        <button
+                          key={cmd.type}
+                          type="button"
+                          className="mz-btn mz-cmd-btn"
+                          onClick={() => onSelect(cmd.type)}
+                        >
+                          {cmd.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

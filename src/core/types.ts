@@ -6,7 +6,15 @@ export interface ClassData { id:string;name:string;tier:1|2|3|4|5;growth?:Partia
 export interface RuntimeSettings { language:'id'|'en';masterVolume:number;musicVolume:number;sfxVolume:number;textScale:number;highContrast:boolean;reducedMotion:boolean }
 export interface ProjectManifest { schemaVersion: 1; projectId: string; title: string; logicalResolution: { width: number; height: number }; maps: string[]; start: { mapId: string; x: number; y: number }; party: string[]; [key: string]: unknown }
 export interface TilesetData { id: string; name: string; mode: number; tilesetNames: string[]; note?: string; flags?: number[] }
-export interface GameData { schemaVersion: 1; actors: ActorData[]; enemies: EnemyData[]; equipment:EquipmentData[]; skills: SkillData[]; states:StateData[]; troops: TroopData[]; items: ItemData[]; tilesets?: TilesetData[]; quests?:QuestData[];shops?:ShopData[];classes?:ClassData[];translations?:Record<string,Record<string,string>>; [key: string]: unknown }
+export interface CommonEventData {
+  id: string;
+  name: string;
+  trigger?: 'none' | 'autorun' | 'parallel';
+  switchId?: string;
+  commands: EventCommand[];
+}
+
+export interface GameData { schemaVersion: 1; actors: ActorData[]; enemies: EnemyData[]; equipment:EquipmentData[]; skills: SkillData[]; states:StateData[]; troops: TroopData[]; items: ItemData[]; tilesets?: TilesetData[]; quests?:QuestData[];shops?:ShopData[];classes?:ClassData[];commonEvents?:CommonEventData[];translations?:Record<string,Record<string,string>>; [key: string]: unknown }
 export type BranchCondition =
   | { kind: 'switch'; id: string; value: boolean }
   | { kind: 'variable'; id: string; op: '==' | '>=' | '<=' | '>' | '<' | '!='; value: number }
@@ -124,6 +132,22 @@ export type EventCommand =
   | { type: 'scrollMap'; direction: 'down' | 'left' | 'right' | 'up'; distance: number; speed: number }
   | { type: 'eraseEvent'; eventId?: string }
   | { type: 'gameOver' }
+  | { type: 'inputNumber'; variableId: string; digits: number }
+  | { type: 'selectItem'; variableId: string; itemType?: 'regular' | 'key' | 'hiddenA' | 'hiddenB' }
+  | { type: 'scrollingText'; text: string; speed?: number; noFastForward?: boolean }
+  | { type: 'controlTimer'; operation: 'start' | 'stop'; seconds?: number }
+  | { type: 'commonEvent'; commonEventId: string }
+  | { type: 'comment'; text: string }
+  | { type: 'changeWeapons'; weaponId: string; operation: 'add' | 'sub'; amount: number; includeEquip?: boolean }
+  | { type: 'changeArmors'; armorId: string; operation: 'add' | 'sub'; amount: number; includeEquip?: boolean }
+  | { type: 'changeTp'; actorId?: string; operation: 'add' | 'sub'; amount: number }
+  | { type: 'changeState'; actorId?: string; operation: 'add' | 'remove'; stateId: string }
+  | { type: 'changeParameter'; actorId: string; param: 'atk' | 'def' | 'mat' | 'mdf' | 'agi' | 'luk'; operation: 'add' | 'sub'; amount: number }
+  | { type: 'changeEquipment'; actorId: string; slot: 'weapon' | 'shield' | 'head' | 'body' | 'accessory'; equipId?: string }
+  | { type: 'changeName'; actorId: string; name: string }
+  | { type: 'changeClass'; actorId: string; classId: string; keepLevel?: boolean }
+  | { type: 'changeNickname'; actorId: string; nickname: string }
+  | { type: 'changeProfile'; actorId: string; profile: string }
   | { type: 'script'; code: string };
 
 export interface PictureState {
@@ -225,4 +249,4 @@ export interface MapData {
 export interface AssetEntry { id: string; type: string; path: string; category?: string; license?: string; size?: number; [key: string]: unknown }
 export interface AssetManifest { schemaVersion: 1; assets: Array<AssetEntry>; [key: string]: unknown }
 export interface ProjectBundle { root?: string; project: ProjectManifest; game: GameData; maps: Record<string, MapData>; assets: AssetManifest }
-export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean> }
+export interface ProgressState { schemaVersion: 2; projectId: string; mapId: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right'; switches: Record<string, boolean>; variables: Record<string, number>; inventory: Record<string, number>; actorResources: Record<string, ResourceState>; actorProgress:Record<string,ActorProgress>; gold: number;quests:Record<string,QuestProgress>;formation:string[];settings:RuntimeSettings;telemetry:{battles:number;victories:number;turns:number;damageTaken:number};eventPositions:Record<string,{mapId:string;x:number;y:number}>; selfSwitches?: Record<string, boolean>; timer?: { active: boolean; seconds: number }; actorOverrides?: Record<string, { name?: string; nickname?: string; profile?: string; classId?: string }>; activeStates?: Record<string, string[]> }

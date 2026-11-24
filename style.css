@@ -1011,10 +1011,10 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
 }
 
 .mz-cmd-picker-dialog {
-  width: 760px;
+  width: 780px;
   max-width: 95vw;
-  height: 560px;
-  max-height: 92vh;
+  height: 620px;
+  max-height: 94vh;
   display: flex;
   flex-direction: column;
   background: #e8ecf2;
@@ -1058,9 +1058,15 @@ footer { margin-top: 1rem; color: #93a8ad; min-height: 1.5rem; }
 
 .mz-cmd-columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
   align-items: start;
+}
+
+.mz-cmd-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .mz-cmd-group {

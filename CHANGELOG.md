@@ -6,7 +6,38 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-24
 
-### 1. Show Text & Face Graphic Picker (Standar RPG Maker MZ)
+### 1. Pemetaan & Implementasi Lengkap Perintah Tab 1 RPG Maker MZ (Message, Progression, Flow Control, Party, Actor)
+- **16 Perintah Baru Standar RPG Maker MZ**:
+  - **Message**:
+    - `Input Number...` (`inputNumber`): Membuka dialog input angka numerik dengan batas digit (1–8) dan menyimpan hasilnya ke ID variabel terpilih.
+    - `Select Item...` (`selectItem`): Membuka dialog pemilih item inventaris berdasarkan kategori (`regular`, `key`, `hiddenA`, `hiddenB`) dan menyimpan ID item ke variabel.
+    - `Show Scrolling Text...` (`scrollingText`): Menampilkan teks bergulir vertikal dengan pengaturan kecepatan (1–8) dan opsi larangan percepat (*No Fast Forward*).
+  - **Game Progression**:
+    - `Control Timer...` (`controlTimer`): Memulai (*Start*) dan menghentikan (*Stop*) timer hitung mundur global dengan durasi dalam detik.
+  - **Flow Control**:
+    - `Common Event...` (`commonEvent`): Memanggil dan mengeksekusi subrutin *Common Event* dari database proyek secara deterministik.
+    - `Comment...` (`comment`): Dokumentasi/catatan anotasi baris perintah event tanpa memengaruhi runtime.
+  - **Party**:
+    - `Change Weapons...` (`changeWeapons`): Menambah atau mengurangi senjata inventaris dengan opsi *Include Equipment*.
+    - `Change Armors...` (`changeArmors`): Menambah atau mengurangi perisai/baju zirah/aksesori dengan opsi *Include Equipment*.
+  - **Actor**:
+    - `Change TP...` (`changeTp`): Penambahan/pengurangan Technical Points (SP/TP) untuk aktor tertentu atau seluruh party.
+    - `Change State...` (`changeState`): Penerapan (*Add*) atau pencabutan (*Remove*) status efek (*State*) pada aktor/party.
+    - `Change Parameter...` (`changeParameter`): Modifikasi langsung stat dasar aktor (`atk`, `def`, `mat`, `mdf`, `agi`, `luk`).
+    - `Change Equipment...` (`changeEquipment`): Pemasangan atau pencopotan perlengkapan pada slot senjata, perisai, kepala, badan, atau aksesori.
+    - `Change Name...` (`changeName`): Perubahan nama dinamis aktor.
+    - `Change Class...` (`changeClass`): Pergantian class/pekerjaan aktor dengan opsi mempertahankan level.
+    - `Change Nickname...` (`changeNickname`): Pembaruan julukan karakter.
+    - `Change Profile...` (`changeProfile`): Pembaruan teks biografi/profil karakter.
+- **Frontend & Event Editor UX**:
+  - Rekonstruksi palet pemilih `EventCommandPickerModal` menjadi tata letak otentik 2-kolom persis RPG Maker MZ (Kiri: Message, Game Progression, Flow Control; Kanan: Party, Actor, Quests & Story).
+  - Penambahan form visual interaktif di `CommandFields.tsx` untuk seluruh 16 perintah baru.
+  - Penambahan modal dan event handler di runtime `DialogueController.ts` dan `WorldScene.ts`.
+- **Validasi & Pengujian**:
+  - Validasi skema deterministik di `src/core/validation.ts`.
+  - Penambahan unit test baru di `tests/stage16-mz-movement-routes-and-commands.test.js` (105/105 tests pass).
+
+### 2. Show Text & Face Graphic Picker (Standar RPG Maker MZ)
 - **Face Graphic Picker Modal (`FacePickerModal`)**:
   - Implementasi modal pemilih potret wajah otentik RPG Maker MZ (`Select an Image`):
     - Kolom kiri: Daftar berkas wajah (`(None)`, `Actor1`, `Actor2`, `People1`, `SF_Actor1`, dst.) tanpa ekstensi.

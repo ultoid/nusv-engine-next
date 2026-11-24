@@ -101,6 +101,7 @@ test('RPG Maker MZ Party & Actor Commands: changeHp, changeMp, recoverAll, chang
   const bundle = loadProject(fixture);
   const state = initialProgress(bundle);
   const actorId = bundle.project.party[0];
+  state.actorResources[actorId].sp = 0;
 
   const io = {
     showText: async () => {},
@@ -225,4 +226,81 @@ test('RPG Maker MZ Show Text: meneruskan speakerName, faceName, faceIndex, backg
     background: 0,
     positionType: 2
   });
+});
+
+test('RPG Maker MZ Message & Logic Commands: inputNumber, selectItem, scrollingText, controlTimer, commonEvent, comment', async () => {
+  const { executeCommands, initialProgress } = await import('../.electron-dist/src/core/world.js');
+  const bundle = loadProject(fixture);
+  const state = initialProgress(bundle);
+
+  let scrolled = '';
+  const io = {
+    showText: async () => {},
+    choose: async () => 0,
+    battle: async () => ({ victory: true, actorResources: {}, actorProgress: {}, inventory: {}, gold: 0 }),
+    inputNumber: async () => 1337,
+    selectItem: async () => 'item.potion',
+    scrollingText: async (text) => { scrolled = text; }
+  };
+
+  bundle.game.commonEvents = [
+    {
+      id: 'common.heal',
+      name: 'Common Heal',
+      commands: [
+        { type: 'setSwitch', id: 'common.invoked', value: true }
+      ]
+    }
+  ];
+
+  const commands = [
+    { type: 'comment', text: 'Catatan pengujian logika' },
+    { type: 'inputNumber', variableId: 'pin.code', digits: 4 },
+    { type: 'selectItem', variableId: 'quest.itemChoice', itemType: 'regular' },
+    { type: 'scrollingText', text: 'Alkisah sebuah kerajaan...', speed: 3 },
+    { type: 'controlTimer', operation: 'start', seconds: 180 },
+    { type: 'commonEvent', commonEventId: 'common.heal' }
+  ];
+
+  const next = await executeCommands(bundle, state, commands, io);
+
+  assert.equal(next.variables['pin.code'], 1337);
+  assert.equal(next.variables['quest.itemChoice'], 'item.potion');
+  assert.equal(scrolled, 'Alkisah sebuah kerajaan...');
+  assert.deepEqual(next.timer, { active: true, seconds: 180 });
+  assert.equal(next.switches['common.invoked'], true);
+});
+
+test('RPG Maker MZ Party & Actor Logic Commands: changeWeapons, changeArmors, changeTp, changeState, changeParameter, changeName, changeClass', async () => {
+  const { executeCommands, initialProgress } = await import('../.electron-dist/src/core/world.js');
+  const bundle = loadProject(fixture);
+  const state = initialProgress(bundle);
+  const actorId = bundle.project.party[0];
+  state.actorResources[actorId].sp = 0;
+
+  const io = {
+    showText: async () => {},
+    choose: async () => 0,
+    battle: async () => ({ victory: true, actorResources: {}, actorProgress: {}, inventory: {}, gold: 0 })
+  };
+
+  const commands = [
+    { type: 'changeWeapons', weaponId: 'weapon.iron-sword', operation: 'add', amount: 3 },
+    { type: 'changeArmors', armorId: 'armor.leather-shield', operation: 'add', amount: 2 },
+    { type: 'changeTp', actorId, operation: 'add', amount: 50 },
+    { type: 'changeState', actorId, operation: 'add', stateId: 'state.poison' },
+    { type: 'changeParameter', actorId, param: 'atk', operation: 'add', amount: 10 },
+    { type: 'changeName', actorId, name: 'Reid the Brave' },
+    { type: 'changeClass', actorId, classId: 'class.paladin', keepLevel: true }
+  ];
+
+  const next = await executeCommands(bundle, state, commands, io);
+
+  assert.equal(next.inventory['weapon.iron-sword'], 3);
+  assert.equal(next.inventory['armor.leather-shield'], 2);
+  assert.equal(next.actorResources[actorId].sp, 50);
+  assert.ok(next.activeStates[actorId].includes('state.poison'));
+  assert.equal(next.actorProgress[actorId].allocated.atk, 10);
+  assert.equal(next.actorOverrides[actorId].name, 'Reid the Brave');
+  assert.equal(next.actorProgress[actorId].activeClassId, 'class.paladin');
 });
