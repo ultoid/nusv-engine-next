@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { formatAnimationLabel } from '../core/animations.js';
 import type { ItemData, SkillDamage, SkillEffect } from '../core/combat-types.js';
 import type { ProjectBundle } from '../core/types.js';
 import {
@@ -391,16 +392,23 @@ export function ItemDetailForm({
                 <span className="mz-field-label">Animation:</span>
                 <select
                   className="mz-select"
-                  value={item.animationId ?? 0}
-                  onChange={(e) => onUpdate({ animationId: e.target.value })}
+                  value={String(item.animationId ?? 0)}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    onUpdate({ animationId: v === '0' ? 0 : v });
+                  }}
                 >
-                  <option value={0}>None</option>
-                  <option value="Recovery One 1">Recovery One 1</option>
-                  <option value="Revive 1">Revive 1</option>
-                  <option value="Hit Physical">Hit Physical</option>
-                  <option value="Fire One 1">Fire One 1</option>
-                  <option value="Ice One 1">Ice One 1</option>
-                  <option value="Thunder One 1">Thunder One 1</option>
+                  <option value="0">None</option>
+                  {(bundle.game.animations ?? []).map((anim, idx) => (
+                    <option key={anim.id} value={anim.id}>
+                      {formatAnimationLabel(anim, idx)}
+                    </option>
+                  ))}
+                  {item.animationId !== undefined &&
+                    String(item.animationId) !== '0' &&
+                    !(bundle.game.animations ?? []).some((a) => a.id === String(item.animationId)) && (
+                      <option value={String(item.animationId)}>{String(item.animationId)}</option>
+                    )}
                 </select>
               </label>
             </div>

@@ -11,6 +11,7 @@ export type AssetCategory =
   | 'titles1'
   | 'titles2'
   | 'system'
+  | 'effects'
   | 'bgm'
   | 'bgs'
   | 'me'
@@ -29,6 +30,7 @@ export const ASSET_CATEGORIES: Array<{ id: AssetCategory; label: string; group: 
   { id: 'titles1', label: 'Titles 1 (Background)', group: 'image' },
   { id: 'titles2', label: 'Titles 2 (Frame)', group: 'image' },
   { id: 'system', label: 'System Graphics', group: 'image' },
+  { id: 'effects', label: 'Effects (Animations)', group: 'other' },
   { id: 'bgm', label: 'BGM (Music)', group: 'audio' },
   { id: 'bgs', label: 'BGS (Ambience)', group: 'audio' },
   { id: 'me', label: 'ME (Jingles)', group: 'audio' },
@@ -62,6 +64,7 @@ export function inferAssetCategory(path: string, type?: string): AssetCategory {
   if (normalized.includes('/battlebacks2/') || normalized.includes('battleback2')) return 'battlebacks2';
   if (normalized.includes('/titles1/') || normalized.includes('title1')) return 'titles1';
   if (normalized.includes('/titles2/') || normalized.includes('title2')) return 'titles2';
+  if (normalized.includes('/effects/') || normalized.endsWith('.efkefc') || normalized.endsWith('.efkmodel')) return 'effects';
   if (normalized.includes('/system/') || normalized.includes('system') || normalized.includes('icon') || normalized.includes('/animations/')) return 'system';
   if (normalized.includes('/bgm/') || normalized.includes('bgm')) return 'bgm';
   if (normalized.includes('/bgs/') || normalized.includes('bgs')) return 'bgs';
@@ -104,6 +107,7 @@ export function auditProjectResources(bundle: ProjectBundle): ResourceAudit {
     titles1: 0,
     titles2: 0,
     system: 0,
+    effects: 0,
     bgm: 0,
     bgs: 0,
     me: 0,
@@ -164,6 +168,18 @@ export function auditProjectResources(bundle: ProjectBundle): ResourceAudit {
     const val = enemyRec.battlerImage;
     if (typeof val === 'string' && val.trim()) {
       tagAssetMatch(lookup, usageReports, val, `Enemy ${enemy.name} (Battler)`);
+    }
+  }
+
+  // Scan database animations (effects and sound timings)
+  for (const anim of bundle.game.animations || []) {
+    if (anim.effectName) {
+      tagAssetMatch(lookup, usageReports, anim.effectName, `Animation ${anim.name} (Effect)`);
+    }
+    for (const st of anim.soundTimings || []) {
+      if (st.se?.name) {
+        tagAssetMatch(lookup, usageReports, st.se.name, `Animation ${anim.name} (SE)`);
+      }
     }
   }
 

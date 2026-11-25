@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, extname, join, resolve } from 'node:path';
+import { dirname, extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createProject, loadProject, saveProject, getRecentProjects, saveRecentProject, removeRecentProject, getDefaultProjectsDirectory } from './project-service.js';
 import { loadProgress, saveProgress } from './progress-service.js';
@@ -260,30 +260,36 @@ ipcMain.handle('assets:open-folder', async (_event, relativeFolder = 'assets') =
   await shell.openPath(target);
   return true;
 });
-ipcMain.handle('assets:read-data', async (_event, relativePath: string) => {
-  if (!currentRoot) return null;
-  const full = join(currentRoot, relativePath);
+function readProjectAssetData(rootDir: string, relativePath: string) {
+  const normalized = String(relativePath || '').replaceAll('\\', '/').replace(/^\/+/, '');
+  if (!normalized) return null;
+  const full = resolve(rootDir, normalized);
+  const rel = relative(resolve(rootDir), full);
+  if (!rel || rel.startsWith('..') || isAbsolute(rel)) return null;
   if (!existsSync(full)) return null;
   const ext = extname(full).toLowerCase().replace('.', '');
-  const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'ogg' ? 'audio/ogg' : ext === 'mp3' ? 'audio/mpeg' : ext === 'wav' ? 'audio/wav' : 'application/octet-stream';
+  const mime =
+    ext === 'png' ? 'image/png'
+    : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg'
+    : ext === 'webp' ? 'image/webp'
+    : ext === 'ogg' ? 'audio/ogg'
+    : ext === 'mp3' ? 'audio/mpeg'
+    : ext === 'wav' ? 'audio/wav'
+    : 'application/octet-stream';
   const buf = readFileSync(full);
   return {
     dataUrl: `data:${mime};base64,${buf.toString('base64')}`,
     buffer: buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
   };
+}
+ipcMain.handle('assets:read-data', async (_event, relativePath: string) => {
+  if (!currentRoot) return null;
+  return readProjectAssetData(currentRoot, relativePath);
 });
 ipcMain.handle('runtime:read-asset', (event, relativePath: string) => {
   const session = playtestRoots.get(event.sender.id);
   if (!session) return null;
-  const full = join(session.root, relativePath);
-  if (!existsSync(full)) return null;
-  const ext = extname(full).toLowerCase().replace('.', '');
-  const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'ogg' ? 'audio/ogg' : ext === 'mp3' ? 'audio/mpeg' : ext === 'wav' ? 'audio/wav' : 'application/octet-stream';
-  const buf = readFileSync(full);
-  return {
-    dataUrl: `data:${mime};base64,${buf.toString('base64')}`,
-    buffer: buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
-  };
+  return readProjectAssetData(session.root, relativePath);
 });
 ipcMain.handle('playtest:start', (_event, options?:{mapId?:string;debug?:boolean}) => { if (!currentRoot) throw new Error('Tidak ada proyek aktif'); const bundle=loadProject(currentRoot);if(options?.mapId&&!bundle.maps[options.mapId])throw new Error(`Map ${options.mapId} tidak ditemukan`); createPlaytest({root:currentRoot,mapId:options?.mapId,debug:options?.debug}, !smokeTest); });
 ipcMain.handle('runtime:load-project', event => { const session = playtestRoots.get(event.sender.id); if (!session) throw new Error('Sesi playtest tidak dikenal'); const bundle=loadProject(session.root);if(session.mapId){const map=bundle.maps[session.mapId];let x=1,y=1;const same=bundle.project.start.mapId===map.id;if(same&&map.collision[bundle.project.start.y*map.width+bundle.project.start.x]===0){x=bundle.project.start.x;y=bundle.project.start.y;}else{const index=map.collision.findIndex(value=>value===0);if(index<0)throw new Error(`Map ${map.id} tidak memiliki tile yang dapat dilalui`);x=index%map.width;y=Math.floor(index/map.width);}bundle.project={...bundle.project,start:{mapId:map.id,x,y},debug:!!session.debug};}else if(session.debug)bundle.project={...bundle.project,debug:true};return bundle; });

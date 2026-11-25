@@ -1,8 +1,10 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
+import { resolveAnimation } from '../core/animations.js';
 import type { MapEvent, ProgressState, ProjectBundle } from '../core/types.js';
 import { autotileMask, DEFAULT_TILESETS, getAutotileQuadrants, tileDefinition } from '../core/map-layers.js';
 import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, terrainTag, type Direction, type EventIO } from '../core/world.js';
 import { AdventureController, applyRuntimeSettings } from './AdventureController.js';
+import { AnimationOverlayPlayer } from './AnimationPlayer.js';
 import type { AudioManager } from './AudioManager.js';
 import { BattleController } from './BattleController.js';
 import { DebugOverlay } from './DebugOverlay.js';
@@ -29,6 +31,8 @@ export class WorldScene {
   private textures: TextureManager;
   private stepCount = 0;
   private parallelRunning = new Set<string>();
+  private animCanvas = document.createElement('canvas');
+  private animPlayer: AnimationOverlayPlayer;
 
   constructor(
     private readonly bundle: ProjectBundle,
@@ -51,6 +55,9 @@ export class WorldScene {
     );
     this.party = new PartyController(bundle);
     this.adventure = new AdventureController(bundle, settings => this.audio.setMix(settings));
+    this.animCanvas.className = 'world-anim-canvas';
+    document.body.append(this.animCanvas);
+    this.animPlayer = new AnimationOverlayPlayer(this.animCanvas, this.audio);
     this.debug.log(`playtest start: ${this.state.mapId}`);
   }
 
@@ -303,7 +310,7 @@ export class WorldScene {
           const map = this.bundle.maps[this.state.mapId];
           const tile = 48;
           if (isDamageFloorTile(this.bundle, this.state.mapId, this.state.x, this.state.y)) {
-            void this.audio.playSe('assets/audio/se/Damage1.ogg').catch(() => {});
+            void this.audio.playSe('assets/audio/se/Damage1.ogg').catch(() => { });
             const flash = new Graphics().rect(0, 0, map.width * tile, map.height * tile).fill({ color: 0xef4444, alpha: 0.25 });
             this.world.addChild(flash);
             setTimeout(() => flash.destroy(), 100);
@@ -336,7 +343,7 @@ export class WorldScene {
       },
       choose: (prompt: string, choices: string[]) => this.dialogue.choose(prompt, choices),
       inputNumber: (variableId: string, digits: number) => this.dialogue.inputNumber(digits, this.state.variables[variableId] ?? 0),
-      selectItem: async (variableId: string, itemType?: string) => {
+      selectItem: async (_variableId: string, itemType?: string) => {
         const inventoryItems = Object.keys(this.state.inventory)
           .filter(id => (this.state.inventory[id] ?? 0) > 0)
           .map(id => {
@@ -382,18 +389,55 @@ export class WorldScene {
       weather: async (_weatherType, _power, duration) => {
         await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
       },
-      showPicture: async () => {},
+      showPicture: async () => { },
       movePicture: async (_id, duration) => {
         await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
       },
-      erasePicture: async () => {},
+      erasePicture: async () => { },
       showBalloon: async () => {
         await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
       },
-      showAnimation: async () => {
-        await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
+      showAnimation: async (target: 'player' | string, animationId: string, waitFlag = true) => {
+        const anim = resolveAnimation(this.bundle.game, animationId);
+        if (!anim) {
+          await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
+          return;
+        }
+        const map = this.bundle.maps[this.state.mapId];
+        const tile = map?.tileSize ?? 48;
+        let tileX = this.state.x;
+        let tileY = this.state.y;
+        if (target !== 'player' && map) {
+          const ev = map.events.find(e => e.id === target);
+          if (ev) {
+            const pos = eventPosition(this.state, this.state.mapId, ev);
+            tileX = pos.x;
+            tileY = pos.y;
+          }
+        }
+        const gameCanvas = document.querySelector<HTMLCanvasElement>('#game canvas');
+        const canvasRect = gameCanvas?.getBoundingClientRect();
+        const logical = this.bundle.project.logicalResolution;
+        const scaleX = canvasRect ? canvasRect.width / logical.width : 1;
+        const scaleY = canvasRect ? canvasRect.height / logical.height : 1;
+        const offsetLeft = canvasRect ? canvasRect.left : 0;
+        const offsetTop = canvasRect ? canvasRect.top : 0;
+        const worldX = this.world.position.x + (tileX + 0.5) * tile;
+        const worldY = this.world.position.y + (tileY + 0.5) * tile;
+        const bottomY = this.world.position.y + (tileY + 1) * tile;
+        const promise = this.animPlayer.play(anim, {
+          anchor: {
+            x: offsetLeft + worldX * scaleX,
+            y: offsetTop + worldY * scaleY,
+            bottomY: offsetTop + bottomY * scaleY
+          },
+          reducedMotion: this.state.settings.reducedMotion
+        });
+        if (waitFlag !== false) {
+          await promise;
+        }
       },
-      transparency: () => {},
+      transparency: () => { },
       playSe: (path, vol) => {
         void this.audio.playSe(path, { volume: vol });
       },
@@ -409,7 +453,7 @@ export class WorldScene {
       fadeoutBgs: async (seconds) => {
         await this.audio.fadeoutBgs(seconds);
       },
-      rotatePicture: () => {},
+      rotatePicture: () => { },
       tintPicture: async (_id, _tone, duration) => {
         await wait((duration ?? 24) * (this.state.settings.reducedMotion ? 1 : 16.6));
       },
@@ -425,11 +469,11 @@ export class WorldScene {
       replayBgm: () => {
         this.audio.replayBgm();
       },
-      playMovie: async () => {},
-      setVehicleLocation: () => {},
-      getOnOffVehicle: () => {},
-      changePlayerFollowers: () => {},
-      gatherFollowers: async () => {},
+      playMovie: async () => { },
+      setVehicleLocation: () => { },
+      getOnOffVehicle: () => { },
+      changePlayerFollowers: () => { },
+      gatherFollowers: async () => { },
       nameInput: async (actorId: string) => {
         const currentName = this.state.actorOverrides?.[actorId]?.name ?? this.bundle.game.actors.find(a => a.id === actorId)?.name ?? 'Hero';
         return currentName;
@@ -437,40 +481,42 @@ export class WorldScene {
       openMenu: async () => {
         await this.openParty();
       },
-      openSave: async () => {},
-      returnToTitle: async () => {},
-      changeBattleBgm: () => {},
-      changeVictoryMe: () => {},
-      changeDefeatMe: () => {},
-      changeVehicleBgm: () => {},
-      changeSaveAccess: () => {},
-      changeMenuAccess: () => {},
-      changeEncounter: () => {},
-      changeFormationAccess: () => {},
-      changeWindowColor: () => {},
-      changeActorImages: () => {},
-      changeVehicleImage: () => {},
-      changeMapNameDisplay: () => {},
-      changeTileset: () => {},
-      changeBattleBack: () => {},
-      changeParallax: () => {},
+      openSave: async () => { },
+      returnToTitle: async () => { },
+      changeBattleBgm: () => { },
+      changeVictoryMe: () => { },
+      changeDefeatMe: () => { },
+      changeVehicleBgm: () => { },
+      changeSaveAccess: () => { },
+      changeMenuAccess: () => { },
+      changeEncounter: () => { },
+      changeFormationAccess: () => { },
+      changeWindowColor: () => { },
+      changeActorImages: () => { },
+      changeVehicleImage: () => { },
+      changeMapNameDisplay: () => { },
+      changeTileset: () => { },
+      changeBattleBack: () => { },
+      changeParallax: () => { },
       getLocationInfo: async (_varId, infoType, x, y) => {
         const curMap = this.bundle.maps[this.state.mapId];
         if (infoType === 'terrainTag') return terrainTag(this.bundle, this.state.mapId, x, y);
         if (infoType === 'regionId') return curMap?.regions ? (curMap.regions[y * curMap.width + x] ?? 0) : 0;
         return 0;
       },
-      changeEnemyHp: () => {},
-      changeEnemyMp: () => {},
-      changeEnemyTp: () => {},
-      changeEnemyState: () => {},
-      enemyRecoverAll: () => {},
-      enemyAppear: () => {},
-      enemyTransform: () => {},
-      showBattleAnimation: async () => {},
-      forceAction: async () => {},
-      abortBattle: () => {},
-      pluginCommand: async () => {}
+      changeEnemyHp: () => { },
+      changeEnemyMp: () => { },
+      changeEnemyTp: () => { },
+      changeEnemyState: () => { },
+      enemyRecoverAll: () => { },
+      enemyAppear: () => { },
+      enemyTransform: () => { },
+      showBattleAnimation: async (enemyIndex: number, animationId: string) => {
+        await this.battle.playBattleAnimation(enemyIndex, animationId);
+      },
+      forceAction: async () => { },
+      abortBattle: () => { },
+      pluginCommand: async () => { }
     };
   }
 
@@ -587,6 +633,8 @@ export class WorldScene {
   }
 
   exit() {
+    this.animPlayer.destroy();
+    this.animCanvas.remove();
     this.dialogue.destroy();
     this.battle.destroy();
     this.party.destroy();

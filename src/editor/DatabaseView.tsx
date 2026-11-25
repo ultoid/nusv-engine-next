@@ -165,6 +165,14 @@ export function DatabaseView({
       'assets/enemies/Bat.png',
       'assets/enemies/Dragon.png',
       'assets/enemies/Gargoyle.png',
+      'assets/battlebacks1/Grassland.png',
+      'assets/battlebacks1/Castle1.png',
+      'assets/battlebacks1/Clouds.png',
+      'assets/battlebacks1/Outside.png',
+      'assets/battlebacks2/Grassland.png',
+      'assets/battlebacks2/Castle1.png',
+      'assets/battlebacks2/Clouds.png',
+      'assets/battlebacks2/Outside.png',
       'assets/system/IconSet.png',
       'assets/tilesets/World_A1.png',
       'assets/tilesets/World_A2.png',
@@ -588,6 +596,7 @@ export function DatabaseView({
       const current = localGame.animations || [];
       const nextNum = current.length + 1;
       const idStr = String(nextNum).padStart(4, '0');
+      // Sample RPG Maker MZ style animation with sound & flash timings
       newEntry = {
         id: `anim.${idStr}`,
         name: `Animation ${nextNum}`,
@@ -599,8 +608,12 @@ export function DatabaseView({
         rotation: { x: 0, y: 0, z: 0 },
         offsetX: 0,
         offsetY: 0,
-        soundTimings: [],
-        flashTimings: []
+        soundTimings: [
+          { frame: 1, se: { name: 'Blow1', volume: 90, pitch: 100, pan: 0 } }
+        ],
+        flashTimings: [
+          { frame: 1, duration: 5, color: [255, 255, 255, 255], target: 0 }
+        ]
       };
     } else if (collection === 'commonEvents') {
       const current = localGame.commonEvents || [];

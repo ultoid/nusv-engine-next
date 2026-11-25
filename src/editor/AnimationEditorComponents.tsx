@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { collectAnimationFrameEvents, computeAnimationDurationFrames } from '../core/animations.js';
 import type {
   AnimationData,
   AnimationSoundTiming,
@@ -6,6 +7,9 @@ import type {
   AnimationRotation,
   ProjectBundle
 } from '../core/types.js';
+import { renderAnimationFrame } from '../runtime/AnimationPlayer.js';
+import { AudioManager } from '../runtime/AudioManager.js';
+import { EffekseerViewport } from '../runtime/EffekseerBackend.js';
 
 // Standard Effekseer effect names shipped with MZ and in assets/effects/
 export const STANDARD_EFFECT_NAMES = [
@@ -183,52 +187,14 @@ export const STANDARD_BATTLEBACK2 = [
   'Snowfield', 'Space', 'Town1', 'Town2', 'Volcano', 'Wasteland'
 ];
 
-// Helper to play synthesized sound preview via Web Audio API
-function playSyntheticSound(name: string, volume: number = 90, pitch: number = 100) {
-  try {
-    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+const editorAudio = new AudioManager();
 
-    const vol = Math.max(0, Math.min(1, volume / 100)) * 0.3;
-    const freqMult = Math.max(0.2, Math.min(3, pitch / 100));
-
-    let baseFreq = 440;
-    const lower = name.toLowerCase();
-    if (lower.includes('thunder')) baseFreq = 120;
-    else if (lower.includes('ice')) baseFreq = 880;
-    else if (lower.includes('fire')) baseFreq = 220;
-    else if (lower.includes('sword') || lower.includes('slash')) baseFreq = 600;
-    else if (lower.includes('blow') || lower.includes('hit')) baseFreq = 180;
-    else if (lower.includes('heal') || lower.includes('cure')) baseFreq = 523.25;
-
-    osc.frequency.setValueAtTime(baseFreq * freqMult, ctx.currentTime);
-    if (lower.includes('slash') || lower.includes('sword')) {
-      osc.type = 'sawtooth';
-      osc.frequency.exponentialRampToValueAtTime(100 * freqMult, ctx.currentTime + 0.15);
-    } else if (lower.includes('hit') || lower.includes('blow')) {
-      osc.type = 'square';
-      osc.frequency.exponentialRampToValueAtTime(40 * freqMult, ctx.currentTime + 0.12);
-    } else if (lower.includes('thunder')) {
-      osc.type = 'sawtooth';
-      osc.frequency.linearRampToValueAtTime(60 * freqMult, ctx.currentTime + 0.25);
-    } else {
-      osc.type = 'sine';
-    }
-
-    gain.gain.setValueAtTime(vol, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start();
-    osc.stop(ctx.currentTime + 0.26);
-  } catch {
-    // Audio context may be restricted before user gesture
-  }
+function playEditorSe(name: string, volume = 90, pitch = 100, pan = 0) {
+  void editorAudio.playSeByName(name, {
+    volume: Math.max(0, Math.min(1, volume / 100)),
+    pitch,
+    pan
+  });
 }
 
 // ============================================================================
@@ -467,7 +433,7 @@ export function AnimationSoundModal({
   }, [filter]);
 
   const handleTest = () => {
-    playSyntheticSound(seName, volume, pitch);
+    playEditorSe(seName, volume, pitch, pan);
   };
 
   return (
@@ -832,21 +798,57 @@ export function AnimationTargetModal({
 }
 
 // ============================================================================
-// Modal: Change Battleback
+// Modal: Change Battleback (scans available battleback images from assets)
 // ============================================================================
 export function AnimationBattlebackModal({
   currentBb1,
   currentBb2,
+  bundle,
   onSelect,
   onClose
 }: {
   currentBb1: string;
   currentBb2: string;
+  bundle: ProjectBundle;
   onSelect: (bb1: string, bb2: string) => void;
   onClose: () => void;
 }) {
-  const [bb1, setBb1] = useState(currentBb1 || 'Grassland');
-  const [bb2, setBb2] = useState(currentBb2 || 'Grassland');
+  // Scan available battlebacks from asset manifest
+  const battlebacks1 = useMemo(() => {
+    const set = new Set<string>();
+    if (bundle.assets?.assets) {
+      for (const a of bundle.assets.assets) {
+        if (a.path?.startsWith('assets/battlebacks1/') && a.path.endsWith('.png')) {
+          const name = a.path.split('/').pop()?.replace(/\.png$/i, '');
+          if (name) set.add(name);
+        }
+      }
+    }
+    // Fallback to standard names if no assets found
+    if (set.size === 0) {
+      STANDARD_BATTLEBACK1.forEach((b) => set.add(b));
+    }
+    return Array.from(set).sort();
+  }, [bundle.assets]);
+
+  const battlebacks2 = useMemo(() => {
+    const set = new Set<string>();
+    if (bundle.assets?.assets) {
+      for (const a of bundle.assets.assets) {
+        if (a.path?.startsWith('assets/battlebacks2/') && a.path.endsWith('.png')) {
+          const name = a.path.split('/').pop()?.replace(/\.png$/i, '');
+          if (name) set.add(name);
+        }
+      }
+    }
+    if (set.size === 0) {
+      STANDARD_BATTLEBACK2.forEach((b) => set.add(b));
+    }
+    return Array.from(set).sort();
+  }, [bundle.assets]);
+
+  const [bb1, setBb1] = useState(currentBb1 || battlebacks1[0] || 'Grassland');
+  const [bb2, setBb2] = useState(currentBb2 || battlebacks2[0] || 'Grassland');
 
   return (
     <div className="mz-modal-overlay">
@@ -861,7 +863,7 @@ export function AnimationBattlebackModal({
             <div className="mz-table-container" style={{ height: 220, overflowY: 'auto' }}>
               <table className="mz-grid-table">
                 <tbody>
-                  {STANDARD_BATTLEBACK1.map((b) => (
+                  {battlebacks1.map((b) => (
                     <tr
                       key={b}
                       className={`mz-table-clickable-row ${bb1 === b ? 'mz-selected-row' : ''}`}
@@ -880,7 +882,7 @@ export function AnimationBattlebackModal({
             <div className="mz-table-container" style={{ height: 220, overflowY: 'auto' }}>
               <table className="mz-grid-table">
                 <tbody>
-                  {STANDARD_BATTLEBACK2.map((b) => (
+                  {battlebacks2.map((b) => (
                     <tr
                       key={b}
                       className={`mz-table-clickable-row ${bb2 === b ? 'mz-selected-row' : ''}`}
@@ -945,12 +947,22 @@ export function AnimationDetailForm({
   const [battleback1, setBattleback1] = useState('Grassland');
   const [battleback2, setBattleback2] = useState('Grassland');
 
+  // Dynamically loaded asset URLs (loaded on demand when not in assetUrlMap)
+  const [dynamicUrls, setDynamicUrls] = useState<Record<string, string>>({});
+
   // Animation Playback state
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [flashOverlay, setFlashOverlay] = useState<{ color: string; duration: number } | null>(null);
+  const [previewProgress, setPreviewProgress] = useState(0);
+  const [previewBackend, setPreviewBackend] = useState<'effekseer' | '2d' | null>(null);
+  const [flashVisual, setFlashVisual] = useState<{ screenColor?: string; flashTarget: boolean; hideTarget: boolean }>({
+    flashTarget: false,
+    hideTarget: false
+  });
   const animFrameIdRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const glCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const effekseerRef = useRef<EffekseerViewport | null>(null);
 
   // Normalize soundTimings and flashTimings
   const soundTimings: AnimationSoundTiming[] = useMemo(() => {
@@ -965,32 +977,70 @@ export function AnimationDetailForm({
     return animation.rotation || { x: 0, y: 0, z: 0 };
   }, [animation.rotation]);
 
-  // Asset URLs
+  // Load an asset URL on demand via Electron API
+  const loadAssetUrl = useCallback(async (path: string) => {
+    const api = typeof window !== 'undefined' ? (window as unknown as { nusvEditor?: { readAssetData?: (p: string) => Promise<{ dataUrl?: string } | null> } }).nusvEditor : undefined;
+    if (!api?.readAssetData) return undefined;
+    const res = await api.readAssetData(path);
+    if (res?.dataUrl) {
+      setDynamicUrls((prev) => (prev[path] ? prev : { ...prev, [path]: res.dataUrl! }));
+      return res.dataUrl;
+    }
+    return undefined;
+  }, []);
+
+  // Asset URLs (with dynamic fallback for on-demand loaded assets)
   const bb1Url =
     assetUrlMap[`assets/battlebacks1/${battleback1}.png`] ||
+    dynamicUrls[`assets/battlebacks1/${battleback1}.png`] ||
     assetUrlMap['assets/battlebacks1/Grassland.png'] ||
+    dynamicUrls['assets/battlebacks1/Grassland.png'] ||
     '';
   const bb2Url =
     assetUrlMap[`assets/battlebacks2/${battleback2}.png`] ||
+    dynamicUrls[`assets/battlebacks2/${battleback2}.png`] ||
     assetUrlMap['assets/battlebacks2/Grassland.png'] ||
+    dynamicUrls['assets/battlebacks2/Grassland.png'] ||
     '';
 
   const targetUrl = useMemo(() => {
     if (targetIsActor) {
       return (
         assetUrlMap[`assets/sv_actors/${targetName}.png`] ||
+        dynamicUrls[`assets/sv_actors/${targetName}.png`] ||
         assetUrlMap['assets/sv_actors/Actor1_1.png'] ||
+        dynamicUrls['assets/sv_actors/Actor1_1.png'] ||
         ''
       );
     }
     return (
       assetUrlMap[`assets/enemies/${targetName}.png`] ||
+      dynamicUrls[`assets/enemies/${targetName}.png`] ||
       assetUrlMap[`assets/sv_enemies/${targetName}.png`] ||
+      dynamicUrls[`assets/sv_enemies/${targetName}.png`] ||
       assetUrlMap['assets/enemies/Hi_monster.png'] ||
+      dynamicUrls['assets/enemies/Hi_monster.png'] ||
       assetUrlMap['assets/enemies/Goblin.png'] ||
+      dynamicUrls['assets/enemies/Goblin.png'] ||
       ''
     );
-  }, [targetIsActor, targetName, assetUrlMap]);
+  }, [targetIsActor, targetName, assetUrlMap, dynamicUrls]);
+
+  // Load battleback and target images on demand when they change
+  useEffect(() => {
+    const b1Path = `assets/battlebacks1/${battleback1}.png`;
+    const b2Path = `assets/battlebacks2/${battleback2}.png`;
+    const tPath = targetIsActor
+      ? `assets/sv_actors/${targetName}.png`
+      : `assets/enemies/${targetName}.png`;
+
+    const loadMissing = async () => {
+      if (!assetUrlMap[b1Path] && !dynamicUrls[b1Path]) await loadAssetUrl(b1Path);
+      if (!assetUrlMap[b2Path] && !dynamicUrls[b2Path]) await loadAssetUrl(b2Path);
+      if (!assetUrlMap[tPath] && !dynamicUrls[tPath]) await loadAssetUrl(tPath);
+    };
+    void loadMissing();
+  }, [battleback1, battleback2, targetName, targetIsActor, assetUrlMap, dynamicUrls, loadAssetUrl]);
 
   // Sound handlers
   const handleSaveSound = (timing: AnimationSoundTiming) => {
@@ -1041,62 +1091,122 @@ export function AnimationDetailForm({
     return `(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
   };
 
-  // Particle playback loop simulation
-  const handlePlay = useCallback(() => {
+  // Particle playback loop driven by Effekseer WebGL (.efkefc) with Canvas2D fallback
+  const handlePlay = useCallback(async () => {
     if (isPlaying) {
       setIsPlaying(false);
       setCurrentFrame(0);
-      setFlashOverlay(null);
+      setPreviewProgress(0);
+      setPreviewBackend(null);
+      setFlashVisual({ flashTarget: false, hideTarget: false });
+      effekseerRef.current?.clear();
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
+      animFrameIdRef.current = null;
       return;
     }
 
     setIsPlaying(true);
-    let frame = 1;
-    const maxFrames = 60;
-    const speedRatio = Math.max(0.1, (animation.speed || 100) / 100);
+    const totalFrames = computeAnimationDurationFrames(animation);
+    const previewW = canvasRef.current?.width ?? 400;
+    const previewH = canvasRef.current?.height ?? 250;
 
-    const step = () => {
-      frame++;
-      setCurrentFrame(frame);
+    let effHandle: { exists: boolean; stop(): void } | null = null;
+    if (glCanvasRef.current && animation.displayType !== 0 && animation.effectName) {
+      if (!effekseerRef.current) {
+        effekseerRef.current = new EffekseerViewport(glCanvasRef.current);
+      }
+      effHandle = await effekseerRef.current.playAnimation(animation, previewW, previewH, {
+        x: previewW / 2,
+        y: previewH * 0.52,
+        bottomY: previewH - 24
+      });
+    }
+    setPreviewBackend(effHandle ? 'effekseer' : '2d');
 
-      // Trigger matching sound timings
-      const sound = soundTimings.find((s) => s.frame === frame);
-      if (sound) {
-        playSyntheticSound(sound.se.name, sound.se.volume ?? 90, sound.se.pitch ?? 100);
+    let elapsedFrames = 0;
+    let lastTriggeredFrame = 0;
+    let lastTime = performance.now();
+    let activeFlashes: Array<{ target: number; color: [number, number, number, number]; remaining: number; total: number }> = [];
+
+    const step = (now: number) => {
+      const dtMs = Math.min(50, Math.max(1, now - lastTime));
+      lastTime = now;
+      const dtFrames = dtMs / (1000 / 60);
+      elapsedFrames += dtFrames;
+
+      const intFrame = Math.min(totalFrames, Math.max(1, Math.floor(elapsedFrames) + 1));
+      setCurrentFrame(intFrame);
+      setPreviewProgress(Math.min(1, elapsedFrames / totalFrames));
+
+      while (lastTriggeredFrame < intFrame) {
+        lastTriggeredFrame++;
+        const { sounds, flashes } = collectAnimationFrameEvents(animation, lastTriggeredFrame);
+        for (const st of sounds) {
+          playEditorSe(st.se.name, st.se.volume ?? 90, st.se.pitch ?? 100, st.se.pan ?? 0);
+        }
+        for (const ft of flashes) {
+          activeFlashes.push({
+            target: ft.target ?? 0,
+            color: ft.color ?? [255, 255, 255, 255],
+            remaining: ft.duration || 1,
+            total: ft.duration || 1
+          });
+        }
       }
 
-      // Trigger matching flash timings
-      const flash = flashTimings.find((f) => f.frame === frame);
-      if (flash) {
-        const c = flash.color || [255, 255, 255, 255];
-        setFlashOverlay({
-          color: `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${c[3] / 255})`,
-          duration: flash.duration || 30
-        });
+      if (effHandle && effekseerRef.current) {
+        effekseerRef.current.updateAndDraw(dtFrames, previewW, previewH);
       }
 
-      if (frame < maxFrames) {
-        // speedRatio controls frame delay
+      let screenColor: string | undefined;
+      let flashTarget = false;
+      let hideTarget = false;
+      const nextFlashes: typeof activeFlashes = [];
+      for (const fl of activeFlashes) {
+        fl.remaining -= dtFrames;
+        if (fl.remaining <= 0) continue;
+        nextFlashes.push(fl);
+        if (fl.target === 2) {
+          hideTarget = true;
+        } else if (fl.target === 1) {
+          const ratio = Math.max(0, fl.remaining / fl.total);
+          const [r, g, b, a] = fl.color;
+          screenColor = `rgba(${r}, ${g}, ${b}, ${(a / 255) * ratio * 0.65})`;
+        } else {
+          flashTarget = true;
+        }
+      }
+      activeFlashes = nextFlashes;
+      setFlashVisual({ screenColor, flashTarget, hideTarget });
+
+      const effAlive = Boolean(effHandle?.exists && elapsedFrames < 300);
+      const animActive = effHandle ? effAlive : elapsedFrames < totalFrames;
+      if (animActive || activeFlashes.length > 0) {
         animFrameIdRef.current = requestAnimationFrame(step);
       } else {
+        animFrameIdRef.current = null;
+        effekseerRef.current?.clear();
         setIsPlaying(false);
         setCurrentFrame(0);
-        setFlashOverlay(null);
+        setPreviewProgress(0);
+        setPreviewBackend(null);
+        setFlashVisual({ flashTarget: false, hideTarget: false });
       }
     };
 
     animFrameIdRef.current = requestAnimationFrame(step);
-  }, [isPlaying, animation.speed, soundTimings, flashTimings]);
+  }, [isPlaying, animation]);
 
-  // Clean up animation on unmount
+  // Clean up animation and Effekseer context on unmount
   useEffect(() => {
     return () => {
       if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
+      effekseerRef.current?.destroy();
+      effekseerRef.current = null;
     };
   }, []);
 
-  // Draw procedural particle/burst effect on canvas when playing
+  // Draw fallback 2D effect on canvas when Effekseer handle is not active
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -1105,90 +1215,14 @@ export function AnimationDetailForm({
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (!isPlaying || currentFrame <= 0) return;
+    if (!isPlaying || currentFrame <= 0 || previewBackend === 'effekseer') return;
 
-    const centerX = canvas.width / 2 + (animation.offsetX || 0);
-    const centerY = canvas.height / 2 + (animation.offsetY || 0);
-    const scale = Math.max(0.1, (animation.scale || 100) / 100);
-    const rotDeg = (animation.rotation?.z || 0) * (Math.PI / 180);
-
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(rotDeg);
-    ctx.scale(scale, scale);
-
-    const progress = currentFrame / 60;
-    const effName = (animation.effectName || '').toLowerCase();
-
-    if (effName.includes('fire')) {
-      // Fire particle flame burst
-      const count = 16;
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * Math.PI * 2 + progress * 2;
-        const dist = progress * 90 * ((i % 3) + 1);
-        const px = Math.cos(angle) * dist;
-        const py = Math.sin(angle) * dist - progress * 40;
-        const alpha = Math.max(0, 1 - progress);
-        ctx.fillStyle = i % 2 === 0 ? `rgba(249, 115, 22, ${alpha})` : `rgba(234, 179, 8, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(px, py, 14 * (1 - progress * 0.5), 0, Math.PI * 2);
-        ctx.fill();
-      }
-    } else if (effName.includes('ice')) {
-      // Ice crystal shards
-      const count = 12;
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * Math.PI * 2;
-        const dist = progress * 80;
-        const px = Math.cos(angle) * dist;
-        const py = Math.sin(angle) * dist;
-        const alpha = Math.max(0, 1 - progress);
-        ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
-        ctx.lineWidth = 3;
-        ctx.strokeRect(px - 10, py - 10, 20, 20);
-      }
-    } else if (effName.includes('slash') || effName.includes('sword') || effName.includes('claw')) {
-      // Arc slash streaks
-      const alpha = Math.max(0, Math.sin(progress * Math.PI));
-      ctx.strokeStyle = `rgba(248, 250, 252, ${alpha})`;
-      ctx.lineWidth = 6;
-      ctx.beginPath();
-      ctx.arc(0, 0, 70 * scale, -Math.PI * 0.4, Math.PI * 0.4);
-      ctx.stroke();
-    } else if (effName.includes('thunder')) {
-      // Electric zigzag lightning
-      const alpha = Math.max(0, Math.sin(progress * Math.PI * 4));
-      ctx.strokeStyle = `rgba(250, 204, 21, ${alpha})`;
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(-40, -80);
-      ctx.lineTo(10, -20);
-      ctx.lineTo(-20, 20);
-      ctx.lineTo(30, 80);
-      ctx.stroke();
-    } else {
-      // Standard expanding energy burst & star ring
-      const count = 10;
-      for (let i = 0; i < count; i++) {
-        const angle = (i / count) * Math.PI * 2 + progress;
-        const dist = progress * 75;
-        const px = Math.cos(angle) * dist;
-        const py = Math.sin(angle) * dist;
-        const alpha = Math.max(0, 1 - progress);
-        ctx.fillStyle = `rgba(224, 231, 255, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(px, py, 6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.strokeStyle = `rgba(147, 197, 253, ${Math.max(0, 1 - progress)})`;
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.arc(0, 0, progress * 90, 0, Math.PI * 2);
-      ctx.stroke();
-    }
-
-    ctx.restore();
-  }, [isPlaying, currentFrame, animation.effectName, animation.scale, animation.rotation, animation.offsetX, animation.offsetY]);
+    renderAnimationFrame(ctx, canvas.width, canvas.height, animation, previewProgress, {
+      x: canvas.width / 2,
+      y: canvas.height * 0.52,
+      bottomY: canvas.height - 24
+    });
+  }, [isPlaying, currentFrame, previewProgress, previewBackend, animation]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -1417,14 +1451,31 @@ export function AnimationDetailForm({
                   style={{
                     maxHeight: 160,
                     maxWidth: 200,
-                    filter: flashOverlay ? 'brightness(1.8)' : undefined,
+                    opacity: flashVisual.hideTarget ? 0 : 1,
+                    filter: flashVisual.flashTarget ? 'brightness(2.0)' : undefined,
                     transition: 'filter 0.05s ease-out'
                   }}
                 />
               </div>
             )}
 
-            {/* Canvas for Particle Rendering */}
+            {/* WebGL Canvas for Effekseer (.efkefc) Rendering */}
+            <canvas
+              ref={glCanvasRef}
+              width={400}
+              height={250}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 3,
+                pointerEvents: 'none'
+              }}
+            />
+
+            {/* 2D Fallback Canvas for Procedural Particle Rendering */}
             <canvas
               ref={canvasRef}
               width={400}
@@ -1441,7 +1492,7 @@ export function AnimationDetailForm({
             />
 
             {/* Screen Flash Overlay */}
-            {flashOverlay && (
+            {flashVisual.screenColor && (
               <div
                 style={{
                   position: 'absolute',
@@ -1449,7 +1500,7 @@ export function AnimationDetailForm({
                   left: 0,
                   width: '100%',
                   height: '100%',
-                  backgroundColor: flashOverlay.color,
+                  backgroundColor: flashVisual.screenColor,
                   zIndex: 4,
                   pointerEvents: 'none',
                   mixBlendMode: 'screen',
@@ -1474,7 +1525,7 @@ export function AnimationDetailForm({
                   fontFamily: 'monospace'
                 }}
               >
-                Frame: #{String(currentFrame).padStart(3, '0')}
+                Frame: #{String(currentFrame).padStart(3, '0')} ({previewBackend === 'effekseer' ? 'Effekseer' : '2D'})
               </div>
             )}
           </div>
@@ -1753,6 +1804,7 @@ export function AnimationDetailForm({
         <AnimationBattlebackModal
           currentBb1={battleback1}
           currentBb2={battleback2}
+          bundle={bundle}
           onSelect={(b1, b2) => {
             setBattleback1(b1);
             setBattleback2(b2);

@@ -1,9 +1,11 @@
+import { resolveAnimation } from '../core/animations.js';
 import { createBattle, derivedStats, partyResources, resolveRound } from '../core/battle.js';
 import type { BattleAction, BattleBattler, BattleState } from '../core/combat-types.js';
 import { previewCtb } from '../core/ctb.js';
 import { grantBattleProgress } from '../core/progression.js';
 import type { ProgressState, ProjectBundle } from '../core/types.js';
 import { ActionSequencePlayer } from './ActionSequencePlayer.js';
+import { AnimationOverlayPlayer } from './AnimationPlayer.js';
 import type { AudioManager } from './AudioManager.js';
 import { TextureManager } from './TextureManager.js';
 
@@ -11,7 +13,10 @@ export class BattleController {
   private root = document.createElement('section');
   private bgBackdrop = document.createElement('div');
   private bgGround = document.createElement('div');
+  private animCanvas = document.createElement('canvas');
+  private animPlayer: AnimationOverlayPlayer;
   private sequence: ActionSequencePlayer;
+  private currentState?: BattleState;
 
   constructor(
     private bundle: ProjectBundle,
@@ -22,9 +27,11 @@ export class BattleController {
     this.root.className = 'battle-overlay';
     this.bgBackdrop.className = 'battle-backdrop-layer';
     this.bgGround.className = 'battle-ground-layer';
-    this.root.append(this.bgBackdrop, this.bgGround);
+    this.animCanvas.className = 'battle-anim-canvas';
+    this.root.append(this.bgBackdrop, this.bgGround, this.animCanvas);
     document.body.append(this.root);
-    this.sequence = new ActionSequencePlayer(this.root, bundle);
+    this.animPlayer = new AnimationOverlayPlayer(this.animCanvas, this.audio);
+    this.sequence = new ActionSequencePlayer(this.root, bundle, this.animPlayer, this.animCanvas);
   }
 
   private def(b: BattleBattler) {
@@ -183,6 +190,7 @@ export class BattleController {
     void this.audio?.playBgm(battleBgm);
 
     let state = createBattle(this.bundle.game, progress.formation, troopId, progress.actorResources, progress.inventory, 0x4e555356, progress.actorProgress);
+    this.currentState = state;
 
     while (state.status === 'active') {
       this.draw(state, `Round ${state.round}`);
@@ -190,8 +198,9 @@ export class BattleController {
       for (const actor of state.battlers.filter(entry => entry.side === 'party' && entry.hp > 0)) {
         actions.push(await this.actorAction(state, actor));
       }
-      await this.sequence.play(actions);
+      await this.sequence.play(actions, state);
       state = resolveRound(this.bundle.game, state, actions);
+      this.currentState = state;
       state.log.forEach(line => this.onLog(`battle: ${line}`));
       this.draw(state, state.status === 'active' ? `Hasil Round ${state.round - 1}` : state.status === 'victory' ? 'Victory' : 'Defeat');
       const log = document.createElement('pre');
@@ -207,6 +216,7 @@ export class BattleController {
       await this.choose(state.status === 'active' ? 'Lanjutkan giliran' : 'Kembali ke peta', [{ label: 'Lanjut', value: true }]);
     }
 
+    this.currentState = undefined;
     this.root.classList.remove('open');
     this.onLog(`battle end: ${state.status}`);
     const inventory = { ...state.inventory };
@@ -224,7 +234,29 @@ export class BattleController {
     };
   }
 
+  async playBattleAnimation(enemyIndex: number, animationId: string) {
+    const anim = resolveAnimation(this.bundle.game, animationId);
+    if (!anim || !this.currentState) return;
+    const enemies = this.currentState.battlers.filter(b => b.side === 'enemy' && b.hp > 0);
+    const targets = enemyIndex < 0 ? enemies : enemies[enemyIndex] ? [enemies[enemyIndex]] : [];
+    const reducedMotion = document.documentElement.classList.contains('reduced-motion');
+    const canvasRect = this.animCanvas.getBoundingClientRect();
+
+    await Promise.all(targets.map(target => {
+      const card = this.root.querySelector<HTMLElement>(`[data-battler="${CSS.escape(target.instanceId)}"]`);
+      const sprite = card?.querySelector<HTMLElement>('.battler-sprite') ?? card;
+      const rect = sprite?.getBoundingClientRect();
+      const anchor = rect ? {
+        x: rect.left - canvasRect.left + rect.width / 2,
+        y: rect.top - canvasRect.top + rect.height / 2,
+        bottomY: rect.bottom - canvasRect.top
+      } : undefined;
+      return this.animPlayer.play(anim, { anchor, targetElement: card, reducedMotion });
+    }));
+  }
+
   destroy() {
+    this.animPlayer.destroy();
     this.root.remove();
   }
 }

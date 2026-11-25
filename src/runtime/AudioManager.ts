@@ -81,9 +81,14 @@ export class AudioManager {
 
     try {
       let arrayBuffer: ArrayBuffer | null = null;
-      if (typeof window !== 'undefined' && window.nusvRuntime?.loadAssetData) {
-        const res = await window.nusvRuntime.loadAssetData(path);
-        if (res?.buffer) arrayBuffer = res.buffer;
+      if (typeof window !== 'undefined') {
+        if (window.nusvRuntime?.loadAssetData) {
+          const res = await window.nusvRuntime.loadAssetData(path);
+          if (res?.buffer) arrayBuffer = res.buffer;
+        } else if (window.nusvEditor?.readAssetData) {
+          const res = await window.nusvEditor.readAssetData(path);
+          if (res?.buffer) arrayBuffer = res.buffer;
+        }
       }
       if (!arrayBuffer && typeof fetch !== 'undefined') {
         const resp = await fetch(path);
@@ -168,19 +173,38 @@ export class AudioManager {
     }
   }
 
-  async playSe(path: string, _options?: { volume?: number }) {
-    if (!path) return;
+  async playSe(path: string, options?: { volume?: number; pitch?: number; pan?: number }): Promise<boolean> {
+    if (!path) return false;
     await this.unlock();
-    if (!this.context || !this.sfxGain) return;
+    if (!this.context || !this.sfxGain) return false;
 
     const buffer = await this.loadAudioBuffer(path);
     if (buffer) {
       try {
         const source = this.context.createBufferSource();
         source.buffer = buffer;
-        source.connect(this.sfxGain);
+
+        const pitch = options?.pitch ?? 100;
+        source.playbackRate.value = Math.max(0.25, Math.min(4, pitch / 100));
+
+        const seGain = this.context.createGain();
+        const vol = options?.volume ?? 1;
+        seGain.gain.value = Math.max(0, Math.min(1, vol > 1 ? vol / 100 : vol));
+
+        const pan = options?.pan ?? 0;
+        if (pan !== 0 && typeof this.context.createStereoPanner === 'function') {
+          const panner = this.context.createStereoPanner();
+          panner.pan.value = Math.max(-1, Math.min(1, pan / 100));
+          source.connect(seGain);
+          seGain.connect(panner);
+          panner.connect(this.sfxGain);
+        } else {
+          source.connect(seGain);
+          seGain.connect(this.sfxGain);
+        }
+
         source.start(0);
-        return;
+        return true;
       } catch {}
     }
 
@@ -188,15 +212,26 @@ export class AudioManager {
     try {
       const osc = this.context.createOscillator();
       const g = this.context.createGain();
-      osc.frequency.setValueAtTime(520, this.context.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(880, this.context.currentTime + 0.06);
-      g.gain.setValueAtTime(0.15, this.context.currentTime);
+      const pitchMult = Math.max(0.25, Math.min(4, (options?.pitch ?? 100) / 100));
+      const vol = options?.volume ?? 1;
+      const gainVal = Math.max(0, Math.min(1, vol > 1 ? vol / 100 : vol)) * 0.15;
+      osc.frequency.setValueAtTime(520 * pitchMult, this.context.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880 * pitchMult, this.context.currentTime + 0.06);
+      g.gain.setValueAtTime(gainVal, this.context.currentTime);
       g.gain.exponentialRampToValueAtTime(0.01, this.context.currentTime + 0.06);
       osc.connect(g);
       g.connect(this.sfxGain);
       osc.start();
       osc.stop(this.context.currentTime + 0.06);
     } catch {}
+    return false;
+  }
+
+  async playSeByName(name: string, options?: { volume?: number; pitch?: number; pan?: number }): Promise<boolean> {
+    if (!name) return false;
+    const clean = name.replace(/^assets\/se\//i, '');
+    const path = clean.includes('.') ? `assets/se/${clean}` : `assets/se/${clean}.ogg`;
+    return this.playSe(path, options);
   }
 
   stopSe() {
