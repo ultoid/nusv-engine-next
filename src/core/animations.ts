@@ -133,3 +133,43 @@ export function formatAnimationLabel(anim: AnimationData, index?: number): strin
   const num = numMatch ? numMatch[1].padStart(4, '0') : String((index ?? 0) + 1).padStart(4, '0');
   return `${num} ${anim.name}`;
 }
+
+/** Tunda sprite animasi pertama (setara Spriteset_Base.animationBaseDelay()). */
+export const ANIMATION_BASE_DELAY = 8;
+
+/** Jeda antar sprite animasi berikutnya (setara Spriteset_Base.animationNextDelay()). */
+export const ANIMATION_NEXT_DELAY = 6;
+
+export interface AnimationScheduleEntry {
+  targetIndex: number;
+  delayFrames: number;
+}
+
+/**
+ * Menghasilkan jadwal stagger ala Spriteset_Base: target pertama menunggu baseDelay,
+ * target berikutnya menambah nextDelay secara akumulatif.
+ */
+export function computeAnimationSchedule(
+  targetCount: number,
+  opts?: { baseDelay?: number; nextDelay?: number }
+): AnimationScheduleEntry[] {
+  const count = Math.floor(Number(targetCount));
+  if (!Number.isFinite(count) || count <= 0) return [];
+  const baseRaw = Number(opts?.baseDelay ?? ANIMATION_BASE_DELAY);
+  const nextRaw = Number(opts?.nextDelay ?? ANIMATION_NEXT_DELAY);
+  const base = Number.isFinite(baseRaw) ? Math.max(0, Math.floor(baseRaw)) : ANIMATION_BASE_DELAY;
+  const next = Number.isFinite(nextRaw) ? Math.max(0, Math.floor(nextRaw)) : ANIMATION_NEXT_DELAY;
+  const out: AnimationScheduleEntry[] = [];
+  for (let i = 0; i < count; i++) {
+    out.push({ targetIndex: i, delayFrames: base + i * next });
+  }
+  return out;
+}
+
+/**
+ * Menentukan apakah animasi harus dicerminkan, mengikuti Spriteset_Base.animationShouldMirror():
+ * target yang berada di kiri titik referensi (pelaku) -> mirror.
+ */
+export function animationShouldMirror(targetCenterX: number, referenceCenterX: number): boolean {
+  return Number(targetCenterX) < Number(referenceCenterX);
+}

@@ -1,4 +1,4 @@
-import { resolveActionAnimation } from '../core/animations.js';
+import { animationShouldMirror, resolveActionAnimation } from '../core/animations.js';
 import type { BattleAction, BattleState } from '../core/combat-types.js';
 import type { ProjectBundle } from '../core/types.js';
 import type { AnimationAnchor, AnimationOverlayPlayer } from './AnimationPlayer.js';
@@ -43,10 +43,23 @@ export class ActionSequencePlayer {
         if (card) card.classList.add(`action-${step}`);
         if (step === 'impact' && anim && this.animPlayer) {
           const anchor = this.targetAnchor(targetCard ?? card);
+          let mirror = false;
+          const targetEl = targetCard ?? card;
+          if (card && targetEl) {
+            const actorRect = card.getBoundingClientRect();
+            const targetRect = targetEl.getBoundingClientRect();
+            if (actorRect && targetRect) {
+              mirror = animationShouldMirror(
+                targetRect.left + targetRect.width / 2,
+                actorRect.left + actorRect.width / 2
+              );
+            }
+          }
           await this.animPlayer.play(anim, {
             anchor,
             targetElement: targetCard ?? card,
-            reducedMotion
+            reducedMotion,
+            mirror
           });
         } else {
           await wait(reducedMotion ? 1 : 110);

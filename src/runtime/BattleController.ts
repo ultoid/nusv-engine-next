@@ -1,4 +1,4 @@
-import { resolveAnimation } from '../core/animations.js';
+import { animationShouldMirror, computeAnimationSchedule, resolveAnimation } from '../core/animations.js';
 import { createBattle, derivedStats, partyResources, resolveRound } from '../core/battle.js';
 import type { BattleAction, BattleBattler, BattleState } from '../core/combat-types.js';
 import { previewCtb } from '../core/ctb.js';
@@ -235,25 +235,37 @@ export class BattleController {
   }
 
   async playBattleAnimation(enemyIndex: number, animationId: string) {
-    const anim = resolveAnimation(this.bundle.game, animationId);
-    if (!anim || !this.currentState) return;
-    const enemies = this.currentState.battlers.filter(b => b.side === 'enemy' && b.hp > 0);
-    const targets = enemyIndex < 0 ? enemies : enemies[enemyIndex] ? [enemies[enemyIndex]] : [];
-    const reducedMotion = document.documentElement.classList.contains('reduced-motion');
-    const canvasRect = this.animCanvas.getBoundingClientRect();
-
-    await Promise.all(targets.map(target => {
-      const card = this.root.querySelector<HTMLElement>(`[data-battler="${CSS.escape(target.instanceId)}"]`);
-      const sprite = card?.querySelector<HTMLElement>('.battler-sprite') ?? card;
-      const rect = sprite?.getBoundingClientRect();
-      const anchor = rect ? {
-        x: rect.left - canvasRect.left + rect.width / 2,
-        y: rect.top - canvasRect.top + rect.height / 2,
-        bottomY: rect.bottom - canvasRect.top
-      } : undefined;
-      return this.animPlayer.play(anim, { anchor, targetElement: card, reducedMotion });
-    }));
-  }
+      const anim = resolveAnimation(this.bundle.game, animationId);
+      if (!anim || !this.currentState) return;
+      const enemies = this.currentState.battlers.filter(b => b.side === 'enemy' && b.hp > 0);
+      const targets = enemyIndex < 0 ? enemies : enemies[enemyIndex] ? [enemies[enemyIndex]] : [];
+      if (targets.length === 0) return;
+      const reducedMotion = document.documentElement.classList.contains('reduced-motion');
+      const canvasRect = this.animCanvas.getBoundingClientRect();
+      const partyCard = this.root.querySelector<HTMLElement>('[data-side="party"]');
+      const partyRect = partyCard?.getBoundingClientRect();
+      const referenceX = partyRect ? partyRect.left + partyRect.width / 2 : canvasRect.left + canvasRect.width * 0.25;
+      if (anim.displayType === 2) {
+        await this.animPlayer.play(anim, { anchor: undefined, reducedMotion });
+        return;
+      }
+      const useStagger = targets.length > 1;
+      const schedule = useStagger ? computeAnimationSchedule(targets.length) : [{ targetIndex: 0, delayFrames: 0 }];
+      await this.animPlayer.playMany(targets.map((target, i) => {
+        const card = this.root.querySelector<HTMLElement>(`[data-battler="${CSS.escape(target.instanceId)}"]`);
+        const sprite = card?.querySelector<HTMLElement>('.battler-sprite') ?? card;
+        const rect = sprite?.getBoundingClientRect();
+        const anchor = rect ? {
+          x: rect.left - canvasRect.left + rect.width / 2,
+          y: rect.top - canvasRect.top + rect.height / 2,
+          bottomY: rect.bottom - canvasRect.top
+        } : undefined;
+        const targetCenterX = rect ? rect.left + rect.width / 2 : canvasRect.left + canvasRect.width / 2;
+        const mirror = animationShouldMirror(targetCenterX, referenceX);
+        const delayFrames = schedule[i]?.delayFrames ?? 0;
+        return { anim, options: { anchor, targetElement: card, reducedMotion, mirror, delayFrames, priority: i } };
+      }));
+    }
 
   destroy() {
     this.animPlayer.destroy();

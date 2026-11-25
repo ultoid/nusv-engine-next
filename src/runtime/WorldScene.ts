@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
-import { resolveAnimation } from '../core/animations.js';
+import { animationShouldMirror, resolveAnimation } from '../core/animations.js';
 import type { MapEvent, ProgressState, ProjectBundle } from '../core/types.js';
 import { autotileMask, DEFAULT_TILESETS, getAutotileQuadrants, tileDefinition } from '../core/map-layers.js';
 import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, terrainTag, type Direction, type EventIO } from '../core/world.js';
@@ -398,45 +398,58 @@ export class WorldScene {
         await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
       },
       showAnimation: async (target: 'player' | string, animationId: string, waitFlag = true) => {
-        const anim = resolveAnimation(this.bundle.game, animationId);
-        if (!anim) {
-          await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
-          return;
-        }
-        const map = this.bundle.maps[this.state.mapId];
-        const tile = map?.tileSize ?? 48;
-        let tileX = this.state.x;
-        let tileY = this.state.y;
-        if (target !== 'player' && map) {
-          const ev = map.events.find(e => e.id === target);
-          if (ev) {
-            const pos = eventPosition(this.state, this.state.mapId, ev);
-            tileX = pos.x;
-            tileY = pos.y;
-          }
-        }
-        const gameCanvas = document.querySelector<HTMLCanvasElement>('#game canvas');
-        const canvasRect = gameCanvas?.getBoundingClientRect();
-        const logical = this.bundle.project.logicalResolution;
-        const scaleX = canvasRect ? canvasRect.width / logical.width : 1;
-        const scaleY = canvasRect ? canvasRect.height / logical.height : 1;
-        const offsetLeft = canvasRect ? canvasRect.left : 0;
-        const offsetTop = canvasRect ? canvasRect.top : 0;
-        const worldX = this.world.position.x + (tileX + 0.5) * tile;
-        const worldY = this.world.position.y + (tileY + 0.5) * tile;
-        const bottomY = this.world.position.y + (tileY + 1) * tile;
-        const promise = this.animPlayer.play(anim, {
-          anchor: {
-            x: offsetLeft + worldX * scaleX,
-            y: offsetTop + worldY * scaleY,
-            bottomY: offsetTop + bottomY * scaleY
-          },
-          reducedMotion: this.state.settings.reducedMotion
-        });
-        if (waitFlag !== false) {
-          await promise;
-        }
-      },
+              const anim = resolveAnimation(this.bundle.game, animationId);
+              if (!anim) {
+                await wait(30 * (this.state.settings.reducedMotion ? 1 : 16.6));
+                return;
+              }
+              if (anim.displayType === 2) {
+                void this.animPlayer.play(anim, {
+                  anchor: undefined,
+                  reducedMotion: this.state.settings.reducedMotion
+                });
+                return;
+              }
+              const map = this.bundle.maps[this.state.mapId];
+              const tile = map?.tileSize ?? 48;
+              let tileX = this.state.x;
+              let tileY = this.state.y;
+              if (target !== 'player' && map) {
+                const ev = map.events.find(e => e.id === target);
+                if (ev) {
+                  const pos = eventPosition(this.state, this.state.mapId, ev);
+                  tileX = pos.x;
+                  tileY = pos.y;
+                }
+              }
+              const gameCanvas = document.querySelector<HTMLCanvasElement>('#game canvas');
+              const canvasRect = gameCanvas?.getBoundingClientRect();
+              const logical = this.bundle.project.logicalResolution;
+              const scaleX = canvasRect ? canvasRect.width / logical.width : 1;
+              const scaleY = canvasRect ? canvasRect.height / logical.height : 1;
+              const offsetLeft = canvasRect ? canvasRect.left : 0;
+              const offsetTop = canvasRect ? canvasRect.top : 0;
+              const worldX = this.world.position.x + (tileX + 0.5) * tile;
+              const worldY = this.world.position.y + (tileY + 0.5) * tile;
+              const bottomY = this.world.position.y + (tileY + 1) * tile;
+              const heroWorldX = this.world.position.x + (this.state.x + 0.5) * tile;
+              const targetScreenX = offsetLeft + worldX * scaleX;
+              const heroScreenX = offsetLeft + heroWorldX * scaleX;
+              const facing = this.state.facing;
+              const mirror = facing === 'left' ? true : facing === 'right' ? false : animationShouldMirror(targetScreenX, heroScreenX);
+              const promise = this.animPlayer.play(anim, {
+                anchor: {
+                  x: targetScreenX,
+                  y: offsetTop + worldY * scaleY,
+                  bottomY: offsetTop + bottomY * scaleY
+                },
+                reducedMotion: this.state.settings.reducedMotion,
+                mirror
+              });
+              if (waitFlag !== false) {
+                await promise;
+              }
+            },
       transparency: () => { },
       playSe: (path, vol) => {
         void this.audio.playSe(path, { volume: vol });

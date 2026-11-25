@@ -25,7 +25,8 @@ export function renderAnimationFrame(
   height: number,
   anim: AnimationData,
   progress: number,
-  anchor?: AnimationAnchor
+  anchor?: AnimationAnchor,
+  mirror?: boolean
 ): void {
   if (anim.displayType === 0) return;
 
@@ -53,7 +54,7 @@ export function renderAnimationFrame(
   ctx.save();
   ctx.translate(centerX, centerY);
   ctx.rotate(rz);
-  ctx.scale(scale * tiltX, scale * tiltY);
+  ctx.scale(scale * tiltX * (mirror ? -1 : 1), scale * tiltY);
 
   const eff = (anim.effectName || '').toLowerCase();
 
@@ -326,12 +327,21 @@ export interface PlayOverlayOptions {
   reducedMotion?: boolean;
   onSound?: (timing: AnimationSoundTiming) => void;
   onFlash?: (timing: AnimationFlashTiming) => void;
+  mirror?: boolean;
+  delayFrames?: number;
+  priority?: number;
+  waitForPrevious?: boolean;
 }
 
 interface RunningInstance {
   anim: AnimationData;
   totalFrames: number;
   elapsedFrames: number;
+  delayFrames: number;
+  priority: number;
+  waitForPrevious: boolean;
+  started: boolean;
+  mirror: boolean;
   lastTriggeredFrame: number;
   anchor?: AnimationAnchor;
   targetElement?: HTMLElement | null;
@@ -392,11 +402,31 @@ export class AnimationOverlayPlayer {
     const effViewport = this.ensureEffekseer();
     const effHandle = await effViewport.playAnimation(anim, this.canvas.width, this.canvas.height, options.anchor);
 
+    const delayRaw = Number(options.delayFrames ?? 0);
+    const delayFrames = Number.isFinite(delayRaw) ? Math.max(0, Math.floor(delayRaw)) : 0;
+    const priorityRaw = Number(options.priority ?? 0);
+    const priority = Number.isFinite(priorityRaw) ? Math.floor(priorityRaw) : 0;
+    const mirror = options.mirror === true;
+    if (mirror && options.targetElement) {
+      options.targetElement.style.transform = 'scaleX(-1)';
+    }
+
     return new Promise<void>((resolve) => {
+      const wrappedResolve = () => {
+        if (mirror && options.targetElement) {
+          options.targetElement.style.transform = '';
+        }
+        resolve();
+      };
       this.instances.push({
         anim,
         totalFrames,
         elapsedFrames: 0,
+        delayFrames,
+        priority,
+        waitForPrevious: options.waitForPrevious === true,
+        started: delayFrames <= 0,
+        mirror,
         lastTriggeredFrame: 0,
         anchor: options.anchor,
         targetElement: options.targetElement,
@@ -404,10 +434,17 @@ export class AnimationOverlayPlayer {
         effekseerHandle: effHandle,
         onSound: options.onSound,
         onFlash: options.onFlash,
-        resolve
+        resolve: wrappedResolve
       });
+      this.instances.sort((a, b) => a.priority - b.priority);
       this.ensureLoop();
     });
+  }
+
+  async playMany(
+    requests: Array<{ anim: AnimationData; options?: PlayOverlayOptions }>
+  ): Promise<void> {
+    await Promise.all(requests.map((req) => this.play(req.anim, req.options)));
   }
 
   private ensureLoop() {
@@ -426,8 +463,26 @@ export class AnimationOverlayPlayer {
 
       let hasEffekseer = false;
       const remaining: RunningInstance[] = [];
+      this.instances.sort((a, b) => a.priority - b.priority);
 
-      for (const inst of this.instances) {
+      for (let instIdx = 0; instIdx < this.instances.length; instIdx++) {
+        const inst = this.instances[instIdx];
+        if (inst.waitForPrevious) {
+          const hasActivePredecessor = remaining.some((prev) => !prev.waitForPrevious);
+          if (hasActivePredecessor) {
+            remaining.push(inst);
+            continue;
+          }
+        }
+        if (!inst.started) {
+          inst.delayFrames -= dtFrames;
+          if (inst.delayFrames > 0) {
+            remaining.push(inst);
+            continue;
+          }
+          inst.started = true;
+          inst.delayFrames = 0;
+        }
         inst.elapsedFrames += dtFrames;
         const currentIntFrame = Math.min(inst.totalFrames, Math.max(1, Math.floor(inst.elapsedFrames) + 1));
 
@@ -460,7 +515,7 @@ export class AnimationOverlayPlayer {
           if (handleAlive) hasEffekseer = true;
         } else if (ctx && inst.elapsedFrames < inst.totalFrames) {
           const progress = Math.min(1, inst.elapsedFrames / inst.totalFrames);
-          renderAnimationFrame(ctx, this.canvas.width, this.canvas.height, inst.anim, progress, inst.anchor);
+          renderAnimationFrame(ctx, this.canvas.width, this.canvas.height, inst.anim, progress, inst.anchor, inst.mirror);
         }
 
         // Update flash states (target tint / screen flash / hide target)
@@ -552,6 +607,7 @@ export class AnimationOverlayPlayer {
       if (inst.targetElement) {
         inst.targetElement.style.opacity = '';
         inst.targetElement.style.filter = '';
+        if (inst.mirror) inst.targetElement.style.transform = '';
       }
       inst.resolve();
     }

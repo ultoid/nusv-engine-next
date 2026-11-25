@@ -6,6 +6,20 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ## [Unreleased] — 2026-11-25
 
+### 3. Paritas Animasi Effekseer MZ (Queue, Stagger Multi-Target, Mirroring)
+- **Core murni (`src/core/animations.ts`)**:
+  - Konstanta `ANIMATION_BASE_DELAY = 8` dan `ANIMATION_NEXT_DELAY = 6` setara `Spriteset_Base`.
+  - `computeAnimationSchedule(n)` menghasilkan delay akumulatif stagger multi-target.
+  - `animationShouldMirror(targetX, refX)` mengembalikan `targetX < refX`.
+- **Runtime (`src/runtime/AnimationPlayer.ts`)**:
+  - `PlayOverlayOptions` mendukung `mirror`, `delayFrames`, `priority`, `waitForPrevious`.
+  - `playMany()` untuk antrean lintas-target; `ensureLoop` menghormati `delayFrames` dan gating `waitForPrevious`.
+  - Mirror Canvas2D via `scale(-1, 1)` dan DOM via `scaleX(-1)` dengan restore; Effekseer best-effort.
+- **Integrasi Battle/Map**:
+  - `BattleController.playBattleAnimation` memakai stagger + mirror per target; `displayType === 2` tetap layar penuh.
+  - `ActionSequencePlayer` meneruskan `mirror` pelaku-vs-target; `WorldScene.showAnimation` menghormati `waitFlag` dan arah hadap.
+- **Test**: perluasan `stage18` + baru `stage19-animation-queue-mirror.test.js`.
+
 ### 1. Sistem Tema Terpadu (Unified Theme System: theme.css)
 - **Single Source of Truth (SSOT) Desain & Gaya Visual**:
   - Dibuat berkas `theme.css` yang mendefinisikan seluruh Design Tokens untuk NUSV Engine Next.

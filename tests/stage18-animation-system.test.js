@@ -9,7 +9,11 @@ import {
   resolveActionAnimation,
   computeAnimationDurationFrames,
   collectAnimationFrameEvents,
-  formatAnimationLabel
+  formatAnimationLabel,
+  ANIMATION_BASE_DELAY,
+  ANIMATION_NEXT_DELAY,
+  computeAnimationSchedule,
+  animationShouldMirror
 } from '../.electron-dist/src/core/animations.js';
 import { inferAssetCategory } from '../.electron-dist/src/core/resource-manager.js';
 
@@ -92,6 +96,17 @@ test('computeAnimationDurationFrames dan collectAnimationFrameEvents mengikuti s
   const f4 = collectAnimationFrameEvents(pierceIce, 4);
   assert.equal(f4.sounds[0].se.name, 'Ice3');
   assert.equal(f4.flashes[0].color[0], 187);
+});
+
+test('paritas MZ: konstanta delay, stagger schedule, dan mirror', () => {
+  assert.equal(ANIMATION_BASE_DELAY, 8);
+  assert.equal(ANIMATION_NEXT_DELAY, 6);
+  assert.deepEqual(computeAnimationSchedule(0), []);
+  assert.deepEqual(computeAnimationSchedule(1), [{ targetIndex: 0, delayFrames: 8 }]);
+  assert.deepEqual(computeAnimationSchedule(2).map(e => e.delayFrames), [8, 14]);
+  assert.equal(animationShouldMirror(100, 200), true);
+  assert.equal(animationShouldMirror(300, 200), false);
+  assert.equal(animationShouldMirror(200, 200), false);
 });
 
 test('inferAssetCategory mengenali folder effects dan berkas .efkefc/.efkmodel', () => {
