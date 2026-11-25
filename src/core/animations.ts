@@ -138,7 +138,7 @@ export function formatAnimationLabel(anim: AnimationData, index?: number): strin
 export const ANIMATION_BASE_DELAY = 8;
 
 /** Jeda antar sprite animasi berikutnya (setara Spriteset_Base.animationNextDelay()). */
-export const ANIMATION_NEXT_DELAY = 6;
+export const ANIMATION_NEXT_DELAY = 12;
 
 export interface AnimationScheduleEntry {
   targetIndex: number;

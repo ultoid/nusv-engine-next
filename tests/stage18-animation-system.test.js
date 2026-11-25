@@ -100,10 +100,10 @@ test('computeAnimationDurationFrames dan collectAnimationFrameEvents mengikuti s
 
 test('paritas MZ: konstanta delay, stagger schedule, dan mirror', () => {
   assert.equal(ANIMATION_BASE_DELAY, 8);
-  assert.equal(ANIMATION_NEXT_DELAY, 6);
+  assert.equal(ANIMATION_NEXT_DELAY, 12);
   assert.deepEqual(computeAnimationSchedule(0), []);
   assert.deepEqual(computeAnimationSchedule(1), [{ targetIndex: 0, delayFrames: 8 }]);
-  assert.deepEqual(computeAnimationSchedule(2).map(e => e.delayFrames), [8, 14]);
+  assert.deepEqual(computeAnimationSchedule(2).map(e => e.delayFrames), [8, 20]);
   assert.equal(animationShouldMirror(100, 200), true);
   assert.equal(animationShouldMirror(300, 200), false);
   assert.equal(animationShouldMirror(200, 200), false);

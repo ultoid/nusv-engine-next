@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite, Text } from 'pixi.js';
-import { animationShouldMirror, resolveAnimation } from '../core/animations.js';
+import { ANIMATION_BASE_DELAY, animationShouldMirror, resolveAnimation } from '../core/animations.js';
 import type { MapEvent, ProgressState, ProjectBundle } from '../core/types.js';
 import { autotileMask, DEFAULT_TILESETS, getAutotileQuadrants, tileDefinition } from '../core/map-layers.js';
 import { activePage, directionDelta, eventAt, eventPosition, executeCommands, initialProgress, move, interactiveEventAt, isLadderTile, isBushTile, isDamageFloorTile, terrainTag, type Direction, type EventIO } from '../core/world.js';
@@ -406,7 +406,8 @@ export class WorldScene {
               if (anim.displayType === 2) {
                 void this.animPlayer.play(anim, {
                   anchor: undefined,
-                  reducedMotion: this.state.settings.reducedMotion
+                  reducedMotion: this.state.settings.reducedMotion,
+                  delayFrames: ANIMATION_BASE_DELAY
                 });
                 return;
               }
@@ -444,7 +445,8 @@ export class WorldScene {
                   bottomY: offsetTop + bottomY * scaleY
                 },
                 reducedMotion: this.state.settings.reducedMotion,
-                mirror
+                mirror,
+                delayFrames: ANIMATION_BASE_DELAY
               });
               if (waitFlag !== false) {
                 await promise;

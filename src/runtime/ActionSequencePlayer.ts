@@ -1,4 +1,4 @@
-import { animationShouldMirror, resolveActionAnimation } from '../core/animations.js';
+import { ANIMATION_BASE_DELAY, animationShouldMirror, resolveActionAnimation } from '../core/animations.js';
 import type { BattleAction, BattleState } from '../core/combat-types.js';
 import type { ProjectBundle } from '../core/types.js';
 import type { AnimationAnchor, AnimationOverlayPlayer } from './AnimationPlayer.js';
@@ -59,7 +59,8 @@ export class ActionSequencePlayer {
             anchor,
             targetElement: targetCard ?? card,
             reducedMotion,
-            mirror
+            mirror,
+            delayFrames: ANIMATION_BASE_DELAY
           });
         } else {
           await wait(reducedMotion ? 1 : 110);

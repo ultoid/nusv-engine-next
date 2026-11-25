@@ -8,17 +8,24 @@ Semua pembaruan dan perubahan penting pada NUSV Engine Next didokumentasikan di 
 
 ### 3. Paritas Animasi Effekseer MZ (Queue, Stagger Multi-Target, Mirroring)
 - **Core murni (`src/core/animations.ts`)**:
-  - Konstanta `ANIMATION_BASE_DELAY = 8` dan `ANIMATION_NEXT_DELAY = 6` setara `Spriteset_Base`.
-  - `computeAnimationSchedule(n)` menghasilkan delay akumulatif stagger multi-target.
+  - Konstanta `ANIMATION_BASE_DELAY = 8` dan `ANIMATION_NEXT_DELAY = 12` setara `Spriteset_Base`.
+  - `computeAnimationSchedule(n)` menghasilkan delay akumulatif stagger multi-target (8, 20, 32...).
   - `animationShouldMirror(targetX, refX)` mengembalikan `targetX < refX`.
-- **Runtime (`src/runtime/AnimationPlayer.ts`)**:
+- **Runtime (`src/runtime/AnimationPlayer.ts`, `EffekseerBackend.ts`)**:
+  - Effekseer-only paritas MZ: hapus fallback prosedural Canvas2D (`drawFire/Ice/...`); `renderAnimationFrame` jadi no-op deprecated.
+  - Mirror via `handle.setScale(-sx, sy, sz)` (`playAnimation(..., mirror)`); hapus DOM `scaleX(-1)` + restore.
+  - `handleAlive = handle.exists` (hapus cap `elapsed<300`); tanpa `.efkefc` hanya SE/flash jalan selama `totalFrames`.
   - `PlayOverlayOptions` mendukung `mirror`, `delayFrames`, `priority`, `waitForPrevious`.
-  - `playMany()` untuk antrean lintas-target; `ensureLoop` menghormati `delayFrames` dan gating `waitForPrevious`.
-  - Mirror Canvas2D via `scale(-1, 1)` dan DOM via `scaleX(-1)` dengan restore; Effekseer best-effort.
+  - **Fix**: efek Effekseer baru dibuat setelah jeda (`delayFrames`) selesai, bukan saat `play()` dipanggil.
+    Sebelumnya handle dibuat di awal, lalu dibunuh `clear()`/`stopAll()` selama jendela jeda sehingga
+    **tidak ada efek yang tampil** dan suara/flash setelah frame 1 terpotong.
+- **Editor preview (`AnimationEditorComponents.tsx`)**:
+  - Hapus `previewProgress` + gambar 2D fallback; label `Effekseer/No Effect`; `effAlive = exists` murni.
 - **Integrasi Battle/Map**:
-  - `BattleController.playBattleAnimation` memakai stagger + mirror per target; `displayType === 2` tetap layar penuh.
+  - `BattleController.playBattleAnimation` memakai `computeAnimationSchedule(n)` untuk semua jumlah target (tunggal = base 8, bukan 0); `displayType === 2` tetap layar penuh + base delay.
+  - `ActionSequencePlayer` + `WorldScene.showAnimation` single-play memakai `delayFrames: ANIMATION_BASE_DELAY` (paritas MZ).
   - `ActionSequencePlayer` meneruskan `mirror` pelaku-vs-target; `WorldScene.showAnimation` menghormati `waitFlag` dan arah hadap.
-- **Test**: perluasan `stage18` + baru `stage19-animation-queue-mirror.test.js`.
+- **Test**: `stage18/19` update ekspektasi next=12, schedule [8,20,32]; baru `stage20-animation-effect-delay.test.js` (regression jeda vs efek); 125/125 lolos.
 
 ### 1. Sistem Tema Terpadu (Unified Theme System: theme.css)
 - **Single Source of Truth (SSOT) Desain & Gaya Visual**:

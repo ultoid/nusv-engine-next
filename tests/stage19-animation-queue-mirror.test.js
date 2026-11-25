@@ -7,9 +7,9 @@ import {
   computeAnimationSchedule
 } from '../.electron-dist/src/core/animations.js';
 
-test('konstanta delay paritas MZ: base 8, next 6', () => {
+test('konstanta delay paritas MZ: base 8, next 12', () => {
   assert.equal(ANIMATION_BASE_DELAY, 8);
-  assert.equal(ANIMATION_NEXT_DELAY, 6);
+  assert.equal(ANIMATION_NEXT_DELAY, 12);
 });
 
 test('computeAnimationSchedule: kosong, tunggal, dan akumulatif stagger', () => {
@@ -18,8 +18,8 @@ test('computeAnimationSchedule: kosong, tunggal, dan akumulatif stagger', () => 
   assert.deepEqual(computeAnimationSchedule(1), [{ targetIndex: 0, delayFrames: 8 }]);
   assert.deepEqual(computeAnimationSchedule(3), [
     { targetIndex: 0, delayFrames: 8 },
-    { targetIndex: 1, delayFrames: 14 },
-    { targetIndex: 2, delayFrames: 20 }
+    { targetIndex: 1, delayFrames: 20 },
+    { targetIndex: 2, delayFrames: 32 }
   ]);
 });
 

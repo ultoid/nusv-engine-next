@@ -7,7 +7,6 @@ import type {
   AnimationRotation,
   ProjectBundle
 } from '../core/types.js';
-import { renderAnimationFrame } from '../runtime/AnimationPlayer.js';
 import { AudioManager } from '../runtime/AudioManager.js';
 import { EffekseerViewport } from '../runtime/EffekseerBackend.js';
 
@@ -55,18 +54,13 @@ export const STANDARD_EFFECT_NAMES = [
   'HealAll2',
   'HealOne1',
   'HealOne2',
-  'HitDarkness',
-  'HitEarth',
   'HitEffect',
   'HitFire',
   'HitIce',
-  'HitLight',
   'HitPhysical',
   'HitSpecial1',
   'HitSpecial2',
   'HitThunder',
-  'HitWater',
-  'HitWind',
   'IceAll1',
   'IceAll2',
   'IceAll3',
@@ -81,7 +75,6 @@ export const STANDARD_EFFECT_NAMES = [
   'LightOne2',
   'LightPillar1',
   'LightPillar2',
-  'Model',
   'NeutralAll1',
   'NeutralAll2',
   'NeutralAll3',
@@ -106,32 +99,23 @@ export const STANDARD_EFFECT_NAMES = [
   'Radiation',
   'Revive1',
   'Revive2',
-  'Sandstorm',
   'ShootAll',
   'ShootBarrage',
   'ShootNormal',
   'ShootSpecial',
   'Shout',
   'Silence',
-  'SlashDarkness',
-  'SlashEarth',
   'SlashEffect',
   'SlashFire',
   'SlashIce',
-  'SlashLight',
   'SlashPhysical',
   'SlashSpecial1',
   'SlashSpecial2',
   'SlashSpecial3',
   'SlashThunder',
-  'SlashWater',
-  'SlashWind',
   'Sleep',
   'Song',
   'SonicWave',
-  'Spark',
-  'StateDown',
-  'StateUp',
   'Sweep',
   'ThunderAll1',
   'ThunderAll2',
@@ -946,6 +930,10 @@ export function AnimationDetailForm({
   const [targetIsActor, setTargetIsActor] = useState(false);
   const [battleback1, setBattleback1] = useState('Grassland');
   const [battleback2, setBattleback2] = useState('Grassland');
+  // SV actor preview: cropped single-cell frames (MZ wait row + damage cell)
+  const [svIdleFrames, setSvIdleFrames] = useState<string[]>([]);
+  const [svIdleStep, setSvIdleStep] = useState(0);
+  const [svDamageUrl, setSvDamageUrl] = useState<string>('');
 
   // Dynamically loaded asset URLs (loaded on demand when not in assetUrlMap)
   const [dynamicUrls, setDynamicUrls] = useState<Record<string, string>>({});
@@ -953,8 +941,7 @@ export function AnimationDetailForm({
   // Animation Playback state
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [previewProgress, setPreviewProgress] = useState(0);
-  const [previewBackend, setPreviewBackend] = useState<'effekseer' | '2d' | null>(null);
+  const [previewBackend, setPreviewBackend] = useState<'effekseer' | 'missing' | null>(null);
   const [flashVisual, setFlashVisual] = useState<{ screenColor?: string; flashTarget: boolean; hideTarget: boolean }>({
     flashTarget: false,
     hideTarget: false
@@ -1026,6 +1013,17 @@ export function AnimationDetailForm({
     );
   }, [targetIsActor, targetName, assetUrlMap, dynamicUrls]);
 
+  // Sprite yang benar-benar dirender di preview: actor SV pakai sel ter-crop
+  // (idle loop, atau pose damage saat flash target), enemy memakai gambar utuh.
+  const targetSpriteSrc = useMemo(() => {
+    if (targetIsActor) {
+      if (flashVisual.flashTarget && svDamageUrl) return svDamageUrl;
+      if (svIdleFrames.length > 0) return svIdleFrames[svIdleStep];
+      return '';
+    }
+    return targetUrl;
+  }, [targetIsActor, targetUrl, svIdleFrames, svIdleStep, svDamageUrl, flashVisual.flashTarget]);
+
   // Load battleback and target images on demand when they change
   useEffect(() => {
     const b1Path = `assets/battlebacks1/${battleback1}.png`;
@@ -1041,6 +1039,69 @@ export function AnimationDetailForm({
     };
     void loadMissing();
   }, [battleback1, battleback2, targetName, targetIsActor, assetUrlMap, dynamicUrls, loadAssetUrl]);
+
+  // Preview SV actor: crop sel 64x64 dari sheet 9x6 (grid sama seperti TextureManager).
+  // Baris 0 = idle (3 frame loop), baris 2 kolom 1 = pose damage (MZ).
+  useEffect(() => {
+    if (!targetIsActor) {
+      setSvIdleFrames([]);
+      setSvDamageUrl('');
+      return;
+    }
+    const path = `assets/sv_actors/${targetName}.png`;
+    const src = assetUrlMap[path] || dynamicUrls[path];
+    if (!src) return;
+
+    let cancelled = false;
+    const CELL = 64;
+    const COLS = 9;
+    const ROWS = 6;
+
+    const crop = (img: HTMLImageElement, col: number, row: number) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = CELL;
+      canvas.height = CELL;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return '';
+      ctx.drawImage(
+        img,
+        col * CELL,
+        row * CELL,
+        CELL,
+        CELL,
+        0,
+        0,
+        CELL,
+        CELL
+      );
+      return canvas.toDataURL('image/png');
+    };
+
+    const img = new Image();
+    img.onload = () => {
+      if (cancelled) return;
+      const frames: string[] = [];
+      for (let col = 0; col < 3; col += 1) {
+        frames.push(crop(img, col, 0));
+      }
+      setSvIdleFrames(frames);
+      setSvDamageUrl(crop(img, 1, 2));
+    };
+    img.src = src;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [targetIsActor, targetName, assetUrlMap, dynamicUrls]);
+
+  // Loop idle actor saat preview berjalan.
+  useEffect(() => {
+    if (!isPlaying || svIdleFrames.length === 0) return;
+    const id = window.setInterval(() => {
+      setSvIdleStep((step) => (step + 1) % svIdleFrames.length);
+    }, 250);
+    return () => window.clearInterval(id);
+  }, [isPlaying, svIdleFrames.length]);
 
   // Sound handlers
   const handleSaveSound = (timing: AnimationSoundTiming) => {
@@ -1096,7 +1157,6 @@ export function AnimationDetailForm({
     if (isPlaying) {
       setIsPlaying(false);
       setCurrentFrame(0);
-      setPreviewProgress(0);
       setPreviewBackend(null);
       setFlashVisual({ flashTarget: false, hideTarget: false });
       effekseerRef.current?.clear();
@@ -1107,8 +1167,8 @@ export function AnimationDetailForm({
 
     setIsPlaying(true);
     const totalFrames = computeAnimationDurationFrames(animation);
-    const previewW = canvasRef.current?.width ?? 400;
-    const previewH = canvasRef.current?.height ?? 250;
+    const previewW = glCanvasRef.current?.width ?? 400;
+    const previewH = glCanvasRef.current?.height ?? 250;
 
     let effHandle: { exists: boolean; stop(): void } | null = null;
     if (glCanvasRef.current && animation.displayType !== 0 && animation.effectName) {
@@ -1121,7 +1181,7 @@ export function AnimationDetailForm({
         bottomY: previewH - 24
       });
     }
-    setPreviewBackend(effHandle ? 'effekseer' : '2d');
+    setPreviewBackend(effHandle ? 'effekseer' : 'missing');
 
     let elapsedFrames = 0;
     let lastTriggeredFrame = 0;
@@ -1136,7 +1196,6 @@ export function AnimationDetailForm({
 
       const intFrame = Math.min(totalFrames, Math.max(1, Math.floor(elapsedFrames) + 1));
       setCurrentFrame(intFrame);
-      setPreviewProgress(Math.min(1, elapsedFrames / totalFrames));
 
       while (lastTriggeredFrame < intFrame) {
         lastTriggeredFrame++;
@@ -1179,7 +1238,7 @@ export function AnimationDetailForm({
       activeFlashes = nextFlashes;
       setFlashVisual({ screenColor, flashTarget, hideTarget });
 
-      const effAlive = Boolean(effHandle?.exists && elapsedFrames < 300);
+      const effAlive = Boolean(effHandle?.exists);
       const animActive = effHandle ? effAlive : elapsedFrames < totalFrames;
       if (animActive || activeFlashes.length > 0) {
         animFrameIdRef.current = requestAnimationFrame(step);
@@ -1188,7 +1247,6 @@ export function AnimationDetailForm({
         effekseerRef.current?.clear();
         setIsPlaying(false);
         setCurrentFrame(0);
-        setPreviewProgress(0);
         setPreviewBackend(null);
         setFlashVisual({ flashTarget: false, hideTarget: false });
       }
@@ -1206,23 +1264,15 @@ export function AnimationDetailForm({
     };
   }, []);
 
-  // Draw fallback 2D effect on canvas when Effekseer handle is not active
+  // Paritas MZ: tidak ada fallback prosedural 2D. Canvas 2D hanya di-clear;
+  // visual efek murni dari Effekseer (.efkefc). Jika missing, hanya SE/flash yang jalan.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (!isPlaying || currentFrame <= 0 || previewBackend === 'effekseer') return;
-
-    renderAnimationFrame(ctx, canvas.width, canvas.height, animation, previewProgress, {
-      x: canvas.width / 2,
-      y: canvas.height * 0.52,
-      bottomY: canvas.height - 24
-    });
-  }, [isPlaying, currentFrame, previewProgress, previewBackend, animation]);
+  }, [isPlaying, currentFrame, animation]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -1434,7 +1484,7 @@ export function AnimationDetailForm({
             )}
 
             {/* Target Battler Sprite */}
-            {targetUrl && (
+            {targetSpriteSrc && (
               <div
                 style={{
                   position: 'absolute',
@@ -1446,11 +1496,12 @@ export function AnimationDetailForm({
                 }}
               >
                 <img
-                  src={targetUrl}
+                  src={targetSpriteSrc}
                   alt={targetName}
                   style={{
                     maxHeight: 160,
                     maxWidth: 200,
+                    imageRendering: targetIsActor ? 'pixelated' : undefined,
                     opacity: flashVisual.hideTarget ? 0 : 1,
                     filter: flashVisual.flashTarget ? 'brightness(2.0)' : undefined,
                     transition: 'filter 0.05s ease-out'
@@ -1475,7 +1526,7 @@ export function AnimationDetailForm({
               }}
             />
 
-            {/* 2D Fallback Canvas for Procedural Particle Rendering */}
+            {/* 2D Canvas (clear-only, paritas MZ: tanpa gambar prosedural) */}
             <canvas
               ref={canvasRef}
               width={400}
@@ -1525,7 +1576,7 @@ export function AnimationDetailForm({
                   fontFamily: 'monospace'
                 }}
               >
-                Frame: #{String(currentFrame).padStart(3, '0')} ({previewBackend === 'effekseer' ? 'Effekseer' : '2D'})
+                Frame: #{String(currentFrame).padStart(3, '0')} ({previewBackend === 'effekseer' ? 'Effekseer' : 'No Effect'})
               </div>
             )}
           </div>

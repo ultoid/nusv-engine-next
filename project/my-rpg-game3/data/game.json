@@ -681,7 +681,7 @@
       "name": "Slash Physical",
       "displayType": 1,
       "alignBottom": false,
-      "effectName": "CureOne2",
+      "effectName": "ClawEffect",
       "scale": 100,
       "speed": 100,
       "rotation": {
@@ -695,7 +695,7 @@
         {
           "frame": 1,
           "se": {
-            "name": "Sword1",
+            "name": "Attack2",
             "volume": 90,
             "pitch": 100,
             "pan": 0

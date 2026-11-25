@@ -1,4 +1,4 @@
-import { animationShouldMirror, computeAnimationSchedule, resolveAnimation } from '../core/animations.js';
+import { ANIMATION_BASE_DELAY, animationShouldMirror, computeAnimationSchedule, resolveAnimation } from '../core/animations.js';
 import { createBattle, derivedStats, partyResources, resolveRound } from '../core/battle.js';
 import type { BattleAction, BattleBattler, BattleState } from '../core/combat-types.js';
 import { previewCtb } from '../core/ctb.js';
@@ -246,11 +246,10 @@ export class BattleController {
       const partyRect = partyCard?.getBoundingClientRect();
       const referenceX = partyRect ? partyRect.left + partyRect.width / 2 : canvasRect.left + canvasRect.width * 0.25;
       if (anim.displayType === 2) {
-        await this.animPlayer.play(anim, { anchor: undefined, reducedMotion });
+        await this.animPlayer.play(anim, { anchor: undefined, reducedMotion, delayFrames: ANIMATION_BASE_DELAY });
         return;
       }
-      const useStagger = targets.length > 1;
-      const schedule = useStagger ? computeAnimationSchedule(targets.length) : [{ targetIndex: 0, delayFrames: 0 }];
+      const schedule = computeAnimationSchedule(targets.length);
       await this.animPlayer.playMany(targets.map((target, i) => {
         const card = this.root.querySelector<HTMLElement>(`[data-battler="${CSS.escape(target.instanceId)}"]`);
         const sprite = card?.querySelector<HTMLElement>('.battler-sprite') ?? card;

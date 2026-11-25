@@ -240,7 +240,8 @@ export class EffekseerViewport {
     anim: AnimationData,
     width: number,
     height: number,
-    anchor?: AnimationAnchor
+    anchor?: AnimationAnchor,
+    mirror?: boolean
   ): Promise<EffekseerHandleLike | null> {
     if (anim.displayType === 0 || !anim.effectName) return null;
     const effect = await this.loadEffect(anim.effectName);
@@ -268,7 +269,7 @@ export class EffekseerViewport {
     if (!handle) return null;
 
     const scale = Math.max(0.1, (anim.scale ?? 100) / 100);
-    handle.setScale(scale, scale, scale);
+    handle.setScale(mirror ? -scale : scale, scale, scale);
 
     const rx = ((anim.rotation?.x ?? 0) * Math.PI) / 180;
     const ry = ((anim.rotation?.y ?? 0) * Math.PI) / 180;

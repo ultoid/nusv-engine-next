@@ -4,5 +4,5 @@
     "outDir": ".electron-dist", "rootDir": ".", "strict": true,
     "skipLibCheck": true, "types": ["node"]
   },
-  "include": ["electron/**/*.ts", "electron/**/*.cts", "src/core/**/*.ts"]
+  "include": ["electron/**/*.ts", "electron/**/*.cts", "src/core/**/*.ts", "src/runtime/AnimationPlayer.ts", "src/global.d.ts"]
 }
